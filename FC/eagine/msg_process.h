@@ -76,10 +76,10 @@ typedef struct MSG_PROCESS
 {
     char           *name;    /* the string which show to user what is the name of this bean*/
     char            action; //use the ACTION_SYNC enum define 
-    int            (*sync)(void *);//use this fun to send the bean to other module
-    int            (*set)(void *, void *);//when recive the update message, use this fun to update to lower layer
-    int            (*check)(void *);//check any value in this bean rightor not
-    int            (*init)(void *);
+    int            (*sync)(byte);//use this fun to send the bean to other module
+    int            (*set)(byte, byte);//when recive the update message, use this fun to update to lower layer
+    int            (*check)(byte);//check any value in this bean rightor not
+    int            (*init)(byte);
     unsigned  int   len;            /* buffer len*/
     unsigned  int   index;             /* the pos in the message array, not a good way  */
     byte            buffer;         /* point to the message bean */
@@ -109,7 +109,7 @@ typedef struct MSG_PROCESS
     MSG_CHECK(name, data_own); \ 
     MSG_INIT(name, data_own); \
     static type msg_##name ; \
-           MSG_PROCESS_STRU process_##name = {strname, \
+    static  MSG_PROCESS_STRU process_##name = {strname, \
                                               EN_ACTION_NOTHING,\
                                               sync_fun_##name,\
                                               set_fun_##name,\
@@ -119,16 +119,6 @@ typedef struct MSG_PROCESS
                                               index, \
                                               &msg_##name \
                                               }
-
-/* how ever when we recive a message, the first four byte of the buffer 
-   is the message head 
- */
-#define PROCESS_MSG(msg) \
-    do \
-    { \
-      return  msg_update(msg); \
-    }while(0) \
-   
 
 
 #define REGISTER_MSG(name) \

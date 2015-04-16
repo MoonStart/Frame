@@ -52,14 +52,12 @@ void process_run()
                 memcpy(buffer+sizeof(int), head->buffer, head->len);
                 io_send(buffer, head->len + sizeof(int));
             }
-
-            sleep(1);
-            if(io_recv(buffer, MSG_LEN_MAX))
-            {
-                msg_update(buffer);
-            }
         }
-
+        sleep(1);
+        if(io_recv(buffer, MSG_LEN_MAX))
+        {
+            msg_update(buffer);
+        }
 
         index ++;
         index = index % INDEX_BEAN_MAX;
