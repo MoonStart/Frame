@@ -4,12 +4,12 @@
 /* 
   we define the message id as a enum start with 0
 */
-typedef enum MSG_ID
+typedef enum INDEX_BEAN
 {
-    ID_MSG_CARD = 0, //CARD_MSG_BEAN_STRU
-    ID_MSG_RTC,
-    ID_MSG_END
-}MSG_ID_ENUM;
+    INDEX_BEAN_0 = 0,
+    INDEX_BEAN_1,
+    INDEX_BEAN_MAX
+}INDEX_BEAN_ENUM;
 
 
 #endif /* MESSAGE_ID */

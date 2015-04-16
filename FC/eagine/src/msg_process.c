@@ -4,7 +4,7 @@ typedef struct MSG_ARRAY
     MSG_PROCESS_STRU    *pmsg;
     char                 flag;
 } MSG_ARRAY_STRU;
-static MSG_ARRAY_STRU msg_array[MODULE_MAX];
+static MSG_ARRAY_STRU msg_array[INDEX_BEAN_MAX];
 /*****************************************************************************
  Prototype    : process_run
  Description  : this function continuly run in main function
@@ -26,7 +26,7 @@ void process_run()
     int index = 0;
     char buffer[MSG_LEN_MAX];
 
-    while((index < MODULE_MAX) && msg_array[index].flag)
+    while((index < INDEX_BEAN_MAX) && msg_array[index].flag)
     {
         head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
         head->init(head->buffer);
@@ -62,7 +62,7 @@ void process_run()
 
 
         index ++;
-        index = index % MODULE_MAX;
+        index = index % INDEX_BEAN_MAX;
     }
 }
 
@@ -104,7 +104,7 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
     }
 
 
-    if(msg->index > MODULE_MAX)
+    if(msg->index > INDEX_BEAN_MAX)
     {
         PRINTF("please redefine the message container size or check the message ID \r\n");
         exit(0);
@@ -195,7 +195,7 @@ void msg_list()
     int index = 0;
     MSG_PROCESS_STRU *head = NULL;
 
-    while(index < MODULE_MAX)
+    while(index < INDEX_BEAN_MAX)
     {
         head =  (MSG_PROCESS_STRU *)msg_array[index].pmsg;
         PRINTF("\t %s \r\n", head->name);
@@ -221,13 +221,12 @@ void msg_list()
 int msg_array_init()
 {
     int i = 0;
-
-    for ( i = 0 ; i < MODULE_MAX; i++ )
+    while (i < INDEX_BEAN_MAX)
     {
         msg_array[i].flag = 0;
         msg_array[i].pmsg = NULL;
+        i++;
     }
-
     PRINTF("MSG ARRAY INIT OVER \r\n");
     return 0;
 }
@@ -235,32 +234,31 @@ int msg_array_init()
 
 
 /*****************************************************************************
- Prototype    : DISPLAY_FUN
- Description  : we use this function to display all module message vaule
-                in the
-                message struct, because just only us know how to display
-                this value
-                to us
- Input        : CardMsgBean
-                data(reservd)
+ Prototype    : display
+ Description  : display all bean register to the message array
+ Input        : None
  Output       : None
- Return Value :
- Calls        :
- Called By    :
-
+ Return Value : 
+ Calls        : 
+ Called By    : 
+ 
   History        :
-  1.Date         : 2014/9/10
-    Author       : Eason Lee
+  1.Date         : 2015/4/16
+    Author       : Laserly
     Modification : Created function
 
 *****************************************************************************/
-#if 0
-int display()
+void display()
 {
-    PRINTF("serinal number: %s \r\n", );
+    int index = 0;
+    printf("the bean register to the array: \r\n");
 
-    PRINTF("Current : %d \r\n", );
-
+    while(index < INDEX_BEAN_MAX)
+    {
+       if(msg_array[index].flag)
+       {
+        printf("%s \r\n" msg_array[index].pmsg.name);
+       }
+    }
     return 0;
 }
-#endif

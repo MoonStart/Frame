@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* we need */
-MSG_PROCESS(card_bean, "CardMsgBean", ID_MSG_CARD, CARD_MSG_BEAN_STRU);
+MSG_PROCESS(card_bean, "card_bean", INDEX_BEAN_0, CARD_MSG_BEAN_STRU);
 
 
 MSG_CHECK(card_bean, data)
