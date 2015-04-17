@@ -3,11 +3,14 @@
 #define PORT_SCM  1024
 #define PORT_CARD 1025
 
+#define IP_SCM   "127.0.0.1"
+#define IP_CARD  "127.0.0.1"
+
 typedef struct SOCK_INFO
 {
     unsigned int   sock_fd;
-    unsigned short serv_port;
-    struct sockaddr_in targetAddr;
+    unsigned short local_port; /* the port used in local module */
+    struct sockaddr_in targetAddr; /* tha target address we will send message to it */
     MODULE_NAME_ENUM module;
     char           send_buffer[MSG_LEN_MAX];
     char           recv_buffer[MSG_LEN_MAX];
@@ -15,44 +18,44 @@ typedef struct SOCK_INFO
 static SOCK_INFO_STRU sock_bean;
 
 
-int display()
+void display()
 {
     int i = 0;
 
-    PRINTF("sock fd: %d \r\n", sock_bean.sock_fd);
+    printf("sock fd: %d \r\n", sock_bean.sock_fd);
 
-    PRINTF("sock port: %d \r\n", sock_bean.serv_port);
+    printf("sock port: %d \r\n", sock_bean.local_port);
 
-    PRINTF("RECV BUFFER\r\n");
+    printf("RECV BUFFER\r\n");
     for(i = 0; i < 16; i++)
     {
-        PRINTF("|%2d ", i);
+        printf("|%2d ", i);
     }
-    PRINTF("\r\n");
+    printf("\r\n");
     for(i = 0; i < MSG_LEN_MAX; i++)
     {
         if(i % 16 == 0)
         {
-            PRINTF("\r\n");
+            printf("\r\n");
         }
 
-        PRINTF("|%2x ", sock_bean.recv_buffer[i]);
+        printf("|%2x ", sock_bean.recv_buffer[i]);
     }
 
-    PRINTF("SEND BUFFER\r\n");
+    printf("SEND BUFFER\r\n");
     for(i = 0; i < 16; i++)
     {
-        PRINTF("|%2d ", i);
+        printf("|%2d ", i);
     }
-    PRINTF("\r\n");
+    printf("\r\n");
     for(i = 0; i < MSG_LEN_MAX; i++)
     {
         if(i % 16 == 0)
         {
-            PRINTF("\r\n");
+            printf("\r\n");
         }
 
-        PRINTF("|%2x ", sock_bean.send_buffer[i]);
+        printf("|%2x ", sock_bean.send_buffer[i]);
     }
 }
 
@@ -74,33 +77,32 @@ int display()
     Modification : Created function
 
 *****************************************************************************/
-char io_init(MODULE_NAME_ENUM name)
+int io_init(MODULE_NAME_ENUM name)
 {
     struct sockaddr_in addr;
 
     memset(&sock_bean, 0x00, sizeof(SOCK_INFO_STRU));
     memset(&addr, 0x00, sizeof(struct sockaddr_in));
 
+    sock_bean.module = name;
+    sock_bean.targetAddr.sin_family = AF_INET;
+
     switch(name)
     {
     case MODULE_SCM:
-        sock_bean.serv_port = PORT_SCM;
+        sock_bean.local_port = PORT_SCM;
         sock_bean.targetAddr.sin_port = htons(PORT_CARD);
+        inet_pton(AF_INET, IP_CARD, &sock_bean.targetAddr.sin_addr);
         break;
     case MODULE_CARD:
-        sock_bean.serv_port = PORT_CARD;
+        sock_bean.local_port = PORT_CARD;
         sock_bean.targetAddr.sin_port = htons(PORT_SCM);
+        inet_pton(AF_INET, IP_SCM, &sock_bean.targetAddr.sin_addr);
         break;
     default:
         PRINTF("error MODULE NAME \r\n");
         return -1;
     }
-
-    
-    sock_bean.module = name;
-    sock_bean.targetAddr.sin_family = AF_INET;
-    inet_pton(AF_INET, "127.0.0.1", &sock_bean.targetAddr.sin_addr);
-
 
     sock_bean.sock_fd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock_bean.sock_fd == -1)
@@ -109,16 +111,16 @@ char io_init(MODULE_NAME_ENUM name)
         return -1;
     }
     PRINTF("sock fd is %d \r\n", sock_bean.sock_fd);
-    PRINTF("port is %d \r\n", sock_bean.serv_port);
+    PRINTF("port is %d \r\n", sock_bean.local_port);
     
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(sock_bean.serv_port);
+    addr.sin_port = htons(sock_bean.local_port);
     inet_pton(AF_INET,"127.0.0.1", &addr.sin_addr);
 
     if (bind(sock_bean.sock_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
     {
-        printf("bind()/n");
+        printf("bind()\n");
         return -1;
     }
 
@@ -135,7 +137,7 @@ int io_recv(char *buffer, unsigned short len)
     int maxfd = 0;
     
     timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
+    timeout.tv_usec = 100;
 
     FD_ZERO(&rfd);
 
@@ -146,7 +148,7 @@ int io_recv(char *buffer, unsigned short len)
     nRet = select(maxfd, &rfd, NULL, NULL, &timeout);
     if (nRet == -1)
     {
-        printf("select()/n");
+        printf("select()\n");
         return -1;
     }
     else
@@ -177,9 +179,12 @@ int io_send(char *buffer, unsigned short len)
     }
     memcpy(sock_bean.send_buffer, buffer, len);
 
-    ret = sendto(sock_bean.sock_fd, sock_bean.send_buffer, MSG_LEN_MAX, 0, (struct sockaddr *)&sock_bean.targetAddr, sizeof(sock_bean.targetAddr));
-    perror("error:");
-    PRINTF("%d byte have send \r\n");
+    ret = sendto(sock_bean.sock_fd, sock_bean.send_buffer, len, 0, (struct sockaddr *)&sock_bean.targetAddr, sizeof(sock_bean.targetAddr));
+    if(len != ret)
+    {
+      perror("error:");
+    }
+    PRINTF("%d byte have send \r\n", len);
     return ret;
 }
 
