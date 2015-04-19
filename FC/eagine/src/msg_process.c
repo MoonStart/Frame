@@ -229,8 +229,15 @@ int msg_array_init()
     return 0;
 }
 
+UTIL_INIT(SCM, module)
+{
+   return msg_array_init();
+}
 
-
+UTIL_INIT(SCM, module)
+{
+  return msg_array_init();
+}
 /*****************************************************************************
  Prototype    : display
  Description  : display all bean register to the message array

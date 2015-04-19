@@ -128,6 +128,9 @@ int io_init(MODULE_NAME_ENUM name)
     return 0;
 }
 
+IO_INIT(name)
+
+
 
 int io_recv(char *buffer, unsigned short len)
 {

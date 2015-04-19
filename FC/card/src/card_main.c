@@ -3,10 +3,8 @@
 
 void card_main()
 {
-   /**/
-   io_init(MODULE_CARD);
 
-   msg_array_init();
+   INIT_LIST(CARD1, MODULE_CARD);
 
    {REGISTER_MSG(card_bean);}
 }

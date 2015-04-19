@@ -3,12 +3,9 @@
 
 void scm_main()
 {
-   /* call all module init function at here */
 
-   io_init(MODULE_SCM);
-
-   msg_array_init();
-
+   INIT_LIST(SCM, MODULE_SCM);
+   
    {REGISTER_MSG(card_bean);}
 }
 
