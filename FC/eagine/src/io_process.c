@@ -17,7 +17,6 @@ typedef struct SOCK_INFO
 } SOCK_INFO_STRU;
 static SOCK_INFO_STRU sock_bean;
 
-
 void display()
 {
     int i = 0;
@@ -128,9 +127,15 @@ int io_init(MODULE_NAME_ENUM name)
     return 0;
 }
 
-IO_INIT(name)
+IO_INIT(SCM, module)
+{
+  io_init(module);
+}
 
-
+IO_INIT(CARD1, module)
+{
+  io_init(module);
+}
 
 int io_recv(char *buffer, unsigned short len)
 {

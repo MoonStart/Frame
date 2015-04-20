@@ -5,14 +5,14 @@
  ******************************************************************************
   File Name     : io_process.h
   Version       : Initial Draft
-  Author        : Eason Lee
-  Created       : 2014/9/12
+  Author        : Laserly
+  Created       : 2015/4/20
   Last Modified :
   Description   : io_process.c header file
   Function List :
   History       :
-  1.Date        : 2014/9/12
-    Author      : Eason Lee
+  1.Date        : 2015/4/20
+    Author      : Laserly
     Modification: Created file
 
 ******************************************************************************/
@@ -51,7 +51,7 @@
 
 #ifndef __IO_PROCESS_H__
 #define __IO_PROCESS_H__
-#include "common.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -59,11 +59,10 @@ extern "C"{
 #endif
 #endif /* __cplusplus */
 
-extern int display();
-extern char io_init(MODULE_NAME_ENUM name);
-extern int io_recv(char *msg, unsigned short len);
-extern int io_send(char *msg, unsigned short len);
-
+extern void display();
+extern int io_init(MODULE_NAME_ENUM name);
+extern int io_send(char *buffer, unsigned short len);
+extern int io_recv(char *buffer, unsigned short len);
 #ifdef __cplusplus
 #if __cplusplus
 }

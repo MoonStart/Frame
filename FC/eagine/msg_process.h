@@ -63,7 +63,6 @@ extern "C"{
 
 #define MSG_LEN_MAX       256
 
-typedef void* byte;
 
 typedef enum ACTION
 {
@@ -76,13 +75,13 @@ typedef struct MSG_PROCESS
 {
     char           *name;    /* the string which show to user what is the name of this bean*/
     char            action; //use the ACTION_SYNC enum define 
-    int            (*sync)(byte);//use this fun to send the bean to other module
-    int            (*set)(byte, byte);//when recive the update message, use this fun to update to lower layer
-    int            (*check)(byte);//check any value in this bean rightor not
-    int            (*init)(byte);
+    int            (*sync)(char*);//use this fun to send the bean to other module
+    int            (*set)(char*, char*);//when recive the update message, use this fun to update to lower layer
+    int            (*check)(char*);//check any value in this bean rightor not
+    int            (*init)(char*);
     unsigned  int   len;            /* buffer len*/
     unsigned  int   index;             /* the pos in the message array, not a good way  */
-    byte            buffer;         /* point to the message bean */
+    char*            buffer;         /* point to the message bean */
 }MSG_PROCESS_STRU; 
 
 /* name: the name of bean
@@ -92,16 +91,16 @@ typedef struct MSG_PROCESS
 */
 
 #define MSG_SYNC(name, data_own) \ 
-     int sync_fun_##name(byte data_own)
+     int sync_fun_##name(char* data_own)
 
 #define MSG_SET(name, data_own, data_other) \
-     int set_fun_##name(byte data_own, byte data_other)
+     int set_fun_##name(char* data_own, char* data_other)
 
 #define MSG_CHECK(name, data_own) \
-     char check_fun_##name(byte data_own)
+     char check_fun_##name(char* data_own)
 
 #define MSG_INIT(name, data_own) \
-     char init_fun_##name(byte data_own)
+     char init_fun_##name(char* data_own)
 
 #define MSG_PROCESS(name, strname, index, type) \
    extern  MSG_SYNC(name, data_own); \
@@ -109,7 +108,7 @@ typedef struct MSG_PROCESS
     MSG_CHECK(name, data_own); \ 
     MSG_INIT(name, data_own); \
     static type msg_##name ; \
-    static  MSG_PROCESS_STRU process_##name = {strname, \
+         MSG_PROCESS_STRU process_##name = {strname, \
                                               EN_ACTION_NOTHING,\
                                               sync_fun_##name,\
                                               set_fun_##name,\
@@ -135,11 +134,14 @@ typedef struct MSG_PROCESS
 #define SYNC_MSG(name) \
     do \
     { \
+      extern MSG_PROCESS_STRU process_##name; \
       process_##name.action = EN_ACTION_SYNC; \
     }while(0)
-extern int display();
+
+    
+extern void display();
 extern int msg_array_init();
-extern int msg_process(void *msg);
+extern int msg_process(char* msg);
 extern void process_run();
 extern int register_to_msg_array(MSG_PROCESS_STRU *head);
 

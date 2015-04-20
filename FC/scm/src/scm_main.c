@@ -4,7 +4,7 @@
 void scm_main()
 {
 
-   INIT_LIST(SCM, MODULE_SCM);
+   {INIT_LIST(SCM, MODULE_SCM);}
    
    {REGISTER_MSG(card_bean);}
 }

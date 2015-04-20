@@ -13,9 +13,9 @@ MSG_SYNC(card_bean, data_own)
   
   PRINTF("%s %d \r\n", __FILE__, __LINE__);
 
-  if (//anychanged)
+  if (1/*anychanged*/)
   {
-     SYNC_MSG(card_bean)
+     SYNC_MSG(card_bean);
   }
   
   return 0;

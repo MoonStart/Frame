@@ -144,7 +144,7 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
     Modification : Created function
 
 *****************************************************************************/
-int msg_update(byte *msg)
+int msg_update(char* *msg)
 {
     int *index             = NULL;
 
@@ -234,7 +234,7 @@ UTIL_INIT(SCM, module)
    return msg_array_init();
 }
 
-UTIL_INIT(SCM, module)
+UTIL_INIT(CARD1, module)
 {
   return msg_array_init();
 }
@@ -262,8 +262,8 @@ void display()
     {
        if(msg_array[index].flag)
        {
-        printf("%s \r\n" msg_array[index].pmsg.name);
+        printf("%s \r\n", msg_array[index].pmsg->name);
        }
+       index ++;
     }
-    return 0;
 }
