@@ -21,7 +21,14 @@ typedef struct SOCK_INFO
 static SOCK_INFO_STRU sock_bean;
 
 
-extern command_line_input_byte(unsigned char c);
+static const char * CMD1 =      "io";
+static const char * CMD1_HELP = "io - display all io information ";
+
+const CMD_TABLE_STRU ioMenu[] =
+{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help                                fct_call        fct_call2
+    { CMD1, "display",       CMD1_HELP,  "display the socket  ",             display,         NULL},
+};
+
 
 static void display()
 {
@@ -113,9 +120,10 @@ int io_init(MODULE_NAME_ENUM name)
     PRINTF("sock fd is %d \r\n", sock_bean.sock_fd);
     PRINTF("port is %d \r\n", sock_bean.local_port);
 
+    /* prepared for select function */
     sock_bean.timeout.tv_sec = 0;
     sock_bean.timeout.tv_usec = 1000;
-
+    sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd:STDIN_FILENO)  + 1;
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -129,6 +137,8 @@ int io_init(MODULE_NAME_ENUM name)
     }
 
     PRINTF("IO INIT OVER \r\n");
+
+    RegisterCommand(ioMenu, sizeof(ioMenu) / sizeof(CMD_TABLE_STRU));
     return 0;
 }
 
@@ -148,14 +158,10 @@ int io_recv(char *buffer, unsigned short len)
     int rlen = 0;
     unsigned char c;
     
-
     FD_ZERO(&sock_bean.rfd);
-
     FD_SET(sock_bean.sock_fd, &sock_bean.rfd);
     FD_SET(STDIN_FILENO, &sock_bean.rfd);
 
-    sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd:STDIN_FILENO)  + 1;
-    
     nRet = select(sock_bean.maxfd, &sock_bean.rfd, NULL, NULL, &sock_bean.timeout);
     if (nRet < 0)
     {
