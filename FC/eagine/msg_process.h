@@ -138,8 +138,6 @@ typedef struct MSG_PROCESS
       process_##name.action = EN_ACTION_SYNC; \
     }while(0)
 
-    
-extern void display();
 extern int msg_array_init();
 extern int msg_process(char* msg);
 extern void process_run();

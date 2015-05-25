@@ -34,7 +34,7 @@
 
 typedef void (*pfunc)();
 
-#define DEBUG
+#define DEBUG 1
 
 #ifdef DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)

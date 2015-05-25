@@ -8,16 +8,17 @@ MSG_SYNC(card_bean, data_own)
 
   p = (CARD_MSG_BEAN_STRU *)data_own;
 
-  PRINTF("x=%d y=%d z=%d \r\n", p->x, p->y, p->z);
+//  PRINTF("x=%d y=%d z=%d \r\n", p->x, p->y, p->z);
   p->x = 13;
   
-  PRINTF("%s %d \r\n", __FILE__, __LINE__);
+ // PRINTF("%s %d \r\n", __FILE__, __LINE__);
 
-  if (1/*anychanged*/)
+/*
+  if (1)
   {
      SYNC_MSG(card_bean);
   }
-  
+ */
   return 0;
 }
 

@@ -46,19 +46,19 @@ void process_run()
                 memcpy(buffer, &head->index, sizeof(int));
                 /*
                  |-------------------|
-                 |MSG_ID | BEAN |
+                 |bean_index | BEAN |
                  |-------------------|
                  */
                 memcpy(buffer+sizeof(int), head->buffer, head->len);
                 io_send(buffer, head->len + sizeof(int));
+                memset(buffer, 0x00, MSG_LEN_MAX);
             }
         }
-        sleep(1);
         if(io_recv(buffer, MSG_LEN_MAX))
         {
             msg_update(buffer);
+            memset(buffer, 0x00, MSG_LEN_MAX);
         }
-
         index ++;
         index = index % INDEX_BEAN_MAX;
     }
@@ -155,7 +155,6 @@ int msg_update(char* *msg)
       return -1;
     }
     index = (int *)(&msg[0]);
-
     
     if(!msg_array[*index].flag)
     {
@@ -253,10 +252,10 @@ UTIL_INIT(CARD1, module)
     Modification : Created function
 
 *****************************************************************************/
-void display()
+static void display()
 {
     int index = 0;
-    printf("the bean register to the array: \r\n");
+    printf("list the bean register to the array: \r\n");
 
     while(index < INDEX_BEAN_MAX)
     {

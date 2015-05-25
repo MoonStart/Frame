@@ -10,7 +10,7 @@ MSG_SYNC(card_bean, data_own)
   p = (CARD_MSG_BEAN_STRU *)data_own;
 
   /* any changed action*/
-  SYNC_MSG(card_bean)
+ // SYNC_MSG(card_bean);
   PRINTF("%s %d \r\n", __FILE__, __LINE__);
   return -1;
 }

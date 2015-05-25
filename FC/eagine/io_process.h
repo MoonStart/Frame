@@ -59,7 +59,6 @@ extern "C"{
 #endif
 #endif /* __cplusplus */
 
-extern void display();
 extern int io_init(MODULE_NAME_ENUM name);
 extern int io_send(char *buffer, unsigned short len);
 extern int io_recv(char *buffer, unsigned short len);

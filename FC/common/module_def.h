@@ -12,10 +12,10 @@ typedef int (*callback_init)(MODULE_NAME_ENUM);
 
 typedef struct CALL_INIT
 {
-   callback_init cspii_init; /* any parameter get from user */
+  // callback_init cspii_init; /* any parameter get from user */
    callback_init io_init; /* socket or serial init */
-   callback_init hal_init; /* interface for hardware*/
-   callback_init driver_init; /* hardware init */
+  // callback_init hal_init; /* interface for hardware*/
+  // callback_init driver_init; /* hardware init */
    callback_init util_init; /*any tools init */
 }CALL_INIT_STRU;
 
@@ -39,29 +39,30 @@ typedef struct CALL_INIT
 
 
 #define INIT_LIST(name, module) \
-    extern CSPII_INIT(name, module); \
+    /*extern CSPII_INIT(name, module);*/ \
     extern IO_INIT(name, module); \
-    extern HAL_INIT(name, module); \
-    extern DRIVER_INIT(name, module); \
+    /*extern HAL_INIT(name, module);*/ \
+    /*extern DRIVER_INIT(name, module);*/ \
     extern UTIL_INIT(name, module); \
     static CALL_INIT_STRU name##_callback = { \
-                                           cspii_##name##_init, \
+                                           /*cspii_##name##_init,*/ \
                                            io_##name##_init, \
-                                           hal_##name##_init, \
-                                           driver_##name##_init,\
+                                           /*hal_##name##_init,*/ \
+                                           /*driver_##name##_init,*/\
                                            util_##name##_init \
                                            }; \
          int index = 0; \
-         int size = sizeof(name##_callback)/sizeof(callback_init);\
-         callback_init *pfinit = (callback_init*)&name##_callback; \
+         int size = sizeof(CALL_INIT_STRU)/sizeof(callback_init);\
+         callback_init *pfinit = (callback_init *)&name##_callback; \
          do \
          {   \
              while(index < size) \
              { \
-                (*pfinit)(MODULE_SCM); \
+                (*pfinit)(module); \
                 pfinit ++; \
+                index ++; \
              } \
-         }while(0)
+         }while(0);
 #endif /* MODULE_DEF */
 
 
