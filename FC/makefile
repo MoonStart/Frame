@@ -11,9 +11,13 @@ ROOT_DIR=$(shell pwd)
 BIN_SCM=SCMApp
 BIN_CARD=CARDApp
 
+#编译选项
 CFLAGS=-Wall -std=c99
+
 #头文件包含路径
-INC = -I$(ROOT_DIR)/common -I$(ROOT_DIR)/bean -I$(ROOT_DIR)/eagine 
+INC = -I$(ROOT_DIR)/common \
+      -I$(ROOT_DIR)/bean \
+	  -I$(ROOT_DIR)/eagine 
 
 #目标文件所在的目录
 OBJS_SCM_DIR=debug/scmobj

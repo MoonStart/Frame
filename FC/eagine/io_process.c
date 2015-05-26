@@ -15,8 +15,10 @@ typedef struct SOCK_INFO
     struct timeval     timeout;
     int                maxfd;
     MODULE_NAME_ENUM   module;
+#if DEBUG
     char               send_buffer[MSG_LEN_MAX];
     char               recv_buffer[MSG_LEN_MAX];
+#endif
 } SOCK_INFO_STRU;
 static SOCK_INFO_STRU sock_bean;
 
@@ -28,7 +30,7 @@ static void display()
     printf("sock fd: %d \r\n", sock_bean.sock_fd);
 
     printf("sock port: %d \r\n", sock_bean.local_port);
-
+#if DEBUG
     printf("\r\nRECV BUFFER:\r\n");
     for(i = 0; i < 16; i++)
     {
@@ -52,6 +54,7 @@ static void display()
         printf("|%2x ", sock_bean.send_buffer[i]);
         if((i+1)%16 == 0)printf("|\r\n");
     }
+#endif
 }
 
 static CMD_TABLE_STRU ioMenu[] =
@@ -168,15 +171,14 @@ int io_recv(char *buffer, unsigned short len)
         /* read the message from socket */
         if (FD_ISSET(sock_bean.sock_fd, &sock_bean.rfd))
         {
-            rlen = recvfrom(sock_bean.sock_fd, sock_bean.recv_buffer, MSG_LEN_MAX, 0, NULL, NULL);
+            rlen = recvfrom(sock_bean.sock_fd, buffer, MSG_LEN_MAX, 0, NULL, NULL);
             if (rlen < 0)
             {
               perror("recvfrom:");
             }
-            else
-            {
-              memcpy(buffer, sock_bean.recv_buffer, rlen);
-            }
+#if DEBUG
+              memcpy(sock_bean.recv_buffer, buffer, rlen);
+#endif
         }
         /* read a chcarator from stdin */
         if(FD_ISSET(STDIN_FILENO, &sock_bean.rfd))
@@ -199,9 +201,11 @@ int io_send(char *buffer, unsigned short len)
     {
         return -1;
     }
+#if DEBUG
     memcpy(sock_bean.send_buffer, buffer, len);
+#endif
 
-    ret = sendto(sock_bean.sock_fd, sock_bean.send_buffer, len, 0, (struct sockaddr *)&sock_bean.targetAddr, sizeof(sock_bean.targetAddr));
+    ret = sendto(sock_bean.sock_fd, buffer, len, 0, (struct sockaddr *)&sock_bean.targetAddr, sizeof(sock_bean.targetAddr));
     if(len != ret)
     {
       perror("sendto:");

@@ -73,15 +73,15 @@ typedef enum ACTION
 
 typedef struct MSG_PROCESS
 {
-    char           *name;    /* the string which show to user what is the name of this bean*/
-    char            action; //use the ACTION_SYNC enum define 
-    int            (*sync)(char*);//use this fun to send the bean to other module
-    int            (*set)(char*, char*);//when recive the update message, use this fun to update to lower layer
-    int            (*check)(char*);//check any value in this bean rightor not
-    int            (*init)(char*);
-    unsigned  int   len;            /* buffer len*/
-    unsigned  int   index;          /* the pos in the message array, not a good way  */
-    char*            buffer;         /* point to the message bean */
+    char           *name;                            /* the string which show to user what is the name of this bean*/
+    char            action;                          //use the ACTION_SYNC enum define 
+    int            (*update_from_local)(char*);      //use this fun update the bean(typically the hardware changed )
+    int            (*update_to_local)(char*, char*); //when recive the update message, use this fun to update to lower layer
+    int            (*check_para)(char*);             //check any value in this bean rightor not
+    int            (*init_bean)(char*);
+    unsigned  int   bean_size;                       /* buffer len*/
+    unsigned  int   bean_pos;                        /* the pos in the message array, not a good way  */
+    char*           bean;                            /* point to the message bean */
 }MSG_PROCESS_STRU; 
 
 /* name: the name of bean

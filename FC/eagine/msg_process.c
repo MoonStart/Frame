@@ -1,7 +1,7 @@
 #include "common.h"
 typedef struct MSG_ARRAY
 {
-    MSG_PROCESS_STRU    *pmsg;
+    MSG_PROCESS_STRU    *process;
     char                 flag;
 } MSG_ARRAY_STRU;
 static MSG_ARRAY_STRU msg_array[INDEX_BEAN_MAX];
@@ -30,8 +30,8 @@ void process_run()
     {
        if( msg_array[index].flag)
        {
-         head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
-         head->init(head->buffer);
+         head = (MSG_PROCESS_STRU *)msg_array[index].process;
+         head->init_bean(head->bean);
        }
        index ++;
     }
@@ -40,22 +40,22 @@ void process_run()
     index = 0;
     while(1)
     {
-        head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
+        head = (MSG_PROCESS_STRU *)msg_array[index].process;
 
         if(msg_array[index].flag)
         {   
-            head->sync(head->buffer);
+            head->update_from_local(head->bean);
 
             if(head->action == EN_ACTION_SYNC)
             {
-                memcpy(buffer, &head->index, sizeof(int));
+                memcpy(buffer, &head->bean_size, sizeof(int));
                 /*
                  |-------------------|
                  |bean_index | BEAN |
                  |-------------------|
                  */
-                memcpy(buffer+sizeof(int), head->buffer, head->len);
-                io_send(buffer, head->len + sizeof(int));
+                memcpy(buffer+sizeof(int), head->bean, head->bean_size);
+                io_send(buffer, head->bean_size+sizeof(int));
                 memset(buffer, 0x00, MSG_LEN_MAX);
                 head->action = EN_ACTION_NOCHANGE;
             }
@@ -108,16 +108,16 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
     }
 
 
-    if(msg->index > INDEX_BEAN_MAX)
+    if(msg->bean_pos > INDEX_BEAN_MAX)
     {
         PRINTF("please redefine the message container size or check the message ID \r\n");
         exit(0);
     }
 
-    if(!msg_array[msg->index].flag)
+    if(!msg_array[msg->bean_pos].flag)
     {
-        msg_array[msg->index].pmsg = msg;
-        msg_array[msg->index].flag = 1;
+        msg_array[msg->bean_pos].process = msg;
+        msg_array[msg->bean_pos].flag = 1;
     }
     else
     {
@@ -168,11 +168,11 @@ int msg_update(char *msg)
         return 0;
     }
 
-    head = (MSG_PROCESS_STRU *)msg_array[*index].pmsg;
+    head = (MSG_PROCESS_STRU *)msg_array[*index].process;
 
-    if(!head->check(msg + sizeof(int)) && (0 != memcmp(head->buffer, msg+sizeof(int), head->len)));
+    if(!head->check_para(msg + sizeof(int)) && (0 != memcmp(head->bean, msg+sizeof(int), head->bean_size)));
     {
-        head->set(head->buffer, msg+sizeof(int));
+        head->update_to_local(head->bean, msg+sizeof(int));
     }
 
     return 0;
@@ -202,7 +202,7 @@ static void display()
     {
        if(msg_array[index].flag)
        {
-        printf("pos%d name:%s \r\n",index, msg_array[index].pmsg->name);
+        printf("pos%d name:%s \r\n",index, msg_array[index].process->name);
        }
        index ++;
     }
@@ -235,7 +235,7 @@ int msg_array_init()
     while (i < INDEX_BEAN_MAX)
     {
         msg_array[i].flag = 0;
-        msg_array[i].pmsg = NULL;
+        msg_array[i].process = NULL;
         i++;
     }
     PRINTF("MSG ARRAY INIT OVER \r\n");
