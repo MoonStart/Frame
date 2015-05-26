@@ -21,15 +21,6 @@ typedef struct SOCK_INFO
 static SOCK_INFO_STRU sock_bean;
 
 
-static const char * CMD1 =      "io";
-static const char * CMD1_HELP = "io - display all io information ";
-
-const CMD_TABLE_STRU ioMenu[] =
-{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help                                fct_call        fct_call2
-    { CMD1, "display",       CMD1_HELP,  "display the socket  ",             display,         NULL},
-};
-
-
 static void display()
 {
     int i = 0;
@@ -63,6 +54,10 @@ static void display()
     }
 }
 
+static CMD_TABLE_STRU ioMenu[] =
+{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
+    { "io", "display",     "io - display all io information ",  "display the socket  ",  display,         NULL}
+};
 
 /*****************************************************************************
  Prototype    : io_init
@@ -122,7 +117,7 @@ int io_init(MODULE_NAME_ENUM name)
 
     /* prepared for select function */
     sock_bean.timeout.tv_sec = 0;
-    sock_bean.timeout.tv_usec = 1000;
+    sock_bean.timeout.tv_usec = 300;
     sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd:STDIN_FILENO)  + 1;
 
     memset(&addr, 0, sizeof(addr));

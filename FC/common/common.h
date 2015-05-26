@@ -1,12 +1,9 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-
-
-#include<stdio.h>
-#include<stdlib.h>
-#include <sys/types.h>
-#include <netinet/in.h>　　　
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>　　
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -31,8 +28,15 @@
 #include "module_def.h"
 #include "msg_process.h"
 #include "io_process.h"
+#include "cmdline.h"
 
 typedef void (*pfunc)();
+
+typedef unsigned char bool ;
+
+#define true  1
+#define false 0
+
 
 #define DEBUG 1
 

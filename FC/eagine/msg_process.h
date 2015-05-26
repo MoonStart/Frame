@@ -80,7 +80,7 @@ typedef struct MSG_PROCESS
     int            (*check)(char*);//check any value in this bean rightor not
     int            (*init)(char*);
     unsigned  int   len;            /* buffer len*/
-    unsigned  int   index;             /* the pos in the message array, not a good way  */
+    unsigned  int   index;          /* the pos in the message array, not a good way  */
     char*            buffer;         /* point to the message bean */
 }MSG_PROCESS_STRU; 
 

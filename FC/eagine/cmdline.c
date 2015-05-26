@@ -1,6 +1,6 @@
 #include "common.h"
 
-#define END                 0x0d
+#define END                 0x0a
 #define MAX_ARGC            50
 #define COMMAND_TABLE_SIZE  120
 #define MAX_CMD_LINE_LENGTH 256
@@ -17,23 +17,6 @@ static char buffer[MAX_ARGC];
 #endif
 
 
-enum STATUS
-{
-    E_SUCCESS = 0,
-    E_FAILURE,
-    E_QUIT
-};
-
-typedef struct CMD_TABLE
-{
-    const char   *cmd_name;
-    const char   *sub_cmd_name;
-    const char   *cmd_help;
-    const char   *sub_cmd_help;
-    STATUS        (*fct_call)(int, char **);
-    STATUS        (*fct_call2)(int, int, char **);
-} CMD_TABLE_STRU;
-
 typedef struct CMD_REGISTER_TABLE
 {
     int             cmd_nb_command;
@@ -42,6 +25,12 @@ typedef struct CMD_REGISTER_TABLE
 
 static CMD_REGISTER_TABLE_STRUCT cmd_register_table[COMMAND_TABLE_SIZE];
 static int nb_cmd_table = 0;
+
+static void display_help( char *command, char *sub_command );
+static void sortAndInsertCmds(int endOfList, const CMD_TABLE_STRU newCmdTable[], int numNewCmds);
+static int invoke_cmd(int *theShellPtr, int argc, char **argv);
+static int process_string( char line_array[], char *argv[], char *tokens );
+static int help (int argc, char *argv[]);
 
 static void sortAndInsertCmds(int endOfList, const CMD_TABLE_STRU newCmdTable[], int numNewCmds)
 {
@@ -71,7 +60,7 @@ void  RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[], int cmd_nb_comma
             {
                 // Basically ignore. Do not THROW since we may shutdown
                 // and restart multiple times (ex: when testing warm restart etc.)
-                fc_cout << "Attempt to re-register '" << cmd_new_cmd_table[0].cmd_name << "' command." << endl;
+                printf("Attempt to re-register %s command. \r\n", cmd_new_cmd_table[0].cmd_name );
                 return;
             }
         }
@@ -79,7 +68,7 @@ void  RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[], int cmd_nb_comma
 
     if ((cmd_new_cmd_table[0].cmd_help == NULL) || (strlen(cmd_new_cmd_table[0].cmd_help) == 0))
     {
-        fc_cout << "WARNING: Registration of '" << cmd_new_cmd_table[0].cmd_name << "' command is missing help string." << endl;
+        printf("WARNING: Registration of '%s' command is missing help string.\r\n", cmd_new_cmd_table[0].cmd_name );
     }
     sortAndInsertCmds(nb_cmd_table, cmd_new_cmd_table, cmd_nb_command);
     nb_cmd_table++;
@@ -160,7 +149,7 @@ static int invoke_cmd(int *theShellPtr, int argc, char **argv)
     /* Command name not found: display help */
     if (cmd_found == false)
     {
-        printf("\nShell: The specified command is not recognized\n\n");
+        printf("Shell: The specified command is not recognized\r\n");
         status = E_FAILURE;
     }
 
@@ -242,9 +231,8 @@ static void display_help( char *command, char *sub_command )
                             sub_cmd_found = true;
 
                             /* Print help on this sub-command */
-                            printf("\n    ");
-                            printf(cmd_register_table[i].cmd_table[j].sub_cmd_help);
-                            printf("\n\n");
+                            printf("\n");
+                            printf("%s %s\r\n",cmd_register_table[i].cmd_table[j].sub_cmd_name,cmd_register_table[i].cmd_table[j].sub_cmd_help);
                         }
                         j++;
 
@@ -283,7 +271,7 @@ static void display_help( char *command, char *sub_command )
                     {
                         /* Print help on this command */
                         printf("\n    ");
-                        printf(cmd_register_table[i].cmd_table[j].cmd_name);
+                        printf("%s ", cmd_register_table[i].cmd_table[j].cmd_name);
 
                         /* For each sub-command */
                         REPEAT
@@ -291,7 +279,7 @@ static void display_help( char *command, char *sub_command )
                         /* Print the sub-commands */
                         printf("\n\t");
                         // printf(cmd_register_table[i].cmd_table[j].sub_cmd_name);
-                        printf(cmd_register_table[i].cmd_table[j].sub_cmd_help);
+                        printf("%s %s", cmd_register_table[i].cmd_table[j].sub_cmd_name,cmd_register_table[i].cmd_table[j].sub_cmd_help);
                         j++;
 
                         UNTIL( (cmd_register_table[i].cmd_table[j].cmd_name != NULL ) ||
@@ -301,7 +289,7 @@ static void display_help( char *command, char *sub_command )
                     else
                     {
                         /* Print help on this command */
-                        printf(cmd_register_table[i].cmd_table[j].cmd_help);
+                        printf("%s", cmd_register_table[i].cmd_table[j].cmd_help);
                     }
 
                     printf("\n\n");
@@ -322,7 +310,7 @@ static void display_help( char *command, char *sub_command )
             {
                 /* Print help on this command */
                 printf("\n    ");
-                printf(cmd_register_table[i].cmd_table[j].cmd_help);
+                printf("%s\r\n", cmd_register_table[i].cmd_table[j].cmd_help);
 
                 /* If a sub-command exist for this command */
                 if ( cmd_register_table[i].cmd_table[j].sub_cmd_name != NULL)
@@ -397,6 +385,7 @@ STATUS ExecuteCommand(int *theShellPtr, char *cmd_line)
     return E_SUCCESS;
 }
 
+#define PROMPT "Help>"
 void command_line_input_byte(char c)
 {
    static int pos = 0;
@@ -415,5 +404,8 @@ void command_line_input_byte(char c)
    if(c == END)
    {
      ExecuteCommand(NULL, buffer);
+     memset(buffer, 0x00, sizeof(buffer));
+     printf("%s", PROMPT);
+     pos = 0;
    }
 }

@@ -173,32 +173,40 @@ int msg_update(char* *msg)
 }
 
 /*****************************************************************************
- Prototype    : msg_list
- Description  : list all message bean in the message container
+ Prototype    : display
+ Description  : display all bean register to the message array
  Input        : None
  Output       : None
- Return Value :
- Calls        :
- Called By    :
-
+ Return Value : 
+ Calls        : 
+ Called By    : 
+ 
   History        :
-  1.Date         : 2014/9/3
-    Author       : Eason Lee
+  1.Date         : 2015/4/16
+    Author       : Laserly
     Modification : Created function
 
 *****************************************************************************/
-void msg_list()
+static void display()
 {
     int index = 0;
-    MSG_PROCESS_STRU *head = NULL;
+    printf("list the bean register to the array: \r\n");
 
     while(index < INDEX_BEAN_MAX)
     {
-        head =  (MSG_PROCESS_STRU *)msg_array[index].pmsg;
-        PRINTF("\t %s \r\n", head->name);
+       if(msg_array[index].flag)
+       {
+        printf("pos%d name:%s \r\n",index, msg_array[index].pmsg->name);
+       }
+       index ++;
     }
 }
 
+
+static CMD_TABLE_STRU msgMenu[] =
+{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
+    { "msg", "display",     "msg - display all msg array information ",  "display the msg array  ",  display,         NULL}
+};
 
 /*****************************************************************************
  Prototype    : msg_init
@@ -225,6 +233,7 @@ int msg_array_init()
         i++;
     }
     PRINTF("MSG ARRAY INIT OVER \r\n");
+    RegisterCommand(msgMenu, sizeof(msgMenu)/sizeof(CMD_TABLE_STRU));
     return 0;
 }
 
@@ -237,32 +246,8 @@ UTIL_INIT(CARD1, module)
 {
   return msg_array_init();
 }
-/*****************************************************************************
- Prototype    : display
- Description  : display all bean register to the message array
- Input        : None
- Output       : None
- Return Value : 
- Calls        : 
- Called By    : 
- 
-  History        :
-  1.Date         : 2015/4/16
-    Author       : Laserly
-    Modification : Created function
 
-*****************************************************************************/
-static void display()
-{
-    int index = 0;
-    printf("list the bean register to the array: \r\n");
 
-    while(index < INDEX_BEAN_MAX)
-    {
-       if(msg_array[index].flag)
-       {
-        printf("%s \r\n", msg_array[index].pmsg->name);
-       }
-       index ++;
-    }
-}
+
+
+
