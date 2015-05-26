@@ -26,11 +26,14 @@ void process_run()
     int index = 0;
     char buffer[MSG_LEN_MAX];
 
-    while((index < INDEX_BEAN_MAX) && msg_array[index].flag)
+    while((index < INDEX_BEAN_MAX))
     {
-        head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
-        head->init(head->buffer);
-        index ++;
+       if( msg_array[index].flag)
+       {
+         head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
+         head->init(head->buffer);
+       }
+       index ++;
     }
 
 
@@ -40,8 +43,10 @@ void process_run()
         head = (MSG_PROCESS_STRU *)msg_array[index].pmsg;
 
         if(msg_array[index].flag)
-        {
-            if(!head->sync(head->buffer) && (head->action == EN_ACTION_SYNC))
+        {   
+            head->sync(head->buffer);
+
+            if(head->action == EN_ACTION_SYNC)
             {
                 memcpy(buffer, &head->index, sizeof(int));
                 /*
@@ -52,6 +57,7 @@ void process_run()
                 memcpy(buffer+sizeof(int), head->buffer, head->len);
                 io_send(buffer, head->len + sizeof(int));
                 memset(buffer, 0x00, MSG_LEN_MAX);
+                head->action = EN_ACTION_NOCHANGE;
             }
         }
         if(io_recv(buffer, MSG_LEN_MAX))
@@ -144,7 +150,7 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
     Modification : Created function
 
 *****************************************************************************/
-int msg_update(char* *msg)
+int msg_update(char *msg)
 {
     int *index             = NULL;
 
@@ -164,7 +170,7 @@ int msg_update(char* *msg)
 
     head = (MSG_PROCESS_STRU *)msg_array[*index].pmsg;
 
-    if(!head->check(msg + sizeof(int)) && (0 == memcmp(head->buffer, msg+sizeof(int), head->len)));
+    if(!head->check(msg + sizeof(int)) && (0 != memcmp(head->buffer, msg+sizeof(int), head->len)));
     {
         head->set(head->buffer, msg+sizeof(int));
     }

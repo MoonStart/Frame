@@ -66,7 +66,7 @@ extern "C"{
 
 typedef enum ACTION
 {
-    EN_ACTION_NOTHING=0,
+    EN_ACTION_NOCHANGE=0,
     EN_ACTION_SYNC
 }ACTION_ENUM;//0:do nothing 1:send the buffer to another module
 
@@ -109,7 +109,7 @@ typedef struct MSG_PROCESS
     MSG_INIT(name, data_own); \
     static type msg_##name ; \
          MSG_PROCESS_STRU process_##name = {strname, \
-                                              EN_ACTION_NOTHING,\
+                                              EN_ACTION_NOCHANGE,\
                                               sync_fun_##name,\
                                               set_fun_##name,\
                                               check_fun_##name, \
@@ -118,6 +118,8 @@ typedef struct MSG_PROCESS
                                               index, \
                                               &msg_##name \
                                               }
+
+#define POINTER_MSG(name) &msg_##name
 
 
 #define REGISTER_MSG(name) \

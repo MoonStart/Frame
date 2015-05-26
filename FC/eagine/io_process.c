@@ -206,7 +206,6 @@ int io_send(char *buffer, unsigned short len)
     {
       perror("sendto:");
     }
-    PRINTF("%d byte have send \r\n", len);
     return ret;
 }
 

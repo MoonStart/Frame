@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* we need */
-MSG_PROCESS(card_bean, "card_bean", INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
+MSG_PROCESS(card_bean, "card", INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
 
 
 MSG_CHECK(card_bean, data)
@@ -17,11 +17,43 @@ MSG_CHECK(card_bean, data)
   {
     PRINTF("the value x is error \r\n");
   }
-
- 
-  PRINTF("%s %d \r\n", __FILE__, __LINE__);
   return 0;
 }
+
+static void display(int argc, char** argv)
+{
+   CARD_MSG_BEAN_STRU *p = POINTER_MSG(card_bean);
+   printf("cardbean value: \r\n");
+   printf("x:%d\r\n", p->x);
+   printf("x:%d\r\n", p->y);
+   printf("x:%d\r\n", p->z);
+}
+
+static void setcardbean(int argc, char** argv)
+{
+   CARD_MSG_BEAN_STRU *p = POINTER_MSG(card_bean);
+
+   if(argc != 4)
+   {
+     printf("card set [x|y|z] value(int) \r\n");
+     return ;
+   }
+
+   if(strcmp(argv[2], "x") == 0)
+   {
+     p->x = atoi(argv[3]); 
+     SYNC_MSG(card_bean);
+   }
+
+   return;
+}
+
+#define CMD1 "card"
+static CMD_TABLE_STRU cardMenu[] =
+{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
+    { CMD1, "display",     "card - display the card content",  "display the card  ",      display,         NULL},
+    { NULL, "set",         NULL,                               "set the content of card", setcardbean,     NULL}
+};
 
 
 MSG_INIT(card_bean, data)
@@ -32,11 +64,7 @@ MSG_INIT(card_bean, data)
   
    p = (CARD_MSG_BEAN_STRU *)data;
 
-
-   p->x = 10;
-   p->y = 12;
-   p->z = 13;
-
-   PRINTF("card bean init over \r\n");
+   RegisterCommand(cardMenu, sizeof(cardMenu)/sizeof(CMD_TABLE_STRU));
+   printf("bean init over \r\n");
    return 0;
 }

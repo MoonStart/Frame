@@ -8,17 +8,6 @@ MSG_SYNC(card_bean, data_own)
 
   p = (CARD_MSG_BEAN_STRU *)data_own;
 
-//  PRINTF("x=%d y=%d z=%d \r\n", p->x, p->y, p->z);
-  p->x = 13;
-  
- // PRINTF("%s %d \r\n", __FILE__, __LINE__);
-
-/*
-  if (1)
-  {
-     SYNC_MSG(card_bean);
-  }
- */
   return 0;
 }
 
@@ -37,12 +26,9 @@ MSG_SET(card_bean, data_own, data_other)
   if(pown->x ^ pother->x)
   {
     //do anything
+    printf("old:%d new:%d \r\n", pown->x, pother->x);
     pown->x = pother->x;
   }
-
-  //just the same action to other fields 
-  
-  PRINTF("%s %d \r\n", __FILE__, __LINE__);
   return 0;
 }
 
