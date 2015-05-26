@@ -308,8 +308,6 @@ static void display_help( char *command, char *sub_command )
             /* For each command in this table */
             for (int j = 0 ; j < cmd_register_table[i].cmd_nb_command ; j++)
             {
-                /* Print help on this command */
-                printf("\n    ");
                 printf("%s\r\n", cmd_register_table[i].cmd_table[j].cmd_help);
 
                 /* If a sub-command exist for this command */
@@ -396,7 +394,7 @@ void command_line_input_byte(char c)
       pos ++;
    }
 
-   if(pos > MAX_ARGC)
+   if((pos > MAX_ARGC) || (c == '?'))
    {
      ExecuteCommand(NULL, "help");
    }

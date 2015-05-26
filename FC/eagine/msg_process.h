@@ -91,35 +91,35 @@ typedef struct MSG_PROCESS
 */
 
 #define MSG_SYNC(name, data_own) \ 
-     int sync_fun_##name(char* data_own)
+     int update_from_local_##name(char* data_own)
 
 #define MSG_SET(name, data_own, data_other) \
-     int set_fun_##name(char* data_own, char* data_other)
+     int update_to_local_##name(char* data_own, char* data_other)
 
 #define MSG_CHECK(name, data_own) \
-     char check_fun_##name(char* data_own)
+     char check_para_##name(char* data_own)
 
 #define MSG_INIT(name, data_own) \
-     char init_fun_##name(char* data_own)
+     char init_bean_##name(char* data_own)
 
 #define MSG_PROCESS(name, strname, index, type) \
    extern  MSG_SYNC(name, data_own); \
    extern  MSG_SET(name, data_own, data_other); \
     MSG_CHECK(name, data_own); \ 
     MSG_INIT(name, data_own); \
-    static type msg_##name ; \
+    static type bean_##name ; \
          MSG_PROCESS_STRU process_##name = {strname, \
                                               EN_ACTION_NOCHANGE,\
-                                              sync_fun_##name,\
-                                              set_fun_##name,\
-                                              check_fun_##name, \
-                                              init_fun_##name, \
+                                              update_from_local_##name,\
+                                              update_to_local_##name,\
+                                              check_para_##name, \
+                                              init_bean_##name, \
                                               sizeof(type), \
                                               index, \
-                                              &msg_##name \
+                                              &bean_##name \
                                               }
 
-#define POINTER_MSG(name) &msg_##name
+#define POINTER_BEAN(name) &bean_##name
 
 
 #define REGISTER_MSG(name) \

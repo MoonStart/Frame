@@ -22,7 +22,7 @@ MSG_CHECK(card_bean, data)
 
 static void display(int argc, char** argv)
 {
-   CARD_MSG_BEAN_STRU *p = POINTER_MSG(card_bean);
+   CARD_MSG_BEAN_STRU *p = POINTER_BEAN(card_bean);
    printf("cardbean value: \r\n");
    printf("x:%d\r\n", p->x);
    printf("x:%d\r\n", p->y);
@@ -31,11 +31,11 @@ static void display(int argc, char** argv)
 
 static void setcardbean(int argc, char** argv)
 {
-   CARD_MSG_BEAN_STRU *p = POINTER_MSG(card_bean);
+   CARD_MSG_BEAN_STRU *p = POINTER_BEAN(card_bean);
 
    if(argc != 4)
    {
-     printf("card set [x|y|z] value(int) \r\n");
+     printf("command format: card set [x|y|z] value(int) \r\n");
      return ;
    }
 
