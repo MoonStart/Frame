@@ -23,7 +23,7 @@ typedef struct SOCK_INFO
 static SOCK_INFO_STRU sock_bean;
 
 
-static void display()
+static void display(int argc, char** argv)
 {
     int i = 0;
     

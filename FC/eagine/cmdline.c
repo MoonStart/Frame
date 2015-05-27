@@ -28,7 +28,7 @@ static int nb_cmd_table = 0;
 
 static void display_help( char *command, char *sub_command );
 static void sortAndInsertCmds(int endOfList, const CMD_TABLE_STRU newCmdTable[], int numNewCmds);
-static int invoke_cmd(int *theShellPtr, int argc, char **argv);
+static int invoke_cmd(int theShellPtr, int argc, char **argv);
 static int process_string( char line_array[], char *argv[], char *tokens );
 static int help (int argc, char *argv[]);
 
@@ -76,7 +76,7 @@ void  RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[], int cmd_nb_comma
 }
 
 
-static int invoke_cmd(int *theShellPtr, int argc, char **argv)
+static int invoke_cmd(int theShellPtr, int argc, char **argv)
 {
     STATUS   status = E_FAILURE;
     bool  cmd_found = false;
@@ -109,9 +109,9 @@ static int invoke_cmd(int *theShellPtr, int argc, char **argv)
                         //    /* If there is a function for that sub-command */
                         /* Call this function */
                         if((cmd_register_table[i].cmd_table[j].fct_call) == NULL)
-                            status = ( *(cmd_register_table[i].cmd_table[j].fct_call2))(theShellPtr, argc, argv);
+                             ( *(cmd_register_table[i].cmd_table[j].fct_call2))(theShellPtr, argc, argv);
                         else
-                            status = ( *(cmd_register_table[i].cmd_table[j].fct_call))(argc, argv);
+                             ( *(cmd_register_table[i].cmd_table[j].fct_call))(argc, argv);
                     }
                     else
                     {
@@ -138,9 +138,9 @@ static int invoke_cmd(int *theShellPtr, int argc, char **argv)
                     /* If there is a function for that command */
                     /* Call this function */
                     if((cmd_register_table[i].cmd_table[j].fct_call) == NULL)
-                        status = ( *(cmd_register_table[i].cmd_table[j].fct_call2))(theShellPtr, argc, argv);
+                        ( *(cmd_register_table[i].cmd_table[j].fct_call2))(theShellPtr, argc, argv);
                     else
-                        status = ( *(cmd_register_table[i].cmd_table[j].fct_call))(argc, argv);
+                        ( *(cmd_register_table[i].cmd_table[j].fct_call))(argc, argv);
                 }
             }
         }
@@ -357,7 +357,7 @@ static int help (int argc, char *argv[])
 }
 
 
-STATUS ExecuteCommand(int *theShellPtr, char *cmd_line)
+STATUS ExecuteCommand(int theShellPtr, char *cmd_line)
 {
     int       argc = 0;
     char     *argv[MAX_ARGC] = {NULL};
@@ -379,7 +379,7 @@ STATUS ExecuteCommand(int *theShellPtr, char *cmd_line)
         return E_SUCCESS;
     }
 
-    STATUS result = invoke_cmd(theShellPtr, argc, argv);
+    invoke_cmd(theShellPtr, argc, argv);
     return E_SUCCESS;
 }
 

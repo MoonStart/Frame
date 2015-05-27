@@ -36,7 +36,7 @@ static void setcardbean(int argc, char** argv)
    if(argc != 4)
    {
      printf("command format: card set [x|y|z] value(int) \r\n");
-     return ;
+     return;
    }
 
    if(strcmp(argv[2], "x") == 0)
@@ -44,8 +44,6 @@ static void setcardbean(int argc, char** argv)
      p->x = atoi(argv[3]); 
      SYNC_MSG(card_bean);
    }
-
-   return;
 }
 
 #define CMD1 "card"

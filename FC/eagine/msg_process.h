@@ -54,13 +54,6 @@
 
 #include "common.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C"{
-#endif
-#endif /* __cplusplus */
-
-
 #define MSG_LEN_MAX       256
 
 
@@ -70,6 +63,16 @@ typedef enum ACTION
     EN_ACTION_SYNC
 }ACTION_ENUM;//0:do nothing 1:send the buffer to another module
 
+
+
+/* when a bean update, we need notify another module to update the 
+corespond bean also */
+
+typedef struct UPDATE_NOTIFY_LIST
+{
+    void                    (*notify)(char *);
+    struct UPDATE_NOTIFY_LIST *next;
+}UPDATE_NOTIFY_LIST_STRU;
 
 typedef struct MSG_PROCESS
 {
@@ -81,6 +84,7 @@ typedef struct MSG_PROCESS
     int            (*init_bean)(char*);
     unsigned  int   bean_size;                       /* buffer len*/
     unsigned  int   bean_pos;                        /* the pos in the message array, not a good way  */
+    UPDATE_NOTIFY_LIST_STRU  *list;
     char*           bean;                            /* point to the message bean */
 }MSG_PROCESS_STRU; 
 
@@ -90,66 +94,73 @@ typedef struct MSG_PROCESS
                 module
 */
 
-#define MSG_SYNC(name, data_own) \ 
+#define MSG_SYNC(name, data_own)\
      int update_from_local_##name(char* data_own)
 
-#define MSG_SET(name, data_own, data_other) \
+#define MSG_SET(name, data_own, data_other)\
      int update_to_local_##name(char* data_own, char* data_other)
 
-#define MSG_CHECK(name, data_own) \
-     char check_para_##name(char* data_own)
+#define MSG_CHECK(name, data_own)\
+     int check_para_##name(char* data_own)
 
-#define MSG_INIT(name, data_own) \
-     char init_bean_##name(char* data_own)
+#define MSG_INIT(name, data_own)\
+     int init_bean_##name(char* data_own)
 
-#define MSG_PROCESS(name, strname, index, type) \
-   extern  MSG_SYNC(name, data_own); \
-   extern  MSG_SET(name, data_own, data_other); \
-    MSG_CHECK(name, data_own); \ 
-    MSG_INIT(name, data_own); \
-    static type bean_##name ; \
-         MSG_PROCESS_STRU process_##name = {strname, \
+#define MSG_PROCESS(name, strname, index, type)\
+   extern  MSG_SYNC(name, data_own);\
+   extern  MSG_SET(name, data_own, data_other);\
+   extern  MSG_CHECK(name, data_own);\ 
+   extern  MSG_INIT(name, data_own);\
+	   static type bean_##name;\
+         MSG_PROCESS_STRU process_##name = {strname,\
                                               EN_ACTION_NOCHANGE,\
                                               update_from_local_##name,\
                                               update_to_local_##name,\
-                                              check_para_##name, \
-                                              init_bean_##name, \
-                                              sizeof(type), \
-                                              index, \
-                                              &bean_##name \
+                                              check_para_##name,\
+                                              init_bean_##name,\
+                                              sizeof(type),\
+                                              index,\
+                                              NULL,\
+                                              (char*)&bean_##name\
                                               }
 
 #define POINTER_BEAN(name) &bean_##name
 
+#define REGISTER_NOTIFY(name,func)\
+    do\
+    {\
+         extern MSG_PROCESS_STRU process_##name;\
+         UPDATE_NOTIFY_LIST_STRU *p = malloc(sizeof(UPDATE_NOTIFY_LIST_STRU));\
+         if(p != NULL)\
+         {\
+            p->notify = func;\      
+            p->next = process_##name.list;\
+            process_##name.list = p;\
+         }\
+    }while(0)
 
-#define REGISTER_MSG(name) \
-    do \
-    { \
-       extern MSG_PROCESS_STRU process_##name; \
-       register_to_msg_array((MSG_PROCESS_STRU *)&process_##name); \
+#define REGISTER_MSG(name)\
+    do\
+    {\
+       extern MSG_PROCESS_STRU process_##name;\
+       register_to_msg_array((MSG_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 /* this macro should be away used in the bean get function, when 
     any changed for the bean we need informed the msg_process 
     to send the bean to other module 
  */
-#define SYNC_MSG(name) \
-    do \
-    { \
-      extern MSG_PROCESS_STRU process_##name; \
-      process_##name.action = EN_ACTION_SYNC; \
+#define SYNC_MSG(name)\
+    do\
+    {\
+      extern MSG_PROCESS_STRU process_##name;\
+      process_##name.action = EN_ACTION_SYNC;\
     }while(0)
 
 extern int msg_array_init();
 extern int msg_process(char* msg);
 extern void process_run();
 extern int register_to_msg_array(MSG_PROCESS_STRU *head);
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif
-#endif /* __cplusplus */
-
+int msg_update(char *msg);
 
 #endif /* __MSG_PROCESS_H__ */

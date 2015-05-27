@@ -1,6 +1,5 @@
 #include "common.h"
 
-
 void scm_main()
 {
    {INIT_LIST(SCM, MODULE_SCM);}

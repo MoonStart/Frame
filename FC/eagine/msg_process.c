@@ -25,7 +25,8 @@ void process_run()
     MSG_PROCESS_STRU *head = NULL;
     int index = 0;
     char buffer[MSG_LEN_MAX];
-
+    UPDATE_NOTIFY_LIST_STRU *update_list = NULL;
+    
     while((index < INDEX_BEAN_MAX))
     {
        if( msg_array[index].flag)
@@ -47,7 +48,17 @@ void process_run()
             head->update_from_local(head->bean);
 
             if(head->action == EN_ACTION_SYNC)
-            {
+            {   
+                /* at first, we need notify other bean which based on this
+                bean update */
+                update_list = head->list;
+                do
+                {
+                  update_list->notify(head->bean);
+                  update_list = update_list->next;
+                }while(update_list != NULL);
+
+                /* now we send the new bean to other app*/
                 memcpy(buffer, &head->bean_size, sizeof(int));
                 /*
                  |-------------------|
@@ -193,7 +204,7 @@ int msg_update(char *msg)
     Modification : Created function
 
 *****************************************************************************/
-static void display()
+static void display(int argc, char** argv)
 {
     int index = 0;
     printf("list the bean register to the array: \r\n");
