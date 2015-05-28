@@ -60,8 +60,9 @@
 typedef enum ACTION
 {
     EN_ACTION_NOCHANGE=0,
-    EN_ACTION_SYNC
-}ACTION_ENUM;//0:do nothing 1:send the buffer to another module
+    EN_ACTION_UPDATE_TO_UP, /* any changed occured in local*/
+    EN_ACTION_UPDATE_TO_DOWN /* any changed from user or other module */
+}ACTION_ENUM;
 
 
 
@@ -74,19 +75,20 @@ typedef struct UPDATE_NOTIFY_LIST
     struct UPDATE_NOTIFY_LIST *next;
 }UPDATE_NOTIFY_LIST_STRU;
 
-typedef struct MSG_PROCESS
+typedef struct BEAN_PROCESS
 {
     char           *name;                            /* the string which show to user what is the name of this bean*/
-    char            action;                          //use the ACTION_SYNC enum define 
-    int            (*update_from_local)(char*);      //use this fun update the bean(typically the hardware changed )
-    int            (*update_to_local)(char*, char*); //when recive the update message, use this fun to update to lower layer
-    int            (*check_para)(char*);             //check any value in this bean rightor not
-    int            (*init_bean)(char*);
-    unsigned  int   bean_size;                       /* buffer len*/
-    unsigned  int   bean_pos;                        /* the pos in the message array, not a good way  */
-    UPDATE_NOTIFY_LIST_STRU  *list;
+    ACTION_ENUM    action;                           /* use the ACTION_SYNC enum define */
+    int            (*update_from_local)(char*);      /* use this fun update the bean(typically the hardware changed */
+    int            (*update_to_local)(char*, char*); /* when reive the update message, use this fun to update to lower layer*/
+    int            (*check_para)(char*);             /* check any value in this bean rightor not */
+    int            (*init_bean)(char*);              /* init the bean function */
+    void           (*display)(char*);                /* show the bean content to user */
+    unsigned  int   bean_size;                       /* bean size*/
+    unsigned  int   bean_pos;                        /* the pos of the bean in the bean_process array  */
+    UPDATE_NOTIFY_LIST_STRU  *list;                  /* notify list, when the bean update we need notify other module insterseted*/
     char*           bean;                            /* point to the message bean */
-}MSG_PROCESS_STRU; 
+}BEAN_PROCESS_STRU; 
 
 /* name: the name of bean
    data_own: mean the pointe point to the own bean buffer
@@ -94,42 +96,50 @@ typedef struct MSG_PROCESS
                 module
 */
 
-#define MSG_SYNC(name, data_own)\
-     int update_from_local_##name(char* data_own)
+#define BEAN_UPDATE_UP(name, bean_local)\
+     int update_from_local_##name(char* bean_local)
 
-#define MSG_SET(name, data_own, data_other)\
-     int update_to_local_##name(char* data_own, char* data_other)
+#define BEAN_UPDATE_DOWN(name, bean_local, bean_receive)\
+     int update_to_local_##name(char* bean_local, char* bean_receive)
 
-#define MSG_CHECK(name, data_own)\
-     int check_para_##name(char* data_own)
+#define BEAN_CHECK(name, bean_local)\
+     int check_para_##name(char* bean_local)
 
-#define MSG_INIT(name, data_own)\
-     int init_bean_##name(char* data_own)
+#define BEAN_INIT(name, bean_local)\
+     int init_bean_##name(char* bean_local)
 
-#define MSG_PROCESS(name, strname, index, type)\
-   extern  MSG_SYNC(name, data_own);\
-   extern  MSG_SET(name, data_own, data_other);\
-   extern  MSG_CHECK(name, data_own);\ 
-   extern  MSG_INIT(name, data_own);\
-	   static type bean_##name;\
-         MSG_PROCESS_STRU process_##name = {strname,\
+#define BEAN_DISPLAY(name, bean_local)\
+    void display_##name(char* bean_local)
+
+
+#define STRING(x) #x
+
+#define BEAN_DEFINE(name, index, type)\
+   extern  BEAN_UPDATE_UP(name, bean_local);\
+   extern  BEAN_UPDATE_DOWN(name, bean_local,bean_receive);\
+   extern  BEAN_CHECK(name, bean_local);\ 
+   extern  BEAN_INIT(name, bean_local);\
+   extern  BEAN_DISPLAY(name, bean_local);\
+	     type bean_##name;\
+         BEAN_PROCESS_STRU process_##name = { STRING(name),\
                                               EN_ACTION_NOCHANGE,\
                                               update_from_local_##name,\
                                               update_to_local_##name,\
                                               check_para_##name,\
                                               init_bean_##name,\
+                                              display_##name,\
                                               sizeof(type),\
                                               index,\
                                               NULL,\
                                               (char*)&bean_##name\
                                               }
 
-#define POINTER_BEAN(name) &bean_##name
+#define BEAN_GET(name) &bean_##name
 
 #define REGISTER_NOTIFY(name,func)\
     do\
     {\
-         extern MSG_PROCESS_STRU process_##name;\
+         extern BEAN_PROCESS_STRU process_##name;\
          UPDATE_NOTIFY_LIST_STRU *p = malloc(sizeof(UPDATE_NOTIFY_LIST_STRU));\
          if(p != NULL)\
          {\
@@ -139,28 +149,46 @@ typedef struct MSG_PROCESS
          }\
     }while(0)
 
-#define REGISTER_MSG(name)\
+
+
+/* regsiter the bean to the bean_process array to update by eagine */
+#define BEAN_REGISTER(name)\
     do\
     {\
-       extern MSG_PROCESS_STRU process_##name;\
-       register_to_msg_array((MSG_PROCESS_STRU *)&process_##name);\
+       extern BEAN_PROCESS_STRU process_##name;\
+       register_to_bean_array((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 /* this macro should be away used in the bean get function, when 
     any changed for the bean we need informed the msg_process 
     to send the bean to other module 
  */
-#define SYNC_MSG(name)\
+#define BEAN_UPDATE_NOTIFY(name)\
     do\
     {\
-      extern MSG_PROCESS_STRU process_##name;\
-      process_##name.action = EN_ACTION_SYNC;\
+      extern BEAN_PROCESS_STRU process_##name;\
+      process_##name.action = EN_ACTION_UPDATE_TO_UP;\
+      UPDATE_NOTIFY_LIST_STRU *update_list  =  process_##name.list;\
+      while(update_list != NULL)\
+       {\
+         update_list->notify(process_##name.bean);\
+         update_list = update_list->next;\
+       }\    
     }while(0)
 
-extern int msg_array_init();
+#if 0
+#define BEAN_SET_DOWN(name) \
+    do\
+    {\
+      extern BEAN_PROCESS_STRU process_##name;\
+      process_##name.action = EN_ACTION_UPDATE_TO_DOWN;\
+    }while(0) 
+#endif
+
+extern int bean_array_init();
 extern int msg_process(char* msg);
 extern void process_run();
-extern int register_to_msg_array(MSG_PROCESS_STRU *head);
-int msg_update(char *msg);
+extern int register_to_bean_array(BEAN_PROCESS_STRU *head);
+int bean_update(char *msg);
 
 #endif /* __MSG_PROCESS_H__ */

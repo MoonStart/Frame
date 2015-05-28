@@ -1,17 +1,12 @@
 #include "common.h"
 
-/* we need */
-MSG_PROCESS(card_bean, "card", INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
+/* define a bean which need to be process by the eagine  */
+BEAN_DEFINE(card_bean, INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
 
 
-MSG_CHECK(card_bean, data)
+BEAN_CHECK(card_bean, bean_local)
 {
-  CARD_MSG_BEAN_STRU *p = NULL;
-  if(data == NULL)
-    return -1;
-
-
-  p = (CARD_MSG_BEAN_STRU *)data;
+  CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
 
   if(p->x > 100)
   {
@@ -20,18 +15,17 @@ MSG_CHECK(card_bean, data)
   return 0;
 }
 
-static void display(int argc, char** argv)
+BEAN_DISPLAY(card_bean, bean_local)
 {
-   CARD_MSG_BEAN_STRU *p = POINTER_BEAN(card_bean);
-   printf("cardbean value: \r\n");
-   printf("x:%d\r\n", p->x);
-   printf("x:%d\r\n", p->y);
-   printf("x:%d\r\n", p->z);
+  CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
+   printf("\tX:%d\r\n", p->x);
+   printf("\tY:%d\r\n", p->y);
+   printf("\tZ:%d\r\n", p->z);
 }
 
 static void setcardbean(int argc, char** argv)
 {
-   CARD_MSG_BEAN_STRU *p = POINTER_BEAN(card_bean);
+   CARD_MSG_BEAN_STRU *p = BEAN_GET(card_bean);
 
    if(argc != 4)
    {
@@ -42,27 +36,21 @@ static void setcardbean(int argc, char** argv)
    if(strcmp(argv[2], "x") == 0)
    {
      p->x = atoi(argv[3]); 
-     SYNC_MSG(card_bean);
+     BEAN_UPDATE_NOTIFY(card_bean);
    }
 }
 
-#define CMD1 "card"
 static CMD_TABLE_STRU cardMenu[] =
-{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
-    { CMD1, "display",     "card - display the card content",  "display the card  ",      display,         NULL},
-    { NULL, "set",         NULL,                               "set the content of card", setcardbean,     NULL}
+{   // cmd   sub_cmd_name               cmd_help                sub_cmd_help             fct_call        fct_call2
+    {"BeanSet",   STRING(card_bean),    "Set the Bean content", "the Name of the Bean would be changed ",             setcardbean,     NULL}
 };
 
 
-MSG_INIT(card_bean, data)
+BEAN_INIT(card_bean, bean_local)
 {
-  CARD_MSG_BEAN_STRU *p = NULL;
-  if(data == NULL)
-    return -1;
-  
-   p = (CARD_MSG_BEAN_STRU *)data;
+  CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
 
-   RegisterCommand(cardMenu, sizeof(cardMenu)/sizeof(CMD_TABLE_STRU));
-   printf("bean init over \r\n");
-   return 0;
+  RegisterCommand(cardMenu, sizeof(cardMenu)/sizeof(CMD_TABLE_STRU));
+  printf("bean init over \r\n");
+  return 0;
 }

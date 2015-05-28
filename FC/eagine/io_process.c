@@ -59,7 +59,7 @@ static void display(int argc, char** argv)
 
 static CMD_TABLE_STRU ioMenu[] =
 {   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
-    { "io", "display",     "io - display all io information ",  "display the socket  ",  display,         NULL}
+    { "io", "display",     "display all io information ",  "display the socket  ",  display,         NULL}
 };
 
 /*****************************************************************************

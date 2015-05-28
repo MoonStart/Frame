@@ -1,33 +1,30 @@
 #include "common.h"
 
-MSG_SYNC(card_bean, data_own)
+BEAN_UPDATE_UP(card_bean, bean_local)
 {
-  CARD_MSG_BEAN_STRU *p = NULL;
-  if(data_own == NULL)
+  CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
+  if(p == NULL)
     return -1;
-
-  p = (CARD_MSG_BEAN_STRU *)data_own;
 
   return 0;
 }
 
 
-MSG_SET(card_bean, data_own, data_other)
+BEAN_UPDATE_DOWN(card_bean, bean_local, bean_receive)
 {
-  CARD_MSG_BEAN_STRU *pown = NULL;
+  CARD_MSG_BEAN_STRU *plocal = NULL;
   CARD_MSG_BEAN_STRU *pother = NULL;
 
-  if(data_own == NULL || data_other == NULL)
+  if(bean_local == NULL || bean_receive == NULL)
     return -1;
 
-  pown = (CARD_MSG_BEAN_STRU *)data_own;
-  pother = (CARD_MSG_BEAN_STRU *)data_other;
+  plocal=  (CARD_MSG_BEAN_STRU *)bean_local;
+  pother = (CARD_MSG_BEAN_STRU *)bean_receive;
 
-  if(pown->x ^ pother->x)
+  if(plocal->x ^ pother->x)
   {
-    //do anything
-    printf("old:%d new:%d \r\n", pown->x, pother->x);
-    pown->x = pother->x;
+    printf("old:%d new:%d \r\n", plocal->x, pother->x);
+    plocal->x = pother->x;
   }
   return 0;
 }

@@ -1,10 +1,10 @@
 #include "common.h"
-typedef struct MSG_ARRAY
+typedef struct BEAN_ARRAY
 {
-    MSG_PROCESS_STRU    *process;
+    BEAN_PROCESS_STRU    *process;
     char                 flag;
-} MSG_ARRAY_STRU;
-static MSG_ARRAY_STRU msg_array[INDEX_BEAN_MAX];
+} BEAN_ARRAY_STRU;
+static BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
 /*****************************************************************************
  Prototype    : process_run
  Description  : this function continuly run in main function
@@ -22,16 +22,15 @@ static MSG_ARRAY_STRU msg_array[INDEX_BEAN_MAX];
 *****************************************************************************/
 void process_run()
 {
-    MSG_PROCESS_STRU *head = NULL;
+    BEAN_PROCESS_STRU *head = NULL;
     int index = 0;
     char buffer[MSG_LEN_MAX];
-    UPDATE_NOTIFY_LIST_STRU *update_list = NULL;
     
     while((index < INDEX_BEAN_MAX))
     {
-       if( msg_array[index].flag)
+       if( bean_array[index].flag)
        {
-         head = (MSG_PROCESS_STRU *)msg_array[index].process;
+         head = (BEAN_PROCESS_STRU *)bean_array[index].process;
          head->init_bean(head->bean);
        }
        index ++;
@@ -41,39 +40,37 @@ void process_run()
     index = 0;
     while(1)
     {
-        head = (MSG_PROCESS_STRU *)msg_array[index].process;
+        head = (BEAN_PROCESS_STRU *)bean_array[index].process;
 
-        if(msg_array[index].flag)
+        if(bean_array[index].flag)
         {   
             head->update_from_local(head->bean);
 
-            if(head->action == EN_ACTION_SYNC)
+            if(head->action == EN_ACTION_UPDATE_TO_UP)
             {   
-                /* at first, we need notify other bean which based on this
-                bean update */
-                update_list = head->list;
-                do
-                {
-                  update_list->notify(head->bean);
-                  update_list = update_list->next;
-                }while(update_list != NULL);
-
-                /* now we send the new bean to other app*/
-                memcpy(buffer, &head->bean_size, sizeof(int));
                 /*
                  |-------------------|
                  |bean_index | BEAN |
                  |-------------------|
                  */
+                /* now we send the new bean to other app*/
+                memcpy(buffer, &head->bean_pos, sizeof(int));
                 memcpy(buffer+sizeof(int), head->bean, head->bean_size);
                 io_send(buffer, head->bean_size+sizeof(int));
                 memset(buffer, 0x00, MSG_LEN_MAX);
                 head->action = EN_ACTION_NOCHANGE;
             }
         }
+#if 0
+        if((head->action == EN_ACTION_UPDATE_TO_DOWN))
+        {
+          head->update_to_local(head->bean);
+          head->action = EN_ACTION_NOCHANGE;
+        }
+#endif        
         if(io_recv(buffer, MSG_LEN_MAX))
         {
-            msg_update(buffer);
+            bean_update(buffer);
             memset(buffer, 0x00, MSG_LEN_MAX);
         }
         index ++;
@@ -110,25 +107,25 @@ void process_run()
     Modification : Created function
 
 *****************************************************************************/
-int register_to_msg_array(MSG_PROCESS_STRU *msg)
+int register_to_bean_array(BEAN_PROCESS_STRU *bean_process)
 {
-    if(msg == NULL)
+    if(bean_process == NULL)
     {
         PRINTF("the message should not be NULL \r\n");
         return -1;
     }
 
 
-    if(msg->bean_pos > INDEX_BEAN_MAX)
+    if(bean_process->bean_pos > INDEX_BEAN_MAX)
     {
         PRINTF("please redefine the message container size or check the message ID \r\n");
         exit(0);
     }
 
-    if(!msg_array[msg->bean_pos].flag)
+    if(!bean_array[bean_process->bean_pos].flag)
     {
-        msg_array[msg->bean_pos].process = msg;
-        msg_array[msg->bean_pos].flag = 1;
+        bean_array[bean_process->bean_pos].process = bean_process;
+        bean_array[bean_process->bean_pos].flag = 1;
     }
     else
     {
@@ -145,11 +142,11 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
   |message bead id(array index)        |parameterx1|parameterx2|...parameterxx |
   |------------------------------------|-----------|-----------|---------------|
 
-  what the different between msg_process and msg_update?
+  what the different between msg_process and bean_update?
   the msg_process update the msgbean which the value from other module
-  and the msg_update update the msgbean which the value from the module himself and
+  and the bean_update update the msgbean which the value from the module himself and
   send the new value to other module
- Input        : void *msg
+ Input        : void *bean_process
  Output       : None
  Return Value :
  Calls        :
@@ -161,29 +158,29 @@ int register_to_msg_array(MSG_PROCESS_STRU *msg)
     Modification : Created function
 
 *****************************************************************************/
-int msg_update(char *msg)
+int bean_update(char *bean_process)
 {
     int *index             = NULL;
 
-    MSG_PROCESS_STRU *head  = NULL;
+    BEAN_PROCESS_STRU *head  = NULL;
 
-    if(msg == NULL)
+    if(bean_process == NULL)
     {
       return -1;
     }
-    index = (int *)(&msg[0]);
+    index = (int *)(&bean_process[0]);
     
-    if(!msg_array[*index].flag)
+    if(!bean_array[*index].flag)
     {
         PRINTF("we need't process this message, the message id is %d\r\n", *index);
         return 0;
     }
 
-    head = (MSG_PROCESS_STRU *)msg_array[*index].process;
+    head = (BEAN_PROCESS_STRU *)bean_array[*index].process;
 
-    if(!head->check_para(msg + sizeof(int)) && (0 != memcmp(head->bean, msg+sizeof(int), head->bean_size)));
+    if((0 != memcmp(head->bean, bean_process+sizeof(int), head->bean_size)) && !head->check_para(bean_process + sizeof(int)));
     {
-        head->update_to_local(head->bean, msg+sizeof(int));
+        head->update_to_local(head->bean, bean_process+sizeof(int));
     }
 
     return 0;
@@ -207,22 +204,45 @@ int msg_update(char *msg)
 static void display(int argc, char** argv)
 {
     int index = 0;
-    printf("list the bean register to the array: \r\n");
-
-    while(index < INDEX_BEAN_MAX)
+    if(argc != 3)
     {
-       if(msg_array[index].flag)
-       {
-        printf("pos%d name:%s \r\n",index, msg_array[index].process->name);
+       printf("format: Bean display [all | list | (int)] \r\n");
+       return;
+    }
+
+    if(strcmp(argv[2], "all") == 0 || strcmp(argv[2], "list") == 0)
+    {
+      while(index < INDEX_BEAN_MAX)
+      {
+        if(bean_array[index].flag)
+        {
+           printf("\tPOS:%d  \r\n", index);
+           printf("\tNAME:%s \r\n", bean_array[index].process->name);
+
+           if(strcmp(argv[2], "all") == 0)
+           {
+             printf("\tCONTENT:\r\n");
+             bean_array[index].process->display((char*)bean_array[index].process->bean);
+           }
+         }
+        index ++;
        }
-       index ++;
+    }
+    else if(bean_array[atoi(argv[2])].flag)
+    {
+         printf("\tPOS:%d  \r\n", atoi(argv[2]));
+         printf("\tNAME:%s \r\n", bean_array[atoi(argv[2])].process->name);
+         printf("\tCONTENT:\r\n");
+         bean_array[atoi(argv[2])].process->display((char*)bean_array[atoi(argv[2])].process->bean);
     }
 }
 
 
+#define CMD_BEAN "Bean"
+
 static CMD_TABLE_STRU msgMenu[] =
 {   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
-    { "msg", "display",     "msg - display all msg array information ",  "display the msg array  ",  display,         NULL}
+    { CMD_BEAN, "display",     "-display all bean register array information ",  "display the process array  ",  display,         NULL}
 };
 
 /*****************************************************************************
@@ -240,13 +260,13 @@ static CMD_TABLE_STRU msgMenu[] =
     Modification : Created function
 
 *****************************************************************************/
-int msg_array_init()
+int bean_array_init()
 {
     int i = 0;
     while (i < INDEX_BEAN_MAX)
     {
-        msg_array[i].flag = 0;
-        msg_array[i].process = NULL;
+        bean_array[i].flag = 0;
+        bean_array[i].process = NULL;
         i++;
     }
     PRINTF("MSG ARRAY INIT OVER \r\n");
@@ -256,12 +276,12 @@ int msg_array_init()
 
 UTIL_INIT(SCM, module)
 {
-   return msg_array_init();
+   return bean_array_init();
 }
 
 UTIL_INIT(CARD1, module)
 {
-  return msg_array_init();
+  return bean_array_init();
 }
 
 
