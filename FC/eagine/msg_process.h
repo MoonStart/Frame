@@ -68,10 +68,11 @@ typedef enum ACTION
 
 /* when a bean update, we need notify another module to update the 
 corespond bean also */
+typedef void  (*notify)(char *);
 
 typedef struct UPDATE_NOTIFY_LIST
 {
-    void                    (*notify)(char *);
+    notify  pNotify;
     struct UPDATE_NOTIFY_LIST *next;
 }UPDATE_NOTIFY_LIST_STRU;
 
@@ -114,13 +115,16 @@ typedef struct BEAN_PROCESS
 
 #define STRING(x) #x
 
-#define BEAN_DEFINE(name, index, type)\
+#define BEAN_HEAD(name)\
    extern  BEAN_UPDATE_UP(name, bean_local);\
    extern  BEAN_UPDATE_DOWN(name, bean_local,bean_receive);\
-   extern  BEAN_CHECK(name, bean_local);\ 
+   extern  BEAN_CHECK(name, bean_local);\
    extern  BEAN_INIT(name, bean_local);\
    extern  BEAN_DISPLAY(name, bean_local);\
-	     type bean_##name;\
+
+#define BEAN_DEFINE(name, index, type)\
+         BEAN_HEAD(name)\
+	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
                                               EN_ACTION_NOCHANGE,\
                                               update_from_local_##name,\
@@ -140,13 +144,7 @@ typedef struct BEAN_PROCESS
     do\
     {\
          extern BEAN_PROCESS_STRU process_##name;\
-         UPDATE_NOTIFY_LIST_STRU *p = malloc(sizeof(UPDATE_NOTIFY_LIST_STRU));\
-         if(p != NULL)\
-         {\
-            p->notify = func;\      
-            p->next = process_##name.list;\
-            process_##name.list = p;\
-         }\
+         bean_add_list((BEAN_PROCESS_STRU *)&process_##name, func);\
     }while(0)
 
 
@@ -156,7 +154,7 @@ typedef struct BEAN_PROCESS
     do\
     {\
        extern BEAN_PROCESS_STRU process_##name;\
-       register_to_bean_array((BEAN_PROCESS_STRU *)&process_##name);\
+       bean_register_to_array((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 /* this macro should be away used in the bean get function, when 
@@ -167,13 +165,7 @@ typedef struct BEAN_PROCESS
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
-      process_##name.action = EN_ACTION_UPDATE_TO_UP;\
-      UPDATE_NOTIFY_LIST_STRU *update_list  =  process_##name.list;\
-      while(update_list != NULL)\
-       {\
-         update_list->notify(process_##name.bean);\
-         update_list = update_list->next;\
-       }\    
+      bean_update_notify((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 #if 0
@@ -188,7 +180,9 @@ typedef struct BEAN_PROCESS
 extern int bean_array_init();
 extern int msg_process(char* msg);
 extern void process_run();
-extern int register_to_bean_array(BEAN_PROCESS_STRU *head);
-int bean_update(char *msg);
+extern int bean_register_to_array(BEAN_PROCESS_STRU *head);
+extern void bean_update_notify(BEAN_PROCESS_STRU * bean_process);
+extern void bean_add_list(BEAN_PROCESS_STRU * bean_process, notify func);
+extern int bean_update(char *msg);
 
 #endif /* __MSG_PROCESS_H__ */

@@ -1,7 +1,7 @@
 #include "common.h"
 
-#define END                 0x0a
-#define MAX_ARGC            50
+
+#define MAX_ARGC            100
 #define COMMAND_TABLE_SIZE  120
 #define MAX_CMD_LINE_LENGTH 256
 
@@ -52,7 +52,8 @@ void  RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[], int cmd_nb_comma
     if (nb_cmd_table != 0)
     {
         /* For each entry in the register_table */
-        for (int i = 0 ; i < COMMAND_TABLE_SIZE && i < nb_cmd_table ; i++)
+		int i = 0;
+        for (i = 0 ; i < COMMAND_TABLE_SIZE && i < nb_cmd_table ; i++)
         {
             /* If the command names match */
             if(strcmp(cmd_register_table[i].cmd_table[0].cmd_name,
@@ -83,10 +84,12 @@ static int invoke_cmd(int theShellPtr, int argc, char **argv)
     bool  sub_cmd_found = false;
 
     /* For each entry in cmd_register_table */
-    for (int i = 0 ; i < nb_cmd_table && cmd_found == false; i++)
+	int i = 0;
+    for (i = 0 ; i < nb_cmd_table && cmd_found == false; i++)
     {
         /* For each command in this table */
-        for (int j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false; j++)
+		int j =0;
+        for (j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false; j++)
         {
             /* If the command names match */
             if( (cmd_register_table[i].cmd_table[j].cmd_name != NULL ) &&
@@ -162,11 +165,12 @@ static int process_string( char line_array[], char *argv[], char *tokens )
     char **lasts;
     char *lastValue = NULL;
     const char *separator = " ";
-    char  line_array_clean[MAX_CMD_LINE_LENGTH + 1] = {NULL};
+    char  line_array_clean[MAX_CMD_LINE_LENGTH + 1] = "";
     int   argc = 0;
 
     /* For all character of the command line */
-    for (int j = 0 ; j < MAX_CMD_LINE_LENGTH && line_array[j] != NULL ; j++ )
+	int j = 0;
+    for (j = 0 ; j < MAX_CMD_LINE_LENGTH && line_array[j] != NULL ; j++ )
     {
         /* Be sure it is a printable character */
         if ( isprint((int)line_array[j]) )
@@ -181,8 +185,12 @@ static int process_string( char line_array[], char *argv[], char *tokens )
 
     /* Break command line in tokens */
     lasts = &lastValue;
+#ifdef WIN32
+    token = strtok_s( line_array_clean , separator, lasts );
+#else
     token = strtok_r( line_array_clean , separator, lasts );
-    /* While there are tokens in cmd_line */
+#endif
+   /* While there are tokens in cmd_line */
     while( token != NULL )
     {
         strcpy(tokens, token);
@@ -190,8 +198,12 @@ static int process_string( char line_array[], char *argv[], char *tokens )
         tokens += strlen(token) + 1;
         argc++;
         /* Get next token: */
+#ifdef WIN32
+		token = strtok_s( NULL, separator, lasts );
+#else
         token = strtok_r( NULL, separator, lasts );
-    }
+#endif    
+	}
 
     /* Return the number of arguments in the command line */
     return argc;
@@ -202,15 +214,17 @@ static void display_help( char *command, char *sub_command )
 {
     bool cmd_found = false;
     bool sub_cmd_found = false;
+    int i = 0;
+	int j = 0;
 
     /* If help on a sub-command is requested */
     if( (command != NULL) && (sub_command != NULL) )
     {
         /* For each entry in the command_register_table */
-        for(int i = 0; (i < nb_cmd_table) && (cmd_found == false); i++ )
+        for(i = 0; (i < nb_cmd_table) && (cmd_found == false); i++ )
         {
             /* For each command in this table */
-            for (int j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false ; j++)
+            for (j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false ; j++)
             {
                 /* If the command names match */
                 if ( (cmd_register_table[i].cmd_table[j].cmd_name != NULL ) &&
@@ -255,10 +269,10 @@ static void display_help( char *command, char *sub_command )
     {
         cmd_found = false;
         /* For each entry in the command_register_table */
-        for(int i = 0; (i < nb_cmd_table) && (cmd_found == false); i++ )
+        for(i = 0; (i < nb_cmd_table) && (cmd_found == false); i++ )
         {
             /* For each command in this table */
-            for (int j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false; j++)
+            for ( j = 0 ; j < cmd_register_table[i].cmd_nb_command && cmd_found == false; j++)
             {
                 /* If the command names match */
                 if((cmd_register_table[i].cmd_table[j].cmd_name != NULL ) &&
@@ -289,7 +303,7 @@ static void display_help( char *command, char *sub_command )
                     else
                     {
                         /* Print help on this command */
-                        printf("%s", cmd_register_table[i].cmd_table[j].cmd_help);
+                        printf("\t%s", cmd_register_table[i].cmd_table[j].cmd_help);
                     }
 
                     printf("\n\n");
@@ -303,10 +317,10 @@ static void display_help( char *command, char *sub_command )
     if( cmd_found == false )
     {
         /* For each entry in the command_register_table */
-        for(int i = 0; (i < nb_cmd_table); i++ )
+        for(i = 0; (i < nb_cmd_table); i++ )
         {
             /* For each command in this table */
-            for (int j = 0 ; j < cmd_register_table[i].cmd_nb_command ; j++)
+            for (j = 0 ; j < cmd_register_table[i].cmd_nb_command ; j++)
             {
                 printf("%s\r\n", cmd_register_table[i].cmd_table[j].cmd_name);
                 printf("\t%s\r\n", cmd_register_table[i].cmd_table[j].cmd_help);
@@ -362,11 +376,12 @@ STATUS ExecuteCommand(int theShellPtr, char *cmd_line)
 {
     int       argc = 0;
     char     *argv[MAX_ARGC] = {NULL};
-    char      tokens[MAX_CMD_LINE_LENGTH + MAX_ARGC] = {NULL};
+    char      tokens[MAX_CMD_LINE_LENGTH + MAX_ARGC] ;
 
     /* Initialize our output stream used by printf() */
 
     /* Set the command line in the right format */
+    memset(tokens, 0x00, sizeof(tokens));
     argc = process_string(cmd_line, argv, &tokens[0] );
 
     /* If no argument were entered (empty line) */
@@ -398,13 +413,26 @@ void command_line_input_byte(char c)
    if((pos > MAX_ARGC) || (c == '?'))
    {
      ExecuteCommand(0, "help");
+     memset(buffer, 0x00, sizeof(buffer));
+     pos = 0;
    }
 
    if(c == END)
    {
-     ExecuteCommand(NULL, buffer);
+     ExecuteCommand(0, buffer);
      memset(buffer, 0x00, sizeof(buffer));
      printf("%s", PROMPT);
      pos = 0;
+   }
+}
+
+
+void win32_cmd_process()
+{
+   while(NULL != fgets(buffer, MAX_ARGC, stdin))
+   {
+     ExecuteCommand(0, buffer);
+     memset(buffer, 0x00, sizeof(buffer));
+     printf("%s", PROMPT);
    }
 }

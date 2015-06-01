@@ -78,36 +78,31 @@ void process_run()
     }
 }
 
+void bean_update_notify(BEAN_PROCESS_STRU *bean_process)
+{
+      UPDATE_NOTIFY_LIST_STRU *update_list  =  bean_process->list;
 
-/*****************************************************************************
- Prototype    : register_msg_container
- Description  : every module message should call this function to register
-                own message bean
-                to the message array, this module mange all message bean
-                all message message bean should be defined as below
+      bean_process->action = EN_ACTION_UPDATE_TO_UP;
+      while(update_list != NULL)
+       {
+         update_list->pNotify(bean_process->bean);
+         update_list = update_list->next;
+       }
+}
 
-                |--------------|--------------|
-                |MSG_HEAD_STRU |MSG_BEAN_STRU |
-                |--------------|------------- |
 
-                and the every MSG_BEAN_STRU should defined like below
+void bean_add_list(BEAN_PROCESS_STRU *bean_process, notify func)
+{
+   UPDATE_NOTIFY_LIST_STRU *p = (UPDATE_NOTIFY_LIST_STRU*)malloc(sizeof(UPDATE_NOTIFY_LIST_STRU));
+   if(p != NULL)
+   {
+      p->pNotify = func;     
+      p->next  = bean_process->list;
+      bean_process->list = p;
+   }
+}
 
-                |-----------|-----------|---------------|
-                |parameterx1|parameter-x2|...parameterxx |
-                |-----------|-----------|---------------|
- Input        : MSG_HEAD_STRU *head
- Output       : None
- Return Value :
- Calls        :
- Called By    :
-
-  History        :
-  1.Date         : 2014/9/11
-    Author       : Eason Lee
-    Modification : Created function
-
-*****************************************************************************/
-int register_to_bean_array(BEAN_PROCESS_STRU *bean_process)
+int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
 {
     if(bean_process == NULL)
     {

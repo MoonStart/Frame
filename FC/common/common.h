@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <unistd.h>
 #ifdef WIN32
+#include <WS2tcpip.h>
+#include <winsock.h> 
 #else
+#include <unistd.h>
 #include <sys/types.h>¡¡¡¡
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -34,11 +36,15 @@
 
 typedef void (*pfunc)();
 
-#if 0
+#ifdef WIN32
 typedef unsigned char bool ;
-
 #define true  1
 #define false 0
+
+
+#define  STDIN_FILENO  STD_INPUT_HANDLE
+#define  STDOUT_FILENO STD_OUTPUT_HANDLE
+#define  STDERR_FILENO STD_ERROR_HANDLE
 #endif
 
 #define DEBUG 1

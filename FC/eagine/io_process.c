@@ -1,5 +1,9 @@
 #include "common.h"
 
+#ifdef WIN32	
+#pragma comment(lib, "Ws2_32.lib")
+#endif
+
 #define PORT_SCM  1024
 #define PORT_CARD 1025
 
@@ -8,7 +12,11 @@
 
 typedef struct SOCK_INFO
 {
+#ifdef WIN32
+	SOCKET sock_fd;
+#else
     unsigned int       sock_fd;
+#endif
     unsigned short     local_port; /* the port used in local module */
     struct sockaddr_in targetAddr; /* tha target address we will send message to it */
     fd_set             rfd;
@@ -81,6 +89,11 @@ static CMD_TABLE_STRU ioMenu[] =
 *****************************************************************************/
 int io_init(MODULE_NAME_ENUM name)
 {
+#ifdef WIN32
+    WSADATA wsaData;
+    int iErrorMsg;  
+	int rlt;
+#endif
     struct sockaddr_in addr;
 
     /* for command line tool */
@@ -92,6 +105,21 @@ int io_init(MODULE_NAME_ENUM name)
     sock_bean.module = name;
     sock_bean.targetAddr.sin_family = AF_INET;
 
+#ifdef WIN32
+  
+    iErrorMsg = WSAStartup(MAKEWORD(1,1),&wsaData);  
+      
+    if (iErrorMsg != NO_ERROR)  
+    {  
+        //³õÊ¼»¯WinSockÊ§°Ü  
+        printf("wsastartup failed with error : %d\n",iErrorMsg);  
+  
+        rlt = 1;  
+        return rlt;  
+    } 
+#endif
+
+    
     switch(name)
     {
     case MODULE_SCM:
@@ -120,8 +148,12 @@ int io_init(MODULE_NAME_ENUM name)
 
     /* prepared for select function */
     sock_bean.timeout.tv_sec = 0;
-    sock_bean.timeout.tv_usec = 300;
+    sock_bean.timeout.tv_usec = 0;
+#ifdef WIN32
+    sock_bean.maxfd = 0;
+#else
     sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd:STDIN_FILENO)  + 1;
+#endif
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
@@ -137,34 +169,42 @@ int io_init(MODULE_NAME_ENUM name)
     PRINTF("IO INIT OVER \r\n");
 
     RegisterCommand(ioMenu, sizeof(ioMenu) / sizeof(CMD_TABLE_STRU));
+#ifdef WIN32
+     CreateThread(NULL, 1024, (LPTHREAD_START_ROUTINE)win32_cmd_process, 0, 0, NULL);
+#endif
     return 0;
 }
 
 IO_INIT(SCM, module)
 {
-  io_init(module);
+  return io_init(module);
 }
 
 IO_INIT(CARD1, module)
 {
-  io_init(module);
+  return io_init(module);
 }
 
 int io_recv(char *buffer, unsigned short len)
 {
     int nRet = 0;
     int rlen = 0;
+    char *line = NULL;
     unsigned char c;
-    
+
     FD_ZERO(&sock_bean.rfd);
     FD_SET(sock_bean.sock_fd, &sock_bean.rfd);
+
+#ifdef WIN32
+#else
     FD_SET(STDIN_FILENO, &sock_bean.rfd);
+#endif
 
     nRet = select(sock_bean.maxfd, &sock_bean.rfd, NULL, NULL, &sock_bean.timeout);
     if (nRet < 0)
     {
         perror("select:");
-        return -1;
+        exit(0);
     }
     else
     {   
@@ -175,11 +215,15 @@ int io_recv(char *buffer, unsigned short len)
             if (rlen < 0)
             {
               perror("recvfrom:");
+              rlen = 0;
             }
 #if DEBUG
               memcpy(sock_bean.recv_buffer, buffer, rlen);
 #endif
         }
+
+#ifdef WIN32
+#else
         /* read a chcarator from stdin */
         if(FD_ISSET(STDIN_FILENO, &sock_bean.rfd))
         {
@@ -188,6 +232,7 @@ int io_recv(char *buffer, unsigned short len)
             command_line_input_byte(c);
           }
         }
+#endif
     }
     return rlen;
 }
