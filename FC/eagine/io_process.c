@@ -106,14 +106,10 @@ int io_init(MODULE_NAME_ENUM name)
     sock_bean.targetAddr.sin_family = AF_INET;
 
 #ifdef WIN32
-  
-    iErrorMsg = WSAStartup(MAKEWORD(1,1),&wsaData);  
-      
+    iErrorMsg = WSAStartup(MAKEWORD(1,1),&wsaData);   
     if (iErrorMsg != NO_ERROR)  
-    {  
-        //≥ı ºªØWinSock ß∞‹  
+    {    
         printf("wsastartup failed with error : %d\n",iErrorMsg);  
-  
         rlt = 1;  
         return rlt;  
     } 
