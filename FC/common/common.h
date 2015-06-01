@@ -28,9 +28,9 @@
 #include <sys/select.h>
 #endif
 #include "card_bean.h"
-#include "message_id.h"
+#include "bean_index.h"
 #include "module_def.h"
-#include "msg_process.h"
+#include "bean_process.h"
 #include "io_process.h"
 #include "cmdline.h"
 
@@ -41,10 +41,6 @@ typedef unsigned char bool ;
 #define true  1
 #define false 0
 
-
-#define  STDIN_FILENO  STD_INPUT_HANDLE
-#define  STDOUT_FILENO STD_OUTPUT_HANDLE
-#define  STDERR_FILENO STD_ERROR_HANDLE
 #endif
 
 #define DEBUG 1

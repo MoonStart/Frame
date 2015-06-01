@@ -8,6 +8,6 @@ int main()
    /* call all run function in circle */
    while(1)
    {
-      process_run();
+      bean_process_run();
    }
 }

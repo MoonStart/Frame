@@ -78,10 +78,10 @@ typedef struct UPDATE_NOTIFY_LIST
 
 typedef struct BEAN_PROCESS
 {
-    char           *name;                            /* the string which show to user what is the name of this bean*/
+    char           *bean_name;                       /* the string which show to user what is the name of this bean*/
     ACTION_ENUM    action;                           /* use the ACTION_SYNC enum define */
     int            (*update_from_local)(char*);      /* use this fun update the bean(typically the hardware changed */
-    int            (*update_to_local)(char*, char*); /* when reive the update message, use this fun to update to lower layer*/
+    int            (*update_to_local)(char* /* local bean*/, char* /* received bean*/); /* 1st.local bean 2se.received bean. when reive the update message, use this fun to update to lower layer*/
     int            (*check_para)(char*);             /* check any value in this bean rightor not */
     int            (*init_bean)(char*);              /* init the bean function */
     void           (*display)(char*);                /* show the bean content to user */
@@ -178,9 +178,8 @@ typedef struct BEAN_PROCESS
 #endif
 
 extern int bean_array_init();
-extern int msg_process(char* msg);
-extern void process_run();
-extern int bean_register_to_array(BEAN_PROCESS_STRU *head);
+extern void bean_process_run();
+extern int  bean_register_to_array(BEAN_PROCESS_STRU *head);
 extern void bean_update_notify(BEAN_PROCESS_STRU * bean_process);
 extern void bean_add_list(BEAN_PROCESS_STRU * bean_process, notify func);
 extern int bean_update(char *msg);

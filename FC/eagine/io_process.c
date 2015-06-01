@@ -23,7 +23,7 @@ typedef struct SOCK_INFO
     struct timeval     timeout;
     int                maxfd;
     MODULE_NAME_ENUM   module;
-#if DEBUG
+#if WIN32
     char               send_buffer[MSG_LEN_MAX];
     char               recv_buffer[MSG_LEN_MAX];
 #endif
@@ -38,7 +38,7 @@ static void display(int argc, char** argv)
     printf("sock fd: %d \r\n", sock_bean.sock_fd);
 
     printf("sock port: %d \r\n", sock_bean.local_port);
-#if DEBUG
+#if WIN32
     printf("\r\nRECV BUFFER:\r\n");
     for(i = 0; i < 16; i++)
     {
@@ -139,8 +139,6 @@ int io_init(MODULE_NAME_ENUM name)
         printf("socket()\n");
         return -1;
     }
-    PRINTF("sock fd is %d \r\n", sock_bean.sock_fd);
-    PRINTF("port is %d \r\n", sock_bean.local_port);
 
     /* prepared for select function */
     sock_bean.timeout.tv_sec = 0;
@@ -213,7 +211,7 @@ int io_recv(char *buffer, unsigned short len)
               perror("recvfrom:");
               rlen = 0;
             }
-#if DEBUG
+#if WIN32
               memcpy(sock_bean.recv_buffer, buffer, rlen);
 #endif
         }
@@ -242,7 +240,7 @@ int io_send(char *buffer, unsigned short len)
     {
         return -1;
     }
-#if DEBUG
+#if WIN32
     memcpy(sock_bean.send_buffer, buffer, len);
 #endif
 
