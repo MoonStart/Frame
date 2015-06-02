@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
+#include <stddef.h>
 #ifdef WIN32
 #include <WS2tcpip.h>
 #include <winsock.h> 
@@ -42,6 +43,9 @@ typedef unsigned char bool ;
 #define false 0
 
 #endif
+
+#define container_of(ptr, type, member)\
+        (type *)( (char *)ptr - offsetof(type,member) )
 
 #define DEBUG 1
 

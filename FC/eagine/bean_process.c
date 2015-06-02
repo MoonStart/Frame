@@ -82,6 +82,15 @@ void bean_process_run()
         index = index % INDEX_BEAN_MAX;
     }
 }
+
+
+
+void bean_get_pointer(BEAN_PROCESS_STRU *process, char *p)
+{
+    p = process->bean;
+}  
+
+
 /*****************************************************************************
  Prototype    : bean_update_notify
  Description  : one bean updated and some bean updated base the bean which
@@ -101,13 +110,18 @@ void bean_process_run()
 void bean_update_notify(BEAN_PROCESS_STRU *bean_process)
 {
       UPDATE_NOTIFY_LIST_STRU *update_list  =  bean_process->list;
-
+      BEAN_PROCESS_STRU *temp = NULL;
+      
       bean_process->action = EN_ACTION_UPDATE_TO_UP;
       while(update_list != NULL)
-       {
+      {
+#ifdef DEBUG
+         temp = container_of(update_list, BEAN_PROCESS_STRU, list);
+         printf("update the %s \r\n", temp->bean_name);
+#endif
          update_list->pNotify(bean_process->bean);
          update_list = update_list->next;
-       }
+      }
 }
 
 /*****************************************************************************

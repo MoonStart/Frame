@@ -25,8 +25,11 @@ BEAN_DISPLAY(card_bean, bean_local)
 
 static void setcardbean(int argc, char** argv)
 {
-   CARD_MSG_BEAN_STRU *p = BEAN_GET(card_bean);
-
+   char *p = NULL;
+   CARD_MSG_BEAN_STRU *plocal = NULL;
+  
+   BEAN_POINTER(card_bean, p);
+   plocal = (CARD_MSG_BEAN_STRU *)p;
    if(argc != 4)
    {
      printf("command format: card set [x|y|z] value(int) \r\n");
@@ -35,7 +38,7 @@ static void setcardbean(int argc, char** argv)
 
    if(strcmp(argv[2], "x") == 0)
    {
-     p->x = atoi(argv[3]); 
+     plocal->x = atoi(argv[3]); 
      BEAN_UPDATE_NOTIFY(card_bean);
    }
 }

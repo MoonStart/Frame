@@ -138,9 +138,21 @@ typedef struct BEAN_PROCESS
                                               (char*)&bean_##name\
                                               }
 
-#define BEAN_GET(name) &bean_##name
 
-#define REGISTER_NOTIFY(name,func)\
+
+
+
+#define BEAN_POINTER(name, p)\
+    do\
+    {\
+        extern BEAN_PROCESS_STRU process_##name;\
+        bean_get_pointer((BEAN_PROCESS_STRU *)&process_##name, p);\
+    }while(0)
+
+
+
+
+#define NOTIFY_REGISTER(name,func)\
     do\
     {\
          extern BEAN_PROCESS_STRU process_##name;\
@@ -183,5 +195,5 @@ extern int  bean_register_to_array(BEAN_PROCESS_STRU *head);
 extern void bean_update_notify(BEAN_PROCESS_STRU * bean_process);
 extern void bean_add_list(BEAN_PROCESS_STRU * bean_process, notify func);
 extern int bean_update(char *msg);
-
+extern void bean_get_pointer(BEAN_PROCESS_STRU *process, char *p);
 #endif /* __MSG_PROCESS_H__ */
