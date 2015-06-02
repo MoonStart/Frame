@@ -32,11 +32,11 @@ void bean_process_run()
        {
          head = (BEAN_PROCESS_STRU *)bean_array[index].process;
          head->init_bean(head->bean);
-       }
-       if(head->bean_size+sizeof(head->bean_pos) > MSG_LEN_MAX)
-       {
-         printf("the bean %s pos %d too much lager \r\n",head->bean_name, head->bean_pos);
-         printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", head->bean_size+sizeof(head->bean_pos));
+		 if(head->bean_size+sizeof(head->bean_pos) > MSG_LEN_MAX)
+         {
+            printf("the bean %s pos %d too much lager \r\n",head->bean_name, head->bean_pos);
+            printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", head->bean_size+sizeof(head->bean_pos));
+         }
        }
        index ++;
     }

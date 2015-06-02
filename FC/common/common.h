@@ -45,7 +45,7 @@ typedef unsigned char bool ;
 #endif
 
 #define container_of(ptr, type, member)\
-        (type *)( (char *)ptr - offsetof(type,member) )
+        (type *)((char *)ptr - offsetof(type,member))
 
 #define DEBUG 1
 
