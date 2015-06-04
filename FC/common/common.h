@@ -34,6 +34,7 @@
 #include "bean_process.h"
 #include "io_process.h"
 #include "cmdline.h"
+#include "module_bean.h"
 
 typedef void (*pfunc)();
 

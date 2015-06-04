@@ -8,6 +8,14 @@ typedef enum MODULE_NAME
   MODULE_MAX               
 }MODULE_NAME_ENUM;
 
+typedef struct MODULE_INFO
+{
+   MODULE_NAME_ENUM ModuleId;
+   int bean_count;
+}MODULE_INFO_STRU;
+
+
+
 typedef int (*callback_init)(MODULE_NAME_ENUM);
 
 typedef struct CALL_INIT

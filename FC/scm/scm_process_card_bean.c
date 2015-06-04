@@ -1,6 +1,6 @@
 #include "common.h"
 
-BEAN_UPDATE_UP(card_bean, bean_local)
+BEAN_UPDATE_UP(EDFA, bean_local)
 {
   CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
   if(p == NULL)
@@ -10,7 +10,7 @@ BEAN_UPDATE_UP(card_bean, bean_local)
 }
 
 
-BEAN_UPDATE_DOWN(card_bean, bean_local, bean_receive)
+BEAN_UPDATE_DOWN(EDFA, bean_local, bean_receive)
 {
   CARD_MSG_BEAN_STRU *plocal = NULL;
   CARD_MSG_BEAN_STRU *pother = NULL;

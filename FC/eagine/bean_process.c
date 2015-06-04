@@ -1,10 +1,12 @@
 #include "common.h"
-typedef struct BEAN_ARRAY
-{
-    BEAN_PROCESS_STRU    *process;
-    char                 flag;
-} BEAN_ARRAY_STRU;
-static BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
+
+BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
+
+
+MODULE_INFO_STRU module_info;
+bool module_sync[MODULE_MAX] = {false};
+
+
 /*****************************************************************************
  Prototype    : bean_process_run
  Description  : this function continuly run in main function
@@ -25,7 +27,8 @@ void bean_process_run()
     BEAN_PROCESS_STRU *head = NULL;
     int index = 0;
     char buffer[MSG_LEN_MAX];
-    
+    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
+        
     while((index < INDEX_BEAN_MAX))
     {
        if(bean_array[index].flag)
@@ -37,11 +40,11 @@ void bean_process_run()
             printf("the bean %s pos %d too much lager \r\n",head->bean_name, head->bean_pos);
             printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", head->bean_size+sizeof(head->bean_pos));
          }
+         module_info.bean_count++;
        }
        index ++;
     }
-
-
+    
     index = 0;
     while(1)
     {
@@ -54,14 +57,15 @@ void bean_process_run()
             if(head->action == EN_ACTION_UPDATE_TO_UP)
             {   
                 /*
-                 |-------------------|
-                 |bean_index | BEAN  |
-                 |-------------------|
+                 |-------------------------------|
+                 |module_id | bean_index | BEAN  |
+                 |-------------------------------|
                  */
                 /* now we send the new bean to other app*/
-                memcpy(buffer, &head->bean_pos, sizeof(head->bean_pos));
-                memcpy(buffer+sizeof(int), head->bean, head->bean_size);
-                io_send(buffer, head->bean_size+sizeof(head->bean_pos));
+                head_msg->module_id = module_info.ModuleId;
+                head_msg->index = head->bean_pos;
+                memcpy(head_msg->bean, head->bean, head->bean_size);
+                io_instance.bean_send(buffer, MSG_LEN_MAX);
                 memset(buffer, 0x00, MSG_LEN_MAX);
                 head->action = EN_ACTION_NOCHANGE;
             }
@@ -73,7 +77,7 @@ void bean_process_run()
           head->action = EN_ACTION_NOCHANGE;
         }
 #endif        
-        if(io_recv(buffer, MSG_LEN_MAX))
+        if(io_instance.bean_recv(buffer, MSG_LEN_MAX))
         {
             bean_update(buffer);
             memset(buffer, 0x00, MSG_LEN_MAX);
@@ -85,11 +89,10 @@ void bean_process_run()
 
 
 
-void bean_get_pointer(BEAN_PROCESS_STRU *process, char *p)
+void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p)
 {
-    p = process->bean;
+    *p = process->bean;
 }  
-
 
 /*****************************************************************************
  Prototype    : bean_update_notify
@@ -215,24 +218,31 @@ int bean_update(char *bean_process)
     int *index             = NULL;
 
     BEAN_PROCESS_STRU *head  = NULL;
-
-    if(bean_process == NULL)
+    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)bean_process;
+    if(head_msg == NULL)
     {
       return -1;
     }
-    index = (int *)(&bean_process[0]);
+
+    if(module_info.ModuleId == MODULE_SCM && 
+        (head_msg->index !=INDEX_BEAN_0) &&
+        !module_sync[head_msg->module_id])
+    {
+       printf("the module %d haven't finished sync action \r\n",head_msg->module_id);
+       return 0;
+    }
     
-    if(!bean_array[*index].flag)
+    if(!bean_array[head_msg->index].flag)
     {
         PRINTF("we need't process this message, the message id is %d\r\n", *index);
         return 0;
     }
 
-    head = (BEAN_PROCESS_STRU *)bean_array[*index].process;
+    head = (BEAN_PROCESS_STRU *)bean_array[head_msg->index].process;
 
-    if((0 != memcmp(head->bean, bean_process+sizeof(int), head->bean_size)) && !head->check_para(bean_process + sizeof(int)));
+    if((0 != memcmp(head->bean,head_msg->bean, head->bean_size)) && !head->check_para(head_msg->bean));
     {
-        head->update_to_local(head->bean, bean_process+sizeof(int));
+        head->update_to_local(head->bean, head_msg->bean);
     }
 
     return 0;
@@ -268,7 +278,7 @@ static void display(int argc, char** argv)
       {
         if(bean_array[index].flag)
         {
-           printf("\tPOS:%d  \r\n", index);
+           printf("\r\n\tPOS:%d  \r\n", index);
            printf("\tNAME:%s \r\n", bean_array[index].process->bean_name);
 
            if(strcmp(argv[2], "all") == 0)
@@ -282,7 +292,7 @@ static void display(int argc, char** argv)
     }
     else if((atoi(argv[2]) <INDEX_BEAN_MAX ) && bean_array[atoi(argv[2])].flag)
     {
-         printf("\tPOS:%d  \r\n", atoi(argv[2]));
+         printf("\r\n\tPOS:%d  \r\n", atoi(argv[2]));
          printf("\tNAME:%s \r\n", bean_array[atoi(argv[2])].process->bean_name);
          printf("\tCONTENT:\r\n");
          bean_array[atoi(argv[2])].process->display((char*)bean_array[atoi(argv[2])].process->bean);
@@ -299,15 +309,20 @@ static CMD_TABLE_STRU msgMenu[] =
 
 
 
-int bean_array_init()
+int bean_array_init(MODULE_NAME_ENUM module)
 {
     int i = 0;
+
+
     while (i < INDEX_BEAN_MAX)
     {
         bean_array[i].flag = 0;
         bean_array[i].process = NULL;
         i++;
     }
+
+    module_info.ModuleId = module;
+    module_info.bean_count = 0;
     PRINTF("MSG ARRAY INIT OVER \r\n");
     RegisterCommand(msgMenu, sizeof(msgMenu)/sizeof(CMD_TABLE_STRU));
     return 0;
@@ -315,12 +330,12 @@ int bean_array_init()
 
 BEAN_ARRAY_INIT(SCM, module)
 {
-   return bean_array_init();
+   return bean_array_init(module);
 }
 
 BEAN_ARRAY_INIT(CARD1, module)
 {
-  return bean_array_init();
+  return bean_array_init(module);
 }
 
 

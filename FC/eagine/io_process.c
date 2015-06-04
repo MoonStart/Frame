@@ -1,5 +1,9 @@
 #include "common.h"
 
+BEAN_IO_STRU io_instance;
+
+
+
 #ifdef WIN32	
 #pragma comment(lib, "Ws2_32.lib")
 #endif
@@ -171,11 +175,15 @@ int io_init(MODULE_NAME_ENUM name)
 
 IO_INIT(SCM, module)
 {
+  io_instance.bean_recv = io_recv;
+  io_instance.bean_send = io_send;
   return io_init(module);
 }
 
 IO_INIT(CARD1, module)
 {
+  io_instance.bean_recv = io_recv;
+  io_instance.bean_send = io_send;
   return io_init(module);
 }
 

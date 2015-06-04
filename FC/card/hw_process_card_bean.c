@@ -4,7 +4,7 @@
  函 数 名  : BEAN_UPDATE_UP
  功能描述  : update the bean from local hw or other reson and should 
              send the new bean to other module 
- 输入参数  : card_bean  
+ 输入参数  : EDFA  
              data_own   
  输出参数  : 无
  返 回 值  : 
@@ -17,7 +17,7 @@
     修改内容   : 新生成函数
 
 *****************************************************************************/
-BEAN_UPDATE_UP(card_bean, bean_local)
+BEAN_UPDATE_UP(EDFA, bean_local)
 {
   CARD_MSG_BEAN_STRU *p =(CARD_MSG_BEAN_STRU *)bean_local;
 
@@ -29,7 +29,7 @@ BEAN_UPDATE_UP(card_bean, bean_local)
  Prototype    : MSG_SET
  Description  : typical use example, when received from other message
                  ,update the local message bean
- Input        : card_bean   
+ Input        : EDFA   
                 data_own    
                 data_other  
  Output       : None
@@ -43,7 +43,7 @@ BEAN_UPDATE_UP(card_bean, bean_local)
     Modification : Created function
 
 *****************************************************************************/
-BEAN_UPDATE_DOWN(card_bean, bean_local, bean_receive)
+BEAN_UPDATE_DOWN(EDFA, bean_local, bean_receive)
 {
   CARD_MSG_BEAN_STRU *plocal = NULL;
   CARD_MSG_BEAN_STRU *pother = NULL;

@@ -57,6 +57,7 @@
 #define MSG_LEN_MAX       256
 
 
+
 typedef enum ACTION
 {
     EN_ACTION_NOCHANGE=0,
@@ -90,6 +91,22 @@ typedef struct BEAN_PROCESS
     UPDATE_NOTIFY_LIST_STRU  *list;                  /* notify list, when the bean update we need notify other module insterseted*/
     char*           bean;                            /* point to the message bean */
 }BEAN_PROCESS_STRU; 
+
+
+typedef struct BEAN_ARRAY
+{
+    BEAN_PROCESS_STRU    *process;
+    char                 flag;
+} BEAN_ARRAY_STRU;
+
+typedef struct MSG_HEAD
+{
+    MODULE_NAME_ENUM module_id;
+    unsigned int     index;
+    char             bean[0];
+}MSG_HEAD_STRU;
+
+
 
 /* name: the name of bean
    data_own: mean the pointe point to the own bean buffer
@@ -146,7 +163,7 @@ typedef struct BEAN_PROCESS
     do\
     {\
         extern BEAN_PROCESS_STRU process_##name;\
-        bean_get_pointer((BEAN_PROCESS_STRU *)&process_##name, p);\
+        bean_get_pointer((BEAN_PROCESS_STRU *)&process_##name, &p);\
     }while(0)
 
 
@@ -180,6 +197,7 @@ typedef struct BEAN_PROCESS
       bean_update_notify((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
+
 #if 0
 #define BEAN_SET_DOWN(name) \
     do\
@@ -188,12 +206,14 @@ typedef struct BEAN_PROCESS
       process_##name.action = EN_ACTION_UPDATE_TO_DOWN;\
     }while(0) 
 #endif
-
+extern BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
+extern MODULE_INFO_STRU module_info;
+extern bool module_sync[MODULE_MAX];
 extern int bean_array_init();
 extern void bean_process_run();
 extern int  bean_register_to_array(BEAN_PROCESS_STRU *head);
 extern void bean_update_notify(BEAN_PROCESS_STRU * bean_process);
 extern void bean_add_list(BEAN_PROCESS_STRU * bean_process, notify func);
 extern int bean_update(char *msg);
-extern void bean_get_pointer(BEAN_PROCESS_STRU *process, char *p);
+extern void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p);
 #endif /* __MSG_PROCESS_H__ */

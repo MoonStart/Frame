@@ -1,10 +1,10 @@
 #include "common.h"
 
 /* define a bean which need to be process by the eagine  */
-BEAN_DEFINE(card_bean, INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
+BEAN_DEFINE(EDFA, INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
 
 
-BEAN_CHECK(card_bean, bean_local)
+BEAN_CHECK(EDFA, bean_local)
 {
   CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
 
@@ -15,7 +15,7 @@ BEAN_CHECK(card_bean, bean_local)
   return 0;
 }
 
-BEAN_DISPLAY(card_bean, bean_local)
+BEAN_DISPLAY(EDFA, bean_local)
 {
   CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
    printf("\tX:%d\r\n", p->x);
@@ -28,7 +28,7 @@ static void setcardbean(int argc, char** argv)
    char *p = NULL;
    CARD_MSG_BEAN_STRU *plocal = NULL;
   
-   BEAN_POINTER(card_bean, p);
+   BEAN_POINTER(EDFA, p);
    plocal = (CARD_MSG_BEAN_STRU *)p;
    if(argc != 4)
    {
@@ -39,17 +39,17 @@ static void setcardbean(int argc, char** argv)
    if(strcmp(argv[2], "x") == 0)
    {
      plocal->x = atoi(argv[3]); 
-     BEAN_UPDATE_NOTIFY(card_bean);
+     BEAN_UPDATE_NOTIFY(EDFA);
    }
 }
 
 static CMD_TABLE_STRU cardMenu[] =
 {   // cmd   sub_cmd_name               cmd_help                sub_cmd_help             fct_call        fct_call2
-    {"BeanSet",   STRING(card_bean),    "Set the Bean content", "the Name of the Bean would be changed ",             setcardbean,     NULL}
+    {"BeanSet",   STRING(EDFA),    "-Set the Bean content", "-the Name of the Bean would be changed ",             setcardbean,     NULL}
 };
 
 
-BEAN_INIT(card_bean, bean_local)
+BEAN_INIT(EDFA, bean_local)
 {
   CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
 

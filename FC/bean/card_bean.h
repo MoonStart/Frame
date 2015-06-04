@@ -3,12 +3,12 @@
   Copyright (C), 2001-2011, DCN Co., Ltd.
 
  ******************************************************************************
-  File Name     : card_bean.h
+  File Name     : EDFA.h
   Version       : Initial Draft
   Author        : Eason Lee
   Created       : 2014/9/12
   Last Modified :
-  Description   : card_bean.c header file
+  Description   : EDFA.c header file
   Function List :
   History       :
   1.Date        : 2014/9/12
