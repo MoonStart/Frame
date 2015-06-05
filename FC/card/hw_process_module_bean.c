@@ -4,7 +4,6 @@ static int bean_sync_count = 0;
 
 BEAN_UPDATE_UP(bean_sync, bean_local)
 {
-    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
     static unsigned int index = INDEX_BEAN_1; /* becareful */
 
