@@ -8,7 +8,7 @@
 #include <stddef.h>
 #ifdef WIN32
 #include <WS2tcpip.h>
-#include <winsock.h> 
+#include <winsock.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>¡¡¡¡

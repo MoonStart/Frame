@@ -3,11 +3,11 @@
 extern pfunc module_main;
 int main()
 {
-   module_main();
-   
-   /* call all run function in circle */
-   while(1)
-   {
-      bean_process_run();
-   }
+    module_main();
+
+    /* call all run function in circle */
+    while(1)
+    {
+        bean_process_run();
+    }
 }

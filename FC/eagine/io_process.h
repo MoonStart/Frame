@@ -55,21 +55,21 @@
 
 #ifdef __cplusplus
 #if __cplusplus
-extern "C"{
+extern "C" {
 #endif
 #endif /* __cplusplus */
-typedef int (*bean_io)(char*, unsigned short);
+    typedef int (*bean_io)(char *, unsigned short);
 
-typedef struct BEAN_IO
-{
-    bean_io bean_send;
-    bean_io bean_recv;
-}BEAN_IO_STRU;
+    typedef struct BEAN_IO
+    {
+        bean_io bean_send;
+        bean_io bean_recv;
+    } BEAN_IO_STRU;
 
-extern BEAN_IO_STRU io_instance;
-extern int io_init(MODULE_NAME_ENUM name);
-extern int io_send(char *buffer, unsigned short len);
-extern int io_recv(char *buffer, unsigned short len);
+    extern BEAN_IO_STRU io_instance;
+    extern int io_init(MODULE_NAME_ENUM name);
+    extern int io_send(char *buffer, unsigned short len);
+    extern int io_recv(char *buffer, unsigned short len);
 #ifdef __cplusplus
 #if __cplusplus
 }

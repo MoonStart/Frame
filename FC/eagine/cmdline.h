@@ -4,12 +4,12 @@
 
 #define END                 0x0a
 
-typedef enum 
+typedef enum
 {
     E_SUCCESS = 0,
     E_FAILURE,
     E_QUIT
-}STATUS;
+} STATUS;
 
 typedef struct CMD_TABLE
 {
@@ -22,8 +22,8 @@ typedef struct CMD_TABLE
 } CMD_TABLE_STRU;
 
 
-STATUS ExecuteCommand(int theShellPtr,char *cmd_line);
-void RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[],int cmd_nb_command);
+STATUS ExecuteCommand(int theShellPtr, char *cmd_line);
+void RegisterCommand(const CMD_TABLE_STRU cmd_new_cmd_table[], int cmd_nb_command);
 void command_line_input_byte(char c);
 void win32_cmd_process();
 #endif

@@ -54,17 +54,17 @@
 
 #ifdef __cplusplus
 #if __cplusplus
-extern "C"{
+extern "C" {
 #endif
 #endif /* __cplusplus */
 
-/* the struct was the real message used by the module*/
-typedef struct CARD_MSG_BEAN
-{
-  int  x;
-  int  y;
-  int  z;
-}CARD_MSG_BEAN_STRU;
+    /* the struct was the real message used by the module*/
+    typedef struct CARD_MSG_BEAN
+    {
+        int  x;
+        int  y;
+        int  z;
+    } CARD_MSG_BEAN_STRU;
 
 
 #ifdef __cplusplus

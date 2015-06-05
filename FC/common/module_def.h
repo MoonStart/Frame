@@ -2,17 +2,17 @@
 #define MODULE_DEF_H_
 
 typedef enum MODULE_NAME
-{ 
-  MODULE_SCM = 0,
-  MODULE_CARD,
-  MODULE_MAX               
-}MODULE_NAME_ENUM;
+{
+    MODULE_SCM = 0,
+    MODULE_CARD,
+    MODULE_MAX
+} MODULE_NAME_ENUM;
 
 typedef struct MODULE_INFO
 {
-   MODULE_NAME_ENUM ModuleId;
-   int bean_count;
-}MODULE_INFO_STRU;
+    MODULE_NAME_ENUM ModuleId;
+    int bean_count;
+} MODULE_INFO_STRU;
 
 
 
@@ -20,13 +20,13 @@ typedef int (*callback_init)(MODULE_NAME_ENUM);
 
 typedef struct CALL_INIT
 {
-  // callback_init cspii_init; /* any parameter get from user */
-   callback_init io_init; /* socket or serial init */
-  // callback_init hal_init; /* interface for hardware*/
-  // callback_init driver_init; /* hardware init */
-   callback_init bean_array_init;
-  //callback_init util_init; /*any tools init */
-}CALL_INIT_STRU;
+    // callback_init cspii_init; /* any parameter get from user */
+    callback_init io_init; /* socket or serial init */
+    // callback_init hal_init; /* interface for hardware*/
+    // callback_init driver_init; /* hardware init */
+    callback_init bean_array_init;
+    //callback_init util_init; /*any tools init */
+} CALL_INIT_STRU;
 
 
 #define CSPII_INIT(name, module)\
@@ -55,7 +55,7 @@ typedef struct CALL_INIT
     /*extern DRIVER_INIT(name, module);*/\
     /*extern UTIL_INIT(name, module);*/\
     extern BEAN_ARRAY_INIT(name, module);
-    
+
 #define INIT_LIST(name, module)\
     INIT_HEAD(name, module)\
     static CALL_INIT_STRU name##_callback = {\

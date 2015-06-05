@@ -4,7 +4,7 @@ BEAN_IO_STRU io_instance;
 
 
 
-#ifdef WIN32	
+#ifdef WIN32
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
@@ -17,7 +17,7 @@ BEAN_IO_STRU io_instance;
 typedef struct SOCK_INFO
 {
 #ifdef WIN32
-	SOCKET sock_fd;
+    SOCKET sock_fd;
 #else
     unsigned int       sock_fd;
 #endif
@@ -35,10 +35,10 @@ typedef struct SOCK_INFO
 static SOCK_INFO_STRU sock_bean;
 
 
-static void display(int argc, char** argv)
+static void display(int argc, char **argv)
 {
     int i = 0;
-    
+
     printf("sock fd: %d \r\n", sock_bean.sock_fd);
 
     printf("sock port: %d \r\n", sock_bean.local_port);
@@ -52,7 +52,7 @@ static void display(int argc, char** argv)
     for(i = 0; i < MSG_LEN_MAX; i++)
     {
         printf("|%2x ", sock_bean.recv_buffer[i]);
-        if((i+1)%16 == 0)printf("|\r\n");
+        if((i + 1) % 16 == 0)printf("|\r\n");
     }
 
     printf("\r\nSEND BUFFER:\r\n");
@@ -64,13 +64,14 @@ static void display(int argc, char** argv)
     for(i = 0; i < MSG_LEN_MAX; i++)
     {
         printf("|%2x ", sock_bean.send_buffer[i]);
-        if((i+1)%16 == 0)printf("|\r\n");
+        if((i + 1) % 16 == 0)printf("|\r\n");
     }
 #endif
 }
 
 static CMD_TABLE_STRU ioMenu[] =
-{   // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
+{
+    // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
     { "io", "display",     "display all io information ",  "display the socket  ",  display,         NULL}
 };
 
@@ -95,8 +96,8 @@ int io_init(MODULE_NAME_ENUM name)
 {
 #ifdef WIN32
     WSADATA wsaData;
-    int iErrorMsg;  
-	int rlt;
+    int iErrorMsg;
+    int rlt;
 #endif
     struct sockaddr_in addr;
 
@@ -110,16 +111,16 @@ int io_init(MODULE_NAME_ENUM name)
     sock_bean.targetAddr.sin_family = AF_INET;
 
 #ifdef WIN32
-    iErrorMsg = WSAStartup(MAKEWORD(1,1),&wsaData);   
-    if (iErrorMsg != NO_ERROR)  
-    {    
-        printf("wsastartup failed with error : %d\n",iErrorMsg);  
-        rlt = 1;  
-        return rlt;  
-    } 
+    iErrorMsg = WSAStartup(MAKEWORD(1, 1), &wsaData);
+    if (iErrorMsg != NO_ERROR)
+    {
+        printf("wsastartup failed with error : %d\n", iErrorMsg);
+        rlt = 1;
+        return rlt;
+    }
 #endif
 
-    
+
     switch(name)
     {
     case MODULE_SCM:
@@ -150,13 +151,13 @@ int io_init(MODULE_NAME_ENUM name)
 #ifdef WIN32
     sock_bean.maxfd = 0;
 #else
-    sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd:STDIN_FILENO)  + 1;
+    sock_bean.maxfd = (sock_bean.sock_fd > STDIN_FILENO ? sock_bean.sock_fd : STDIN_FILENO)  + 1;
 #endif
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(sock_bean.local_port);
-    inet_pton(AF_INET,"127.0.0.1", &addr.sin_addr);
+    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
 
     if (bind(sock_bean.sock_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
     {
@@ -168,23 +169,23 @@ int io_init(MODULE_NAME_ENUM name)
 
     RegisterCommand(ioMenu, sizeof(ioMenu) / sizeof(CMD_TABLE_STRU));
 #ifdef WIN32
-     CreateThread(NULL, 1024, (LPTHREAD_START_ROUTINE)win32_cmd_process, 0, 0, NULL);
+    CreateThread(NULL, 1024, (LPTHREAD_START_ROUTINE)win32_cmd_process, 0, 0, NULL);
 #endif
     return 0;
 }
 
 IO_INIT(SCM, module)
 {
-  io_instance.bean_recv = io_recv;
-  io_instance.bean_send = io_send;
-  return io_init(module);
+    io_instance.bean_recv = io_recv;
+    io_instance.bean_send = io_send;
+    return io_init(module);
 }
 
 IO_INIT(CARD1, module)
 {
-  io_instance.bean_recv = io_recv;
-  io_instance.bean_send = io_send;
-  return io_init(module);
+    io_instance.bean_recv = io_recv;
+    io_instance.bean_send = io_send;
+    return io_init(module);
 }
 
 int io_recv(char *buffer, unsigned short len)
@@ -209,18 +210,17 @@ int io_recv(char *buffer, unsigned short len)
         exit(0);
     }
     else
-    {   
+    {
         /* read the message from socket */
         if (FD_ISSET(sock_bean.sock_fd, &sock_bean.rfd))
         {
             rlen = recvfrom(sock_bean.sock_fd, buffer, MSG_LEN_MAX, 0, NULL, NULL);
             if (rlen < 0)
             {
-              perror("recvfrom:");
-              rlen = 0;
+                rlen = 0;
             }
 #if WIN32
-              memcpy(sock_bean.recv_buffer, buffer, rlen);
+            memcpy(sock_bean.recv_buffer, buffer, rlen);
 #endif
         }
 
@@ -229,10 +229,10 @@ int io_recv(char *buffer, unsigned short len)
         /* read a chcarator from stdin */
         if(FD_ISSET(STDIN_FILENO, &sock_bean.rfd))
         {
-          if(read(STDIN_FILENO, &c, 1) > 0)
-          {
-            command_line_input_byte(c);
-          }
+            if(read(STDIN_FILENO, &c, 1) > 0)
+            {
+                command_line_input_byte(c);
+            }
         }
 #endif
     }
@@ -255,7 +255,7 @@ int io_send(char *buffer, unsigned short len)
     ret = sendto(sock_bean.sock_fd, buffer, len, 0, (struct sockaddr *)&sock_bean.targetAddr, sizeof(sock_bean.targetAddr));
     if(len != ret)
     {
-      perror("sendto:");
+        perror("sendto:");
     }
     return ret;
 }
