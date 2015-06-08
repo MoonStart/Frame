@@ -185,7 +185,7 @@ static int process_string( char line_array[], char *argv[], char *tokens )
 
     /* Break command line in tokens */
     lasts = &lastValue;
-#ifdef WIN32
+#ifdef WIN32 
     token = strtok_s( line_array_clean , separator, lasts );
 #else
     token = strtok_r( line_array_clean , separator, lasts );

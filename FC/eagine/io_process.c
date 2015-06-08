@@ -27,7 +27,7 @@ typedef struct SOCK_INFO
     struct timeval     timeout;
     int                maxfd;
     MODULE_NAME_ENUM   module;
-#if WIN32
+#ifdef WIN32
     char               send_buffer[MSG_LEN_MAX];
     char               recv_buffer[MSG_LEN_MAX];
 #endif
@@ -42,7 +42,7 @@ static void display(int argc, char **argv)
     printf("sock fd: %d \r\n", sock_bean.sock_fd);
 
     printf("sock port: %d \r\n", sock_bean.local_port);
-#if WIN32
+#ifdef WIN32
     printf("\r\nRECV BUFFER:\r\n");
     for(i = 0; i < 16; i++)
     {
@@ -126,12 +126,12 @@ int io_init(MODULE_NAME_ENUM name)
     case MODULE_SCM:
         sock_bean.local_port = PORT_SCM;
         sock_bean.targetAddr.sin_port = htons(PORT_CARD);
-        inet_pton(AF_INET, IP_CARD, &sock_bean.targetAddr.sin_addr);
+        inet_pton(AF_INET, IP_CARD, (char *)&sock_bean.targetAddr.sin_addr);
         break;
     case MODULE_CARD:
         sock_bean.local_port = PORT_CARD;
         sock_bean.targetAddr.sin_port = htons(PORT_SCM);
-        inet_pton(AF_INET, IP_SCM, &sock_bean.targetAddr.sin_addr);
+        inet_pton(AF_INET, IP_SCM, (char *)&sock_bean.targetAddr.sin_addr);
         break;
     default:
         PRINTF("error MODULE NAME \r\n");
@@ -157,7 +157,7 @@ int io_init(MODULE_NAME_ENUM name)
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(sock_bean.local_port);
-    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+    inet_pton(AF_INET, "127.0.0.1", (char *)&addr.sin_addr);
 
     if (bind(sock_bean.sock_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
     {
@@ -219,7 +219,7 @@ int io_recv(char *buffer, unsigned short len)
             {
                 rlen = 0;
             }
-#if WIN32
+#ifdef WIN32
             memcpy(sock_bean.recv_buffer, buffer, rlen);
 #endif
         }
@@ -248,7 +248,7 @@ int io_send(char *buffer, unsigned short len)
     {
         return -1;
     }
-#if WIN32
+#ifdef WIN32
     memcpy(sock_bean.send_buffer, buffer, len);
 #endif
 

@@ -248,68 +248,9 @@ int bean_update(char *bean_process)
     return 0;
 }
 
-/*****************************************************************************
- Prototype    : display
- Description  : display all bean register to the message array
- Input        : None
- Output       : None
- Return Value :
- Calls        :
- Called By    :
-
-  History        :
-  1.Date         : 2015/4/16
-    Author       : Laserly
-    Modification : Created function
-
-*****************************************************************************/
-static void display(int argc, char **argv)
-{
-    int index = 0;
-    if(argc != 3)
-    {
-        printf("format: Bean display [all | list | (int)] \r\n");
-        return;
-    }
-
-    if(strcmp(argv[2], "all") == 0 || strcmp(argv[2], "list") == 0)
-    {
-        while(index < INDEX_BEAN_MAX)
-        {
-            if(bean_array[index].flag)
-            {
-                printf("\r\n\tPOS:%d  \r\n", index);
-                printf("\tNAME:%s \r\n", bean_array[index].process->bean_name);
-
-                if(strcmp(argv[2], "all") == 0)
-                {
-                    printf("\tCONTENT:\r\n");
-                    bean_array[index].process->display((char *)bean_array[index].process->bean);
-                }
-            }
-            index ++;
-        }
-    }
-    else if((atoi(argv[2]) < INDEX_BEAN_MAX ) && bean_array[atoi(argv[2])].flag)
-    {
-        printf("\r\n\tPOS:%d  \r\n", atoi(argv[2]));
-        printf("\tNAME:%s \r\n", bean_array[atoi(argv[2])].process->bean_name);
-        printf("\tCONTENT:\r\n");
-        bean_array[atoi(argv[2])].process->display((char *)bean_array[atoi(argv[2])].process->bean);
-    }
-}
 
 
-#define CMD_BEAN "Bean"
-
-static CMD_TABLE_STRU msgMenu[] =
-{
-    // cmd   sub_cmd_name   cmd_help    sub_cmd_help             fct_call        fct_call2
-    { CMD_BEAN, "display",     "-display all bean register array information ",  "display the process array  ",  display,         NULL}
-};
-
-
-
+extern void bean_test_menu_register();
 int bean_array_init(MODULE_NAME_ENUM module)
 {
     int i = 0;
@@ -325,7 +266,7 @@ int bean_array_init(MODULE_NAME_ENUM module)
     module_info.ModuleId = module;
     module_info.bean_count = 0;
     PRINTF("MSG ARRAY INIT OVER \r\n");
-    RegisterCommand(msgMenu, sizeof(msgMenu) / sizeof(CMD_TABLE_STRU));
+    bean_test_menu_register();
     return 0;
 }
 

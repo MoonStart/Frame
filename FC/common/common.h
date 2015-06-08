@@ -8,7 +8,7 @@
 #include <stddef.h>
 #ifdef WIN32
 #include <WS2tcpip.h>
-#include <winsock.h>
+#include <winsock2.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>¡¡¡¡
@@ -45,6 +45,7 @@ typedef unsigned char bool ;
 
 #endif
 
+
 #define container_of(ptr, type, member)\
         (type *)((char *)ptr - offsetof(type,member))
 
@@ -52,7 +53,7 @@ typedef unsigned char bool ;
 
 #ifdef DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
-#elif
+#else
 #define PRINTF
 #endif
 

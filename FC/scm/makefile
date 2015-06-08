@@ -5,7 +5,7 @@ CUR_SOURCE=${wildcard *.c}
 CUR_OBJS=${patsubst %.c, %.o, $(CUR_SOURCE)}
 all:$(SUBDIRS) $(CUR_OBJS)
 $(SUBDIRS):ECHO
-	make -C $@
+	$(MAKE) -$(COMPILE) $@
 $(CUR_OBJS):%.o:%.c
 	$(CC) $(CFLAGS) $(INC) -c $^ -o $(ROOT_DIR)/$(OBJS_SCM_DIR)/$@
 ECHO:
