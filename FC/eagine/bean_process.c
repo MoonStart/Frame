@@ -53,7 +53,7 @@ void bean_process_run()
         if(bean_array[index].flag)
         {
             head->update_from_local(head->bean);
-
+#if 0
             if(head->action == EN_ACTION_UPDATE_TO_UP)
             {
                 /*
@@ -69,6 +69,7 @@ void bean_process_run()
                 memset(buffer, 0x00, MSG_LEN_MAX);
                 head->action = EN_ACTION_NOCHANGE;
             }
+#endif
         }
 #if 0
         if((head->action == EN_ACTION_UPDATE_TO_DOWN))
@@ -114,8 +115,22 @@ void bean_update_notify(BEAN_PROCESS_STRU *bean_process)
 {
     UPDATE_NOTIFY_LIST_STRU *update_list  =  bean_process->list;
     BEAN_PROCESS_STRU *temp = NULL;
+    char buffer[MSG_LEN_MAX];
+    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
+    /*
+     |-------------------------------|
+     |module_id | bean_index | BEAN  |
+     |-------------------------------|
+     */
+    /* now we send the new bean to other app*/
+    memset(buffer, 0x00, MSG_LEN_MAX);
+    head_msg->module_id = module_info.ModuleId;
+    head_msg->index = bean_process->bean_pos;
+    memcpy(head_msg->bean, bean_process->bean, bean_process->bean_size);
+    io_instance.bean_send(buffer, MSG_LEN_MAX);
 
-    bean_process->action = EN_ACTION_UPDATE_TO_UP;
+
+
     while(update_list != NULL)
     {
 #ifdef DEBUG

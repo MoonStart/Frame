@@ -53,6 +53,8 @@ BEAN_UPDATE_DOWN(bean_sync, bean_local, bean_receive)
         bean_array[INDEX_BEAN_0].process->bean = (char *)pbean_send;
         bean_array[INDEX_BEAN_0].process->bean_size = len;
         BEAN_UPDATE_NOTIFY(bean_sync);
+        bean_array[INDEX_BEAN_0].process->bean = (char *)ptemp;
+        bean_array[INDEX_BEAN_0].process->bean_size = len_save;
     }
     else if(pbean_recv->bean_sync_action == SYNC_BEAN_RES)
     {
@@ -64,7 +66,6 @@ BEAN_UPDATE_DOWN(bean_sync, bean_local, bean_receive)
            other module to update the bean of SCM
         */
         module_sync[pbean_recv->module_id] = true;
-        printf("the module %d sync have been finished \r\n", pbean_recv->module_id);
     }
 
     if(pbean_send != NULL)

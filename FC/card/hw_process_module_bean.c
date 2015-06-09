@@ -31,9 +31,9 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
         pbean_local->bean_index = index;
         pbean_local->bean_sync_action = SYNC_BEAN_REQ;
         BEAN_UPDATE_NOTIFY(bean_sync);
-        index ++;
-        index = index % INDEX_BEAN_MAX;
     }
+    index ++;
+    index = index % INDEX_BEAN_MAX;
     return 0;
 }
 

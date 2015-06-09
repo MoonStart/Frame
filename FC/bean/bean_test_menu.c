@@ -20,7 +20,7 @@ static void display(int argc, char **argv)
     int index = 0;
     if(argc != 3 && argc != 2)
     {
-        printf("format: Bean list ([pos(int)]optinal) \r\n");
+        printf("format: Bean list ([index(int)]optinal) \r\n");
         return;
     }
 
@@ -71,7 +71,7 @@ static void setcardbean(int argc, char **argv)
 CMD_TABLE_STRU beanMenu[] =
 {
     // cmd        sub_cmd_name               cmd_help                                 sub_cmd_help                                      fct_call        fct_call2
-    {CMD,        "list",          "-display all bean register in array",            "-show detail ",                 display,         NULL},
+    {CMD,        "list",          "-display or set bean content register in array",            "-show detail ",      display,         NULL},
     {NULL,       STRING(EDFA),    "-Set the Bean content",                          "-the bean name ",               setcardbean,     NULL},
 };
 
