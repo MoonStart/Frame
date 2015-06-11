@@ -20,7 +20,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
     {
         pbean_local->bean_sync_action = SYNC_BEAN_FIN;
         pbean_local->bean_index = INDEX_BEAN_0;
-        BEAN_UPDATE_NOTIFY(bean_sync);
+        BEAN_UP_NOTIFY(bean_sync);
         module_sync[module_info.ModuleId] = true;
         printf("the module %d sync have been finished \r\n", module_info.ModuleId);
         return 0;
@@ -30,7 +30,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
     {
         pbean_local->bean_index = index;
         pbean_local->bean_sync_action = SYNC_BEAN_REQ;
-        BEAN_UPDATE_NOTIFY(bean_sync);
+        BEAN_UP_NOTIFY(bean_sync);
     }
     index ++;
     index = index % INDEX_BEAN_MAX;

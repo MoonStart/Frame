@@ -186,11 +186,11 @@ typedef struct MSG_HEAD
        bean_register_to_array((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
-/* this macro should be away used in the bean get function, when
+/* this macro should be away used in the bean UPDATE_UP function, when
     any changed for the bean we need informed the msg_process
     to send the bean to other module
  */
-#define BEAN_UPDATE_NOTIFY(name)\
+#define BEAN_UP_NOTIFY(name)\
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
@@ -198,14 +198,15 @@ typedef struct MSG_HEAD
     }while(0)
 
 
-#if 0
-#define BEAN_SET_DOWN(name) \
+
+#define BEAN_DOWN_NOTIFY(name) \
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
-      process_##name.action = EN_ACTION_UPDATE_TO_DOWN;\
+      bean_update_notify((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
-#endif
+
+
 extern BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
 extern MODULE_INFO_STRU module_info;
 extern unsigned char module_sync[MODULE_MAX];

@@ -61,7 +61,7 @@ static void setcardbean(int argc, char **argv)
     if(strcmp(argv[2], "x") == 0)
     {
         plocal->x = atoi(argv[3]);
-        BEAN_UPDATE_NOTIFY(EDFA);
+        BEAN_UP_NOTIFY(EDFA);
     }
 }
 
