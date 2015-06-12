@@ -58,15 +58,6 @@
 
 
 
-typedef enum ACTION
-{
-    EN_ACTION_NOCHANGE = 0,
-    EN_ACTION_UPDATE_TO_UP, /* any changed occured in local*/
-    EN_ACTION_UPDATE_TO_DOWN /* any changed from user or other module */
-} ACTION_ENUM;
-
-
-
 /* when a bean update, we need notify another module to update the
 corespond bean also */
 typedef void  (*notify)(char *);
@@ -80,7 +71,6 @@ typedef struct UPDATE_NOTIFY_LIST
 typedef struct BEAN_PROCESS
 {
     char           *bean_name;                       /* the string which show to user what is the name of this bean*/
-    ACTION_ENUM    action;                           /* use the ACTION_SYNC enum define */
     int            (*update_from_local)(char *);     /* use this fun update the bean(typically the hardware changed */
     int            (*update_to_local)(char * /* local bean*/, char * /* received bean*/); /* 1st.local bean 2se.received bean. when reive the update message, use this fun to update to lower layer*/
     int            (*check_para)(char *);            /* check any value in this bean rightor not */
@@ -101,7 +91,7 @@ typedef struct BEAN_ARRAY
 
 typedef struct MSG_HEAD
 {
-    MODULE_NAME_ENUM module_id;
+    MODULE_NAME_ENUM moduleid;
     unsigned int     index;
     char             bean[0];
 } MSG_HEAD_STRU;
@@ -143,7 +133,6 @@ typedef struct MSG_HEAD
          BEAN_HEAD(name)\
 	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
-                                              EN_ACTION_NOCHANGE,\
                                               update_from_local_##name,\
                                               update_to_local_##name,\
                                               check_para_##name,\
@@ -194,7 +183,8 @@ typedef struct MSG_HEAD
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
-      bean_update_notify((BEAN_PROCESS_STRU *)&process_##name);\
+      bean_update_to_out((BEAN_PROCESS_STRU *)&process_##name);\
+      bean_update_notify_list((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 
@@ -203,18 +193,19 @@ typedef struct MSG_HEAD
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
-      bean_update_notify((BEAN_PROCESS_STRU *)&process_##name);\
+      bean_update_notify_list((BEAN_PROCESS_STRU *)&process_##name);\
     }while(0)
 
 
-extern BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
+extern BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL];
 extern MODULE_INFO_STRU module_info;
-extern unsigned char module_sync[MODULE_MAX];
+extern unsigned char module_sync_info[MODULE_MAX];
 extern int bean_array_init();
 extern void bean_process_run();
 extern int  bean_register_to_array(BEAN_PROCESS_STRU *head);
-extern void bean_update_notify(BEAN_PROCESS_STRU *bean_process);
+extern void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process);
 extern void bean_add_list(BEAN_PROCESS_STRU *bean_process, notify func);
-extern int bean_update(char *msg);
+extern int bean_update_to_local(char *bean_msg);
+extern int bean_update_to_out(BEAN_PROCESS_STRU *bean_process);
 extern void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p);
 #endif /* __MSG_PROCESS_H__ */

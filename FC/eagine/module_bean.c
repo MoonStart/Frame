@@ -5,16 +5,22 @@ BEAN_DEFINE(bean_sync, INDEX_BEAN_0, MODULE_BEAN_STRU);
 
 BEAN_INIT(bean_sync, bean_local)
 {
+    memset(bean_local, 0x00, sizeof(MODULE_BEAN_STRU));
     return 0;
 }
 
 BEAN_DISPLAY(bean_sync, bean_local)
 {
     MODULE_BEAN_STRU *p = (MODULE_BEAN_STRU *)bean_local;
-
-    printf("\tmodule_id=%d\r\n", p->module_id);
+    int index = 0;
+    while(index < MODULE_MAX)
+    {
+      printf("\tmodule_sync_info[ %s ] = %s\r\n",STR_MODULE_NAME(index), ((module_sync_info[index]==1)?"true":"false"));
+      index ++;
+    }
+    printf("\tmoduleid_local=%s\r\n", STR_MODULE_NAME(module_info.ModuleId));
     printf("\tbean_sync_action=%s\r\n", STR_BEAN_SYNC_ACTION(p->bean_sync_action));
-    printf("\tbean_index=%d\r\n", p->bean_index);
+    printf("\tbean_index=%d\r\n", p->bean_sync_index);
 }
 
 BEAN_CHECK(bean_sync, bean_local)

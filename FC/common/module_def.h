@@ -7,6 +7,9 @@ typedef enum MODULE_NAME
     MODULE_CARD,
     MODULE_MAX
 } MODULE_NAME_ENUM;
+#define STR_MODULE_NAME(module)\
+    (module == MODULE_SCM)?"MODULE_SCM":\
+    (module == MODULE_CARD)?"MODULE_CARD":"UNKNOWN"
 
 typedef struct MODULE_INFO
 {

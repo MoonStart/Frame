@@ -26,7 +26,7 @@ static void display(int argc, char **argv)
 
     if(argc == 2)
     {
-        while(index < INDEX_BEAN_MAX)
+        while(index < INDEX_BEAN_ALL)
         {
             if(bean_array[index].flag)
             {
@@ -36,7 +36,7 @@ static void display(int argc, char **argv)
             index ++;
         }
     }
-    else if((atoi(argv[2]) < INDEX_BEAN_MAX ) && bean_array[atoi(argv[2])].flag)
+    else if((atoi(argv[2]) < INDEX_BEAN_ALL ) && bean_array[atoi(argv[2])].flag)
     {
         printf("\r\n\tPOS:%d  \r\n", atoi(argv[2]));
         printf("\tNAME:%s \r\n", bean_array[atoi(argv[2])].process->bean_name);

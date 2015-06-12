@@ -1,10 +1,10 @@
 #include "common.h"
 
-BEAN_ARRAY_STRU bean_array[INDEX_BEAN_MAX];
+BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL];
 
 
 MODULE_INFO_STRU module_info;
-unsigned char module_sync[MODULE_MAX] = {false};
+unsigned char module_sync_info[MODULE_MAX] = {false};
 
 
 /*****************************************************************************
@@ -29,7 +29,7 @@ void bean_process_run()
     char buffer[MSG_LEN_MAX];
     MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
 
-    while(index < INDEX_BEAN_MAX)
+    while(index < INDEX_BEAN_ALL)
     {
         if(bean_array[index].flag)
         {
@@ -58,10 +58,10 @@ void bean_process_run()
         memset(buffer, 0x00, MSG_LEN_MAX);
         if(io_instance.bean_recv(buffer, MSG_LEN_MAX))
         {
-            bean_update(buffer);
+            bean_update_to_local(buffer);
         }
         index ++;
-        index = index % INDEX_BEAN_MAX;
+        index = index % INDEX_BEAN_ALL;
     }
 }
 
@@ -72,6 +72,23 @@ void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p)
     *p = process->bean;
 }
 
+
+int bean_update_to_out(BEAN_PROCESS_STRU *bean_process)
+{
+    char buffer[MSG_LEN_MAX];
+    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
+    /*
+     |-------------------------------|
+     |moduleid | bean_index | BEAN  |
+     |-------------------------------|
+     */
+    /* now we send the new bean to other app*/
+    memset(buffer, 0x00, MSG_LEN_MAX);
+    head_msg->moduleid = module_info.ModuleId;
+    head_msg->index = bean_process->bean_pos;
+    memcpy(head_msg->bean, bean_process->bean, bean_process->bean_size);
+    return io_instance.bean_send(buffer, MSG_LEN_MAX);
+}
 /*****************************************************************************
  Prototype    : bean_update_notify
  Description  : one bean updated and some bean updated base the bean which
@@ -88,23 +105,10 @@ void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p)
     Modification : Created function
 
 *****************************************************************************/
-void bean_update_notify(BEAN_PROCESS_STRU *bean_process)
+void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process)
 {
     UPDATE_NOTIFY_LIST_STRU *update_list  =  bean_process->list;
     BEAN_PROCESS_STRU *temp = NULL;
-    char buffer[MSG_LEN_MAX];
-    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
-    /*
-     |-------------------------------|
-     |module_id | bean_index | BEAN  |
-     |-------------------------------|
-     */
-    /* now we send the new bean to other app*/
-    memset(buffer, 0x00, MSG_LEN_MAX);
-    head_msg->module_id = module_info.ModuleId;
-    head_msg->index = bean_process->bean_pos;
-    memcpy(head_msg->bean, bean_process->bean, bean_process->bean_size);
-    io_instance.bean_send(buffer, MSG_LEN_MAX);
 
     while(update_list != NULL)
     {
@@ -168,7 +172,7 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
     }
 
 
-    if(bean_process->bean_pos > INDEX_BEAN_MAX)
+    if(bean_process->bean_pos > INDEX_BEAN_ALL)
     {
         printf("please redefine the message container size or check the message ID \r\n");
         printf("bean name %s \r\n", bean_process->bean_name);
@@ -203,12 +207,12 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
     Modification : Created function
 
 *****************************************************************************/
-int bean_update(char *bean_process)
+int bean_update_to_local(char *bean_msg)
 {
     int *index             = NULL;
 
     BEAN_PROCESS_STRU *head  = NULL;
-    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)bean_process;
+    MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)bean_msg;
     if(head_msg == NULL)
     {
         return -1;
@@ -216,9 +220,9 @@ int bean_update(char *bean_process)
 
     if(module_info.ModuleId == MODULE_SCM &&
             (head_msg->index != INDEX_BEAN_0) &&
-            !module_sync[head_msg->module_id])
+            !module_sync_info[head_msg->moduleid])
     {
-        printf("the module %d haven't finished sync action \r\n", head_msg->module_id);
+        printf("the module %d haven't finished sync action \r\n", head_msg->moduleid);
         return 0;
     }
 
@@ -246,7 +250,7 @@ int bean_array_init(MODULE_NAME_ENUM module)
     int i = 0;
 
 
-    while (i < INDEX_BEAN_MAX)
+    while (i < INDEX_BEAN_ALL)
     {
         bean_array[i].flag = 0;
         bean_array[i].process = NULL;
