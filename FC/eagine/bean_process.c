@@ -1,6 +1,6 @@
 #include "common.h"
 
-BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL];
+BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL]; /* the base bean */
 
 
 MODULE_INFO_STRU module_info;
@@ -107,46 +107,19 @@ int bean_update_to_out(BEAN_PROCESS_STRU *bean_process)
 *****************************************************************************/
 void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process)
 {
-    UPDATE_NOTIFY_LIST_STRU *update_list  =  bean_process->list;
-    BEAN_PROCESS_STRU *temp = NULL;
+    BEAN_PROCESS_STRU *temp  = NULL; /* just only notify child */
+    BEAN_PROCESS_STRU *child = bean_process->child;
 
-    while(update_list != NULL)
+    while(child != NULL)
     {
-#ifdef DEBUG
-        temp = container_of(update_list, BEAN_PROCESS_STRU, list);
-        printf("update the %s \r\n", temp->bean_name);
+#if 1
+        printf("\t\t%s -->> %s \r\n", bean_process->bean_name, child->bean_name);
 #endif
-        update_list->pNotify(bean_process->bean);
-        update_list = update_list->next;
+        child->notify(child->bean, bean_process->bean);
+        child = child->brother;
     }
 }
 
-/*****************************************************************************
- Prototype    : bean_add_list
- Description  : add the notify list to the bean notify list
- Input        : BEAN_PROCESS_STRU *bean_process
-                notify func
- Output       : None
- Return Value :
- Calls        :
- Called By    :
-
-  History        :
-  1.Date         : 2015/6/1
-    Author       : Laserlee
-    Modification : Created function
-
-*****************************************************************************/
-void bean_add_list(BEAN_PROCESS_STRU *bean_process, notify func)
-{
-    UPDATE_NOTIFY_LIST_STRU *p = (UPDATE_NOTIFY_LIST_STRU *)malloc(sizeof(UPDATE_NOTIFY_LIST_STRU));
-    if(p != NULL)
-    {
-        p->pNotify = func;
-        p->next  = bean_process->list;
-        bean_process->list = p;
-    }
-}
 
 /*****************************************************************************
  Prototype    : bean_register_to_array
@@ -165,6 +138,8 @@ void bean_add_list(BEAN_PROCESS_STRU *bean_process, notify func)
 *****************************************************************************/
 int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
 {
+    BEAN_PROCESS_STRU *parent = NULL;
+    
     if(bean_process == NULL)
     {
         printf("the message should not be NULL \r\n");
@@ -179,10 +154,32 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
         exit(0);
     }
 
-    if(!bean_array[bean_process->bean_pos].flag)
+    if((bean_process->bean_type == BEAN_LEVEL_0) && !bean_array[bean_process->bean_pos].flag)
     {
         bean_array[bean_process->bean_pos].process = bean_process;
         bean_array[bean_process->bean_pos].flag = 1;
+    }
+    else if(bean_process->bean_type == BEAN_LEVEL_1)
+    {  
+       /* at here we construct a tree */
+       if(bean_process->parent != NULL)
+       {
+         parent = bean_process->parent;
+
+         if(parent->child == NULL)
+         {
+           parent->child = bean_process;
+         }
+         else
+         {
+           bean_process->brother = parent->child;
+           parent->child = bean_process;
+         }
+       }
+       else
+       {
+          printf("unformatted bean %s \r\n", bean_process->bean_name);
+       }
     }
     else
     {

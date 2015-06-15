@@ -1,7 +1,7 @@
 #include "common.h"
 
 /* define a bean which need to be process by the eagine  */
-BEAN_DEFINE(EDFA, INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
+BEAN_BASE(EDFA, INDEX_BEAN_1, CARD_MSG_BEAN_STRU);
 
 
 BEAN_CHECK(EDFA, bean_local)

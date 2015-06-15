@@ -1,5 +1,18 @@
 #include "common.h"
 
+static void display_bean_base_on(BEAN_PROCESS_STRU *process)
+{
+   BEAN_PROCESS_STRU *child = process->child;
+  
+   while(child != NULL)
+   {
+     printf("\t\t%s -->> %s \r\n", process->bean_name, child->bean_name);
+     display_bean_base_on(child);
+     child = child->brother;
+   }
+}
+
+
 /*****************************************************************************
  Prototype    : display
  Description  : display all bean register to the message array
@@ -32,6 +45,7 @@ static void display(int argc, char **argv)
             {
                 printf("\r\n\tPOS:%d  \r\n", index);
                 printf("\tNAME:%s \r\n", bean_array[index].process->bean_name);
+                display_bean_base_on(bean_array[index].process);
             }
             index ++;
         }

@@ -21,7 +21,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
 
     if(pbean_local->bean_sync_action == SYNC_BEAN_FIN)
     {
-      printf("%s %d \r\n", __FILE__, __LINE__);
+
     }
     else if(pbean_local->bean_sync_action == SYNC_BEAN_RES)
     {
