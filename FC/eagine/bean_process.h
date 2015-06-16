@@ -153,7 +153,7 @@ typedef struct MSG_HEAD
                                               NULL,\
                                               (char*)&bean_##name\
                                               }
-
+#if 0
 #define BEAN_BASE_ON_HEAD(name, beanbaseon)\
     BEAN_HEAD(name)\
     extern BEAN_PROCESS process_##beanbaseon;
@@ -164,7 +164,7 @@ typedef struct MSG_HEAD
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
                                               NULL,\
                                               NULL,\
-                                              check_para_##name,\
+                                              NULL,\
                                               init_bean_##name,\
                                               notify_##name,\
                                               display_##name,\
@@ -177,7 +177,7 @@ typedef struct MSG_HEAD
                                               (char*)&bean_##name\
                                               }
 
-
+#endif
 #define BEAN_POINTER(name, p)\
     do\
     {\

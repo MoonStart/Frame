@@ -9,12 +9,8 @@ void scm_main()
 
 
     /* every module should register bean_sync */
-    {
-        BEAN_REGISTER(bean_sync);
-    }
-    {
-        BEAN_REGISTER(EDFA);
-    }
+    {BEAN_REGISTER(bean_sync);}
+    {BEAN_REGISTER(EDFA);}
     printf("message bean register over! \r\n");
 
 }

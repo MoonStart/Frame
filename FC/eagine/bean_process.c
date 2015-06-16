@@ -29,23 +29,6 @@ void bean_process_run()
     char buffer[MSG_LEN_MAX];
     MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)buffer;
 
-    while(index < INDEX_BEAN_ALL)
-    {
-        if(bean_array[index].flag)
-        {
-            head = (BEAN_PROCESS_STRU *)bean_array[index].process;
-            head->init_bean(head->bean);
-            if(head->bean_size + sizeof(head->bean_pos) > MSG_LEN_MAX)
-            {
-                printf("the bean %s pos %d too much lager \r\n", head->bean_name, head->bean_pos);
-                printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", head->bean_size + sizeof(head->bean_pos));
-            }
-            module_info.bean_count++;
-        }
-        index ++;
-    }
-
-    index = 0;
     while(1)
     {
         head = (BEAN_PROCESS_STRU *)bean_array[index].process;
@@ -147,17 +130,26 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
     }
 
 
-    if(bean_process->bean_pos > INDEX_BEAN_ALL)
+    if((bean_process->bean_type != BEAN_LEVEL_1) && bean_process->bean_pos > INDEX_BEAN_ALL)
     {
         printf("please redefine the message container size or check the message ID \r\n");
         printf("bean name %s \r\n", bean_process->bean_name);
         exit(0);
     }
+    bean_process->init_bean(bean_process->bean);
 
     if((bean_process->bean_type == BEAN_LEVEL_0) && !bean_array[bean_process->bean_pos].flag)
     {
         bean_array[bean_process->bean_pos].process = bean_process;
         bean_array[bean_process->bean_pos].flag = 1;
+       
+        /* the buffer need to be lager than beansize + beanindex + moduleid */
+        if((bean_process->bean_size + 4 + 4) > MSG_LEN_MAX)
+        {
+           printf("the bean %s pos %d too much lager \r\n", bean_process->bean_name, bean_process->bean_pos);
+           printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", bean_process->bean_size + 8);
+        }
+        module_info.bean_count++;
     }
     else if(bean_process->bean_type == BEAN_LEVEL_1)
     {  
