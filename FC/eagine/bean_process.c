@@ -2,6 +2,8 @@
 
 BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL]; /* the base bean */
 
+#define LIST_ARRAY_SIZE 100
+NOTIFY_LIST_STRU bean_list[LIST_ARRAY_SIZE]; /* may be is not enough */
 
 MODULE_INFO_STRU module_info;
 unsigned char module_sync_info[MODULE_MAX] = {false};
@@ -49,6 +51,27 @@ void bean_process_run()
 }
 
 
+void bean_base_on(BEAN_PROCESS_STRU *p1, BEAN_PROCESS_STRU *p2, notify func, char *name)
+{
+   static int index = 0;
+
+   if(index > LIST_ARRAY_SIZE)
+   {
+     printf("please define the macro LIST_ARRAY_SIZE much more lager \r\n");
+     exit(0);
+   }
+   NOTIFY_LIST_STRU *plist = &bean_list[index];
+
+   plist->notify_func_name = name;
+   plist->bean_process = p2;
+   plist->notify_to = func;
+
+   /* add to the base bean notify list */
+   plist->next = p1->notify_list;
+   p1->notify_list = plist;
+   index ++;
+}
+
 
 void bean_get_pointer(BEAN_PROCESS_STRU *process, char **p)
 {
@@ -91,15 +114,17 @@ int bean_update_to_out(BEAN_PROCESS_STRU *bean_process)
 void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process)
 {
     BEAN_PROCESS_STRU *temp  = NULL; /* just only notify child */
-    BEAN_PROCESS_STRU *child = bean_process->child;
+    NOTIFY_LIST_STRU *list = bean_process->notify_list;
 
-    while(child != NULL)
+    while(list != NULL)
     {
-#if 1
-        printf("\t\t%s -->> %s \r\n", bean_process->bean_name, child->bean_name);
+        temp = (BEAN_PROCESS_STRU *)list->bean_process
+#if DEBUG
+        printf("\t\t %s(%s %s)\r\n",list->notify_func_name,bean_process->bean_name, temp->bean_name);
 #endif
-        child->notify(child->bean, bean_process->bean);
-        child = child->brother;
+
+        list->notify_to(bean_process->bean, temp->bean);
+        list = list->next;
     }
 }
 
@@ -150,28 +175,6 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
            printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", bean_process->bean_size + 8);
         }
         module_info.bean_count++;
-    }
-    else if(bean_process->bean_type == BEAN_LEVEL_1)
-    {  
-       /* at here we construct a tree */
-       if(bean_process->parent != NULL)
-       {
-         parent = bean_process->parent;
-
-         if(parent->child == NULL)
-         {
-           parent->child = bean_process;
-         }
-         else
-         {
-           bean_process->brother = parent->child;
-           parent->child = bean_process;
-         }
-       }
-       else
-       {
-          printf("unformatted bean %s \r\n", bean_process->bean_name);
-       }
     }
     else
     {

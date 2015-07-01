@@ -2,13 +2,15 @@
 
 static void display_bean_base_on(BEAN_PROCESS_STRU *process)
 {
-   BEAN_PROCESS_STRU *child = process->child;
-  
-   while(child != NULL)
+   NOTIFY_LIST_STRU *list = process->notify_list;
+   BEAN_PROCESS_STRU *temp;
+   
+   while(list != NULL)
    {
-     printf("\t\t%s -->> %s \r\n", process->bean_name, child->bean_name);
-     display_bean_base_on(child);
-     child = child->brother;
+     temp = (BEAN_PROCESS_STRU*)list->bean_process;
+     printf("\t\t %s(%s, %s) \r\n", list->notify_func_name, process->bean_name, temp->bean_name);
+     display_bean_base_on((BEAN_PROCESS_STRU*)list->bean_process);
+     list = list->next;
    }
 }
 

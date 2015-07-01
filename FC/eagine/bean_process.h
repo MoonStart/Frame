@@ -56,6 +56,15 @@
 
 #define MSG_LEN_MAX       256
 
+typedef int (*notify)(void*, void*);
+
+typedef struct NOTIFY_LIST
+{
+    struct NOTIFY_LIST *next ;
+    notify notify_to;          /* jsut only used in BEAN_BASE_ON*/
+    char   *notify_func_name;
+    void   *bean_process;
+}NOTIFY_LIST_STRU;
 
 
 typedef struct BEAN_PROCESS
@@ -65,14 +74,11 @@ typedef struct BEAN_PROCESS
     int            (*update_to_local)(char * /* local bean*/, char * /* received bean*/); /* 1st.local bean 2se.received bean. when reive the update message, use this fun to update to lower layer*/
     int            (*check_para)(char *);            /* check any value in this bean rightor not */
     int            (*init_bean)(char *);             /* init the bean function */
-    int            (*notify)(char* /* beanself */, char* /*bean base on*/);          /* jsut only used in BEAN_BASE_ON*/
+    NOTIFY_LIST_STRU *notify_list;
     void           (*display)(char *);               /* show the bean content to user */
     unsigned  int   bean_type;
     unsigned  int   bean_size;                       /* bean size*/
     unsigned  int   bean_pos;                        /* the pos of the bean in the bean_process array  */
-    struct BEAN_PROCESS *parent;
-    struct BEAN_PROCESS *child;
-    struct BEAN_PROCESS *brother;
     char           *bean;                            /* point to the message bean */
 } BEAN_PROCESS_STRU;
 
@@ -85,7 +91,7 @@ typedef enum BEAN_TYPE
 }BEAN_TYPE_ENUM;
 
 
-
+/*just the only bean level 0 will be register in this array */
 typedef struct BEAN_ARRAY
 {
     BEAN_PROCESS_STRU    *process;
@@ -132,10 +138,13 @@ typedef struct MSG_HEAD
    extern  BEAN_UPDATE_DOWN(name, bean_local,bean_receive);\
    extern  BEAN_CHECK(name, bean_local);\
    extern  BEAN_INIT(name, bean_local);\
-   extern  BEAN_NOTIFY(name, beanself, beanbaseon);\
    extern  BEAN_DISPLAY(name, bean_local);\
- 
-#define BEAN_BASE(name, index, type)\
+
+
+/* if the bean just only update by user or hardware, use this macro to
+   define 
+*/
+#define BEAN_1L_DEF(name, index, type)\
          BEAN_HEAD(name)\
 	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
@@ -148,42 +157,45 @@ typedef struct MSG_HEAD
                                               BEAN_LEVEL_0,\
                                               sizeof(type),\
                                               index,\
-                                              NULL,\
-                                              NULL,\
-                                              NULL,\
                                               (char*)&bean_##name\
                                               }
-#if 0
-#define BEAN_BASE_ON_HEAD(name, beanbaseon)\
-    BEAN_HEAD(name)\
-    extern BEAN_PROCESS process_##beanbaseon;
 
-#define BEAN_BASE_ON(name, bean_baseon, type)\
-         BEAN_BASE_ON_HEAD(name, bean_baseon)\
+
+/* if the bean update by other bean, use this macro to define */
+#define BEAN_2L_DEF(name, type)\
+         BEAN_HEAD(name)\
 	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
                                               NULL,\
                                               NULL,\
                                               NULL,\
                                               init_bean_##name,\
-                                              notify_##name,\
+                                              NULL,\
                                               display_##name,\
                                               BEAN_LEVEL_1,\
                                               sizeof(type),\
                                               0xffffffff,\ 
-                                              (char*)&process_##bean_baseon,\
-                                              NULL,\
-                                              NULL,\
                                               (char*)&bean_##name\
                                               }
 
-#endif
+
+
 #define BEAN_POINTER(name, p)\
     do\
     {\
         extern BEAN_PROCESS_STRU process_##name;\
         bean_get_pointer((BEAN_PROCESS_STRU *)&process_##name, &p);\
     }while(0)
+
+
+/* */
+#define BEAN_BASE_ON(beanself, beanbaseon, notify)\
+        do\
+        {\
+            extern BEAN_PROCESS_STRU process_##beanself;\
+            extern BEAN_PROCESS_STRU process_##beanbaseon;\
+            bean_base_on(&process##beanself, process_##beanbaseon, notify, STRING(notify));\
+        }while(0)
 
 
 
@@ -222,6 +234,7 @@ extern MODULE_INFO_STRU module_info;
 extern unsigned char module_sync_info[MODULE_MAX];
 extern int bean_array_init();
 extern void bean_process_run();
+extern void bean_base_on(BEAN_PROCESS_STRU *p1, BEAN_PROCESS_STRU *p2, notify func, char *name);
 extern int  bean_register_to_array(BEAN_PROCESS_STRU *head);
 extern void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process);
 extern int bean_update_to_local(char *bean_msg);

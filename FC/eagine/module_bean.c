@@ -1,6 +1,6 @@
 #include "common.h"
 
-BEAN_BASE(bean_sync, INDEX_BEAN_0, MODULE_BEAN_STRU);
+BEAN_1L_DEF(bean_sync, INDEX_BEAN_0, MODULE_BEAN_STRU);
 
 
 BEAN_INIT(bean_sync, bean_local)
