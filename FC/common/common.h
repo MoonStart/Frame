@@ -35,6 +35,8 @@
 #include "io_process.h"
 #include "cmdline.h"
 #include "module_bean.h"
+#include "bean_test_menu.h"
+#include "card_alarm.h"
 
 typedef void (*pfunc)();
 
@@ -42,7 +44,6 @@ typedef void (*pfunc)();
 typedef unsigned char bool ;
 #define true  1
 #define false 0
-
 #endif
 
 

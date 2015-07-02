@@ -19,16 +19,22 @@ typedef struct MODULE_INFO
 
 
 
-typedef int (*callback_init)(MODULE_NAME_ENUM);
+typedef int (*callback)(MODULE_NAME_ENUM);
+
+typedef struct CALLBACK
+{
+    callback func;
+    char *   func_name;
+}CALLBACK_STRU;
 
 typedef struct CALL_INIT
 {
-    // callback_init cspii_init; /* any parameter get from user */
-    callback_init io_init; /* socket or serial init */
-    // callback_init hal_init; /* interface for hardware*/
-    // callback_init driver_init; /* hardware init */
-    callback_init bean_array_init;
-    //callback_init util_init; /*any tools init */
+    // CALLBACK_STRU cspii_init; /* any parameter get from user */
+    CALLBACK_STRU io_init; /* socket or serial init */
+    // CALLBACK_STRU hal_init; /* interface for hardware*/
+    // CALLBACK_STRU driver_init; /* hardware init */
+    CALLBACK_STRU bean_array_init;
+    //CALLBACK_STRU util_init; /*any tools init */
 } CALL_INIT_STRU;
 
 
@@ -62,21 +68,23 @@ typedef struct CALL_INIT
 #define INIT_LIST(name, module)\
     INIT_HEAD(name, module)\
     static CALL_INIT_STRU name##_callback = {\
-                                           /*cspii_##name##_init,*/\
-                                           io_##name##_init,\
-                                           /*hal_##name##_init,*/\
-                                           /*driver_##name##_init,*/\
-                                           bean_array_##name##_init\
-                                           /*util_##name##_init\*/\
+                                           /* {cspii_##name##_init,        STRING(cspii_##name##_init)},*/\
+                                              {io_##name##_init,           STRING(io_##name##_init)},\
+                                           /* {hal_##name##_init,          STRING(hal_##name##_init)},*/\
+                                           /* {driver_##name##_init,       STRING(driver_##name##_init)}, */\
+                                              {bean_array_##name##_init,   STRING(bean_array_##name##_init)},\
+                                           /* {util_##name##_init,         STRING(util_##name##_init)} */\
                                            };\
          int index = 0;\
-         int size = sizeof(CALL_INIT_STRU)/sizeof(callback_init);\
-         callback_init *pfinit = (callback_init *)&name##_callback;\
+         int size = sizeof(CALL_INIT_STRU)/sizeof(CALLBACK_STRU);\
+         CALLBACK_STRU *pfinit = (CALLBACK_STRU *)&name##_callback;\
          do\
          {\
              while(index < size)\
              {\
-                (*pfinit)(module);\
+                printf("\r\n\r\n******* %s call start ******* \r\n", pfinit->func_name);\
+                pfinit->func(module);\
+                printf("******* %s call over ******\r\n", pfinit->func_name);\
                 pfinit ++;\
                 index ++;\
              }\

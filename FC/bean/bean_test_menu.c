@@ -1,5 +1,8 @@
 #include "common.h"
 
+
+BUG_LOCK_STRU bug_instance;
+
 static void display_bean_base_on(BEAN_PROCESS_STRU *process)
 {
    NOTIFY_LIST_STRU *list = process->notify_list;
@@ -81,18 +84,39 @@ static void setcardbean(int argc, char **argv)
     }
 }
 
-
+static void setbugswitch(int argc, char **argv)
+{
+   if(argc != 4)
+   {
+     printf("Bean debug [st] on|off\r\n");
+     return;
+   }
+   else if(strcmp(argv[2], "st") == 0)
+   {
+     if(strcmp(argv[3], "on") == 0)
+     {
+       bug_instance.bean_callstack = true;
+     }
+     else if(strcmp(argv[3], "off") == 0)
+     {
+       bug_instance.bean_callstack = false;
+     }
+   }
+}
 
 #define CMD "Bean"
 CMD_TABLE_STRU beanMenu[] =
 {
     // cmd        sub_cmd_name               cmd_help                                 sub_cmd_help                                      fct_call        fct_call2
     {CMD,        "list",          "-display or set bean content register in array",            "-show detail ",      display,         NULL},
+    {NULL,       "debug",         "-set the debug switch on/off",                   "-switch name",                  setbugswitch,    NULL},
     {NULL,       STRING(EDFA),    "-Set the Bean content",                          "-the bean name ",               setcardbean,     NULL},
 };
 
 
 void bean_test_menu_register()
 {
+   memset(&bug_instance, 0x00, sizeof(bug_instance));
+   
    RegisterCommand(beanMenu, sizeof(beanMenu) / sizeof(CMD_TABLE_STRU));
 }

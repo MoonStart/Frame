@@ -51,7 +51,7 @@ void bean_process_run()
 }
 
 
-void bean_base_on(BEAN_PROCESS_STRU *p1, BEAN_PROCESS_STRU *p2, notify func, char *name)
+void bean_base_on(BEAN_PROCESS_STRU *pup, BEAN_PROCESS_STRU *pbaseon, notify func, char *name)
 {
    static int index = 0;
 
@@ -60,15 +60,22 @@ void bean_base_on(BEAN_PROCESS_STRU *p1, BEAN_PROCESS_STRU *p2, notify func, cha
      printf("please define the macro LIST_ARRAY_SIZE much more lager \r\n");
      exit(0);
    }
+
+   if(pup==NULL || pbaseon==NULL || func==NULL || name==NULL)
+   {
+      printf("%s %d parameter error \r\n", __func__, __LINE__);
+      exit(0);
+   }
+   
    NOTIFY_LIST_STRU *plist = &bean_list[index];
 
    plist->notify_func_name = name;
-   plist->bean_process = p2;
+   plist->bean_process = pup;
    plist->notify_to = func;
 
    /* add to the base bean notify list */
-   plist->next = p1->notify_list;
-   p1->notify_list = plist;
+   plist->next = pbaseon->notify_list;
+   pbaseon->notify_list = plist;
    index ++;
 }
 
@@ -118,10 +125,17 @@ void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process)
 
     while(list != NULL)
     {
-        temp = (BEAN_PROCESS_STRU *)list->bean_process
-#if DEBUG
-        printf("\t\t %s(%s %s)\r\n",list->notify_func_name,bean_process->bean_name, temp->bean_name);
-#endif
+        temp = (BEAN_PROCESS_STRU *)list->bean_process;
+
+        if(bug_instance.bean_callstack)
+        {
+           bean_process->display(bean_process->bean);
+           temp->display(temp->bean);
+           printf("\t %s(%s %s)\r\n",list->notify_func_name,bean_process->bean_name, temp->bean_name);
+           bean_process->display(bean_process->bean);
+           temp->display(temp->bean);
+           printf("\r\n\r\n\r\n");
+        }
 
         list->notify_to(bean_process->bean, temp->bean);
         list = list->next;
@@ -161,7 +175,11 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
         printf("bean name %s \r\n", bean_process->bean_name);
         exit(0);
     }
+
+    printf("\r\n\r\n###### %s init satrt ######\r\n",bean_process->bean_name);
     bean_process->init_bean(bean_process->bean);
+    bean_process->display(bean_process->bean);
+    printf("###### %s init over ######\r\n",bean_process->bean_name);
 
     if((bean_process->bean_type == BEAN_LEVEL_0) && !bean_array[bean_process->bean_pos].flag)
     {
@@ -176,10 +194,7 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
         }
         module_info.bean_count++;
     }
-    else
-    {
-        PRINTF("the bean have register it \r\n");
-    }
+
     return 0;
 }
 
@@ -235,8 +250,6 @@ int bean_update_to_local(char *bean_msg)
 }
 
 
-
-extern void bean_test_menu_register();
 int bean_array_init(MODULE_NAME_ENUM module)
 {
     int i = 0;

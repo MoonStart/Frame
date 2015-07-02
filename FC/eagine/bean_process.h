@@ -128,8 +128,8 @@ typedef struct MSG_HEAD
 #define BEAN_DISPLAY(name, bean_local)\
     void display_##name(char* bean_local)
 
-#define BEAN_NOTIFY(name, beanself, beanbaseon)\
-    int notify_##name(char* beanself, char *beanbaseon)
+#define BEAN_NOTIFY(beanselfnm, beanbaseonnm, beanself, beanbaseon)\
+    int beanbaseonnm##_notify_##beanselfnm(void* beanself, void *beanbaseon)
 
 #define STRING(x) #x
 
@@ -189,12 +189,13 @@ typedef struct MSG_HEAD
 
 
 /* */
-#define BEAN_BASE_ON(beanself, beanbaseon, notify)\
+#define BEAN_BASE_ON(beanself, beanbaseon)\
         do\
         {\
             extern BEAN_PROCESS_STRU process_##beanself;\
             extern BEAN_PROCESS_STRU process_##beanbaseon;\
-            bean_base_on(&process##beanself, process_##beanbaseon, notify, STRING(notify));\
+            extern int beanbaseon##_notify_##beanself(void*, void*);\
+            bean_base_on(&process_##beanself, &process_##beanbaseon, beanbaseon##_notify_##beanself, STRING(beanbaseon##_notify_##beanself));\
         }while(0)
 
 

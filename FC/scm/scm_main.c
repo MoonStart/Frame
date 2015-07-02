@@ -2,17 +2,12 @@
 
 void scm_main()
 {
-    {
-        INIT_LIST(SCM, MODULE_SCM);
-    }
-    printf("init function over! \r\n");
-
-
-    /* every module should register bean_sync */
-    {BEAN_REGISTER(bean_sync);}
+    {INIT_LIST(SCM, MODULE_SCM);}
+    
+    /* every module should register SYS_BEAN_SYNC */
+    {BEAN_REGISTER(SYS_BEAN_SYNC);}
     {BEAN_REGISTER(EDFA);}
-    printf("message bean register over! \r\n");
-
+    {BEAN_REGISTER(EDFA_AM);}
 }
 
 pfunc module_main = scm_main;

@@ -1,6 +1,6 @@
 #include "common.h"
 
-BEAN_UPDATE_UP(bean_sync, bean_local)
+BEAN_UPDATE_UP(SYS_BEAN_SYNC, bean_local)
 {
     char buffer[MSG_LEN_MAX];
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
@@ -16,7 +16,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
        pbean_local->des_moduleid = index;
        pbean_local->src_moduleid = module_info.ModuleId;
        pbean_local->bean_sync_index = INDEX_BEAN_ALL;
-       BEAN_UP_NOTIFY(bean_sync);
+       BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
     }
 
     if(pbean_local->bean_sync_action == SYNC_BEAN_FIN)
@@ -41,7 +41,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
         */
         bean_array[INDEX_BEAN_0].process->bean = (char *)pbean_send;
         bean_array[INDEX_BEAN_0].process->bean_size = len;
-        BEAN_UP_NOTIFY(bean_sync);
+        BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
         bean_array[INDEX_BEAN_0].process->bean = (char *)ptemp;
         bean_array[INDEX_BEAN_0].process->bean_size = len_save;
        
@@ -51,7 +51,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
     return 0;
 }
 
-BEAN_UPDATE_DOWN(bean_sync, bean_local, bean_receive)
+BEAN_UPDATE_DOWN(SYS_BEAN_SYNC, bean_local, bean_receive)
 {
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
     MODULE_BEAN_STRU *pbean_recv =  (MODULE_BEAN_STRU *)bean_receive;

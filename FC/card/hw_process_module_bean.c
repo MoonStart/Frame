@@ -3,7 +3,7 @@
 static int bean_sync_count = 1;
 
 
-BEAN_UPDATE_UP(bean_sync, bean_local)
+BEAN_UPDATE_UP(SYS_BEAN_SYNC, bean_local)
 {
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
     static unsigned int index = INDEX_BEAN_1; /* becareful */
@@ -14,7 +14,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
     }
     else if(pbean_local->bean_sync_action == SYNC_BEAN_FIN )
     {
-        BEAN_UP_NOTIFY(bean_sync);
+        BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
         module_sync_info[module_info.ModuleId] = true;
         printf("the module %d sync have been finished \r\n", module_info.ModuleId);
         return 0;
@@ -25,7 +25,7 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
         pbean_local->src_moduleid = module_info.ModuleId;
         pbean_local->bean_sync_index = index;
         pbean_local->bean_sync_action = SYNC_BEAN_REQ;
-        BEAN_UP_NOTIFY(bean_sync);
+        BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
     }
     index ++;
     index = index % INDEX_BEAN_ALL;
@@ -34,13 +34,13 @@ BEAN_UPDATE_UP(bean_sync, bean_local)
 
 
 
-BEAN_UPDATE_DOWN(bean_sync, bean_local, bean_receive)
+BEAN_UPDATE_DOWN(SYS_BEAN_SYNC, bean_local, bean_receive)
 {
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
     MODULE_BEAN_STRU *pbean_recv =  (MODULE_BEAN_STRU *)bean_receive;
     MODULE_BEAN_STRU *pbean_send = NULL; /* the bean will be send */
 
-    BEAN_PROCESS_STRU *process_temp = NULL; /* for bean_sync */
+    BEAN_PROCESS_STRU *process_temp = NULL; /* for SYS_BEAN_SYNC */
 
     /* the bean request should be register in the array */
     if((pbean_recv->bean_sync_index > INDEX_BEAN_ALL ) || 

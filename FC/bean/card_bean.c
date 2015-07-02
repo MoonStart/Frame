@@ -29,6 +29,5 @@ BEAN_DISPLAY(EDFA, bean_local)
 BEAN_INIT(EDFA, bean_local)
 {
     CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
-    printf("bean init over \r\n");
     return 0;
 }
