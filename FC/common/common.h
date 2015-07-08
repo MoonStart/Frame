@@ -36,7 +36,9 @@
 #include "cmdline.h"
 #include "module_bean.h"
 #include "bean_test_menu.h"
+#include "cspii_common.h"
 #include "card_alarm.h"
+#include "fun_macro.h"
 
 typedef void (*pfunc)();
 
@@ -51,12 +53,19 @@ typedef unsigned char bool ;
         (type *)((char *)ptr - offsetof(type,member))
 
 #define DEBUG 1
+#define STRING(x) #x
+
 
 #ifdef DEBUG
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
 #define PRINTF
 #endif
+
+
+typedef unsigned int   uint32;
+typedef unsigned char  uint8;
+typedef unsigned short uint16;
 
 
 #endif

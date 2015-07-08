@@ -1,7 +1,7 @@
 #include "common.h"
 
 
-BEAN_UPDATE_UP(EDFA, bean_local)
+BEAN_RUN(EDFA, bean_local)
 {
     CARD_MSG_BEAN_STRU *p = (CARD_MSG_BEAN_STRU *)bean_local;
 
@@ -27,7 +27,7 @@ BEAN_UPDATE_UP(EDFA, bean_local)
     Modification : Created function
 
 *****************************************************************************/
-BEAN_UPDATE_DOWN(EDFA, bean_local, bean_receive)
+BEAN_UPDATE(EDFA, bean_local, bean_receive)
 {
     CARD_MSG_BEAN_STRU *plocal = NULL;
     CARD_MSG_BEAN_STRU *pother = NULL;

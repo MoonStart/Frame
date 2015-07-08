@@ -1,23 +1,6 @@
 #ifndef MODULE_DEF_H_
 #define MODULE_DEF_H_
-
-typedef enum MODULE_NAME
-{
-    MODULE_SCM = 0,
-    MODULE_CARD,
-    MODULE_MAX
-} MODULE_NAME_ENUM;
-#define STR_MODULE_NAME(module)\
-    (module == MODULE_SCM)?"MODULE_SCM":\
-    (module == MODULE_CARD)?"MODULE_CARD":"UNKNOWN"
-
-typedef struct MODULE_INFO
-{
-    MODULE_NAME_ENUM ModuleId;
-    int bean_count;
-} MODULE_INFO_STRU;
-
-
+#include "common.h"
 
 typedef int (*callback)(MODULE_NAME_ENUM);
 

@@ -70,16 +70,17 @@ typedef struct NOTIFY_LIST
 typedef struct BEAN_PROCESS
 {
     char           *bean_name;                       /* the string which show to user what is the name of this bean*/
-    int            (*update_from_local)(char *);     /* use this fun update the bean(typically the hardware changed */
-    int            (*update_to_local)(char * /* local bean*/, char * /* received bean*/); /* 1st.local bean 2se.received bean. when reive the update message, use this fun to update to lower layer*/
+    int            (*run)(char *);     /* use this fun update the bean(typically the hardware changed */
+    int            (*update)(char * /* local bean*/, char * /* received bean*/); /* 1st.local bean 2se.received bean. when reive the update message, use this fun to update to lower layer*/
     int            (*check_para)(char *);            /* check any value in this bean rightor not */
     int            (*init_bean)(char *);             /* init the bean function */
     NOTIFY_LIST_STRU *notify_list;
     void           (*display)(char *);               /* show the bean content to user */
     unsigned  int   bean_type;
-    unsigned  int   bean_size;                       /* bean size*/
-    unsigned  int   bean_pos;                        /* the pos of the bean in the bean_process array  */
-    char           *bean;                            /* point to the message bean */
+    unsigned  int   bean_size;                      /* bean size*/
+    unsigned  int   des_pos;                        /* the pos of the bean in the scm module bean_process array  */
+    unsigned  int   bean_id;                        /* the pos in local array pos */
+    char           *bean;                           /* point to the message bean */
 } BEAN_PROCESS_STRU;
 
 
@@ -100,10 +101,9 @@ typedef struct BEAN_ARRAY
 
 typedef struct MSG_HEAD
 {
-    MODULE_NAME_ENUM moduleid;
-    unsigned int     index;
+    CARD_INFO_STRU   card;
     char             bean[0];
-} MSG_HEAD_STRU;
+}MSG_HEAD_STRU;
 
 
 
@@ -113,42 +113,40 @@ typedef struct MSG_HEAD
                 module
 */
 
-#define BEAN_UPDATE_UP(name, bean_local)\
-     int update_from_local_##name(char* bean_local)
+#define bean_run(n1, n2)\
+     int run_local_##n1(char* n2)
 
-#define BEAN_UPDATE_DOWN(name, bean_local, bean_receive)\
-     int update_to_local_##name(char* bean_local, char* bean_receive)
+#define bean_update(n1, n2, n3)\
+     int update_to_local_##n1(char* n2, char* n3)
 
-#define BEAN_CHECK(name, bean_local)\
-     int check_para_##name(char* bean_local)
+#define bean_check(n1, n2)\
+     int check_para_##n1(char* n2)
 
-#define BEAN_INIT(name, bean_local)\
-     int init_bean_##name(char* bean_local)
+#define bean_init(n1, n2)\
+     int init_bean_##n1(char* n2)
 
-#define BEAN_DISPLAY(name, bean_local)\
-    void display_##name(char* bean_local)
+#define bean_display(n1, n2)\
+    void display_##n1(char* n2)
 
-#define BEAN_NOTIFY(beanselfnm, beanbaseonnm, beanself, beanbaseon)\
-    int beanbaseonnm##_notify_##beanselfnm(void* beanself, void *beanbaseon)
-
-#define STRING(x) #x
+#define bean_notify(n1, n2, n3, n4)\
+    int n2##_notify_##n1(void* n3, void *n4)
 
 #define BEAN_HEAD(name)\
-   extern  BEAN_UPDATE_UP(name, bean_local);\
-   extern  BEAN_UPDATE_DOWN(name, bean_local,bean_receive);\
-   extern  BEAN_CHECK(name, bean_local);\
-   extern  BEAN_INIT(name, bean_local);\
-   extern  BEAN_DISPLAY(name, bean_local);\
+   extern  bean_run(name, bean_local);\
+   extern  bean_update(name, bean_local,bean_receive);\
+   extern  bean_check(name, bean_local);\
+   extern  bean_init(name, bean_local);\
+   extern  bean_display(name, bean_local);\
 
 
 /* if the bean just only update by user or hardware, use this macro to
    define 
 */
-#define BEAN_1L_DEF(name, index, type)\
+#define bean_1l_def(name, type)\
          BEAN_HEAD(name)\
 	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
-                                              update_from_local_##name,\
+                                              run_local_##name,\
                                               update_to_local_##name,\
                                               check_para_##name,\
                                               init_bean_##name,\
@@ -156,13 +154,14 @@ typedef struct MSG_HEAD
                                               display_##name,\
                                               BEAN_LEVEL_0,\
                                               sizeof(type),\
-                                              index,\
+                                              0xFFFFFFFF,\
+                                              0xFFFFFFFF,\
                                               (char*)&bean_##name\
                                               }
 
 
 /* if the bean update by other bean, use this macro to define */
-#define BEAN_2L_DEF(name, type)\
+#define bean_2l_def(name, type)\
          BEAN_HEAD(name)\
 	     static type bean_##name;\
          BEAN_PROCESS_STRU process_##name = { STRING(name),\
@@ -174,13 +173,14 @@ typedef struct MSG_HEAD
                                               display_##name,\
                                               BEAN_LEVEL_1,\
                                               sizeof(type),\
-                                              0xffffffff,\ 
+                                              0xFFFFFFFF,\
+                                              0xFFFFFFFF,\
                                               (char*)&bean_##name\
                                               }
 
 
 
-#define BEAN_POINTER(name, p)\
+#define bean_pointer(name, p)\
     do\
     {\
         extern BEAN_PROCESS_STRU process_##name;\
@@ -189,19 +189,19 @@ typedef struct MSG_HEAD
 
 
 /* */
-#define BEAN_BASE_ON(beanself, beanbaseon)\
+#define bean_base_on(n1, n2)\
         do\
         {\
-            extern BEAN_PROCESS_STRU process_##beanself;\
-            extern BEAN_PROCESS_STRU process_##beanbaseon;\
-            extern int beanbaseon##_notify_##beanself(void*, void*);\
-            bean_base_on(&process_##beanself, &process_##beanbaseon, beanbaseon##_notify_##beanself, STRING(beanbaseon##_notify_##beanself));\
+            extern BEAN_PROCESS_STRU process_##n1;\
+            extern BEAN_PROCESS_STRU process_##n1;\
+            extern int n2##_notify_##n1(void*, void*);\
+            bean_base_on(&process_##n1, &process_##n2, n2##_notify_##n1, STRING(n2##_notify_##n1));\
         }while(0)
 
 
 
 /* regsiter the bean to the bean_process array to update by eagine */
-#define BEAN_REGISTER(name)\
+#define bean_register(name)\
     do\
     {\
        extern BEAN_PROCESS_STRU process_##name;\
@@ -212,7 +212,7 @@ typedef struct MSG_HEAD
     any changed for the bean we need informed the msg_process
     to send the bean to other module
  */
-#define BEAN_UP_NOTIFY(name)\
+#define bean_sync(name)\
     do\
     {\
       extern BEAN_PROCESS_STRU process_##name;\
@@ -222,15 +222,7 @@ typedef struct MSG_HEAD
 
 
 
-#define BEAN_DOWN_NOTIFY(name) \
-    do\
-    {\
-      extern BEAN_PROCESS_STRU process_##name;\
-      bean_update_notify_list((BEAN_PROCESS_STRU *)&process_##name);\
-    }while(0)
-
-
-extern BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL];
+extern BEAN_ARRAY_STRU bean_array[BEAN_ARRAY_SIZE];
 extern MODULE_INFO_STRU module_info;
 extern unsigned char module_sync_info[MODULE_MAX];
 extern int bean_array_init();

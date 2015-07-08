@@ -1,13 +1,8 @@
 #include "common.h"
 
-BEAN_UPDATE_UP(SYS_BEAN_SYNC, bean_local)
+BEAN_RUN(SYS_BEAN_SYNC, bean_local)
 {
-    char buffer[MSG_LEN_MAX];
     MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
-    MODULE_BEAN_STRU *pbean_send = (MODULE_BEAN_STRU *)buffer; /* the bean will be send */
-    int len_save = 0;
-    char *ptemp = NULL;
-    int   len = 0;
     static int index = 0;
     
     if(!module_sync_info[index] && (index != module_info.ModuleId))
@@ -15,19 +10,39 @@ BEAN_UPDATE_UP(SYS_BEAN_SYNC, bean_local)
        pbean_local->bean_sync_action = SYNC_BEAN_RESET;
        pbean_local->des_moduleid = index;
        pbean_local->src_moduleid = module_info.ModuleId;
-       pbean_local->bean_sync_index = INDEX_BEAN_ALL;
-       BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
+       pbean_local->bean_sync_index = 0xFFFFFFFF;
+       BEAN_SYNC(SYS_BEAN_SYNC);
     }
 
-    if(pbean_local->bean_sync_action == SYNC_BEAN_FIN)
-    {
+    index ++;
+    index %= MODULE_MAX;
+    return 0;
+}
 
-    }
-    else if(pbean_local->bean_sync_action == SYNC_BEAN_RES)
+BEAN_UPDATE(SYS_BEAN_SYNC, bean_local, bean_receive)
+{
+    MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
+    MODULE_BEAN_STRU *pbean_recv =  (MODULE_BEAN_STRU *)bean_receive;
+    MODULE_BEAN_STRU *pbean_send = (MODULE_BEAN_STRU *)buffer; 
+
+    char buffer[MSG_LEN_MAX];
+      /* the bean will be send */
+    int  len_save   = 0;
+    char *ptemp     = NULL;
+    int  len        = 0;
+    
+    /* any bean request from other module */
+    if(pbean_recv->bean_sync_action == SYNC_BEAN_REQ)
     {
-         /* the index of 0 is aways as the module bean */
-       ptemp = bean_array[INDEX_BEAN_0].process->bean;
-       len_save = bean_array[INDEX_BEAN_0].process->bean_size;
+        /* now we need prepare the respose bean */
+        pbean_local->bean_sync_action = SYNC_BEAN_RES;
+        pbean_local->bean_sync_index = pbean_recv->bean_sync_index;
+        pbean_local->des_moduleid =  pbean_recv->src_moduleid;
+        pbean_local->src_moduleid = module_info.ModuleId;
+
+          /* the index of 0 is aways as the module bean */
+       ptemp = bean_array[0].process->bean;
+       len_save = bean_array[0].process->bean_size;
 
        len = sizeof(MODULE_BEAN_STRU) + bean_array[pbean_local->bean_sync_index].process->bean_size;
 
@@ -39,38 +54,11 @@ BEAN_UPDATE_UP(SYS_BEAN_SYNC, bean_local)
         /* now we use the new bean pointer and length to instead the
            bean we have register it
         */
-        bean_array[INDEX_BEAN_0].process->bean = (char *)pbean_send;
-        bean_array[INDEX_BEAN_0].process->bean_size = len;
-        BEAN_UP_NOTIFY(SYS_BEAN_SYNC);
-        bean_array[INDEX_BEAN_0].process->bean = (char *)ptemp;
-        bean_array[INDEX_BEAN_0].process->bean_size = len_save;
-       
-    }
-    index ++;
-    index %= MODULE_MAX;
-    return 0;
-}
-
-BEAN_UPDATE_DOWN(SYS_BEAN_SYNC, bean_local, bean_receive)
-{
-    MODULE_BEAN_STRU *pbean_local = (MODULE_BEAN_STRU *)bean_local;
-    MODULE_BEAN_STRU *pbean_recv =  (MODULE_BEAN_STRU *)bean_receive;
-  
-    /* the bean request should be register in the array */
-    if((pbean_recv->bean_sync_index > INDEX_BEAN_ALL ) || !bean_array[pbean_recv->bean_sync_index].flag)
-    {
-        return -1;
-    }
-
-
-    /* any bean request from other module */
-    if(pbean_recv->bean_sync_action == SYNC_BEAN_REQ)
-    {
-        /* now we need prepare the respose bean */
-        pbean_local->bean_sync_action = SYNC_BEAN_RES;
-        pbean_local->bean_sync_index = pbean_recv->bean_sync_index;
-        pbean_local->des_moduleid =  pbean_recv->src_moduleid;
-        pbean_local->src_moduleid = module_info.ModuleId;
+        bean_array[0].process->bean = (char *)pbean_send;
+        bean_array[0].process->bean_size = len;
+        BEAN_SYNC(SYS_BEAN_SYNC);
+        bean_array[0].process->bean = (char *)ptemp;
+        bean_array[0].process->bean_size = len_save;
     }
     else if(pbean_recv->bean_sync_action == SYNC_BEAN_RES)
     {

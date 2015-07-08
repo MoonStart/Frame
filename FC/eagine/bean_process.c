@@ -1,8 +1,7 @@
 #include "common.h"
 
-BEAN_ARRAY_STRU bean_array[INDEX_BEAN_ALL]; /* the base bean */
+BEAN_ARRAY_STRU bean_array[BEAN_ARRAY_SIZE]; /* the base bean */
 
-#define LIST_ARRAY_SIZE 100
 NOTIFY_LIST_STRU bean_list[LIST_ARRAY_SIZE]; /* may be is not enough */
 
 MODULE_INFO_STRU module_info;
@@ -37,7 +36,7 @@ void bean_process_run()
 
         if(bean_array[index].flag)
         {
-            head->update_from_local(head->bean);
+            head->run(head->bean);
         }
 
         memset(buffer, 0x00, MSG_LEN_MAX);
@@ -46,7 +45,7 @@ void bean_process_run()
             bean_update_to_local(buffer);
         }
         index ++;
-        index = index % INDEX_BEAN_ALL;
+        index = index % BEAN_ARRAY_SIZE;
     }
 }
 
@@ -159,17 +158,16 @@ void bean_update_notify_list(BEAN_PROCESS_STRU *bean_process)
 
 *****************************************************************************/
 int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
-{
-    BEAN_PROCESS_STRU *parent = NULL;
-    
+{   
+    static unsigned index = 0;
+    int i = 0;
     if(bean_process == NULL)
     {
-        printf("the message should not be NULL \r\n");
+        printf("the bean should not be NULL \r\n");
         return -1;
     }
 
-
-    if((bean_process->bean_type != BEAN_LEVEL_1) && bean_process->bean_pos > INDEX_BEAN_ALL)
+    if(index>BEAN_ARRAY_SIZE)
     {
         printf("please redefine the message container size or check the message ID \r\n");
         printf("bean name %s \r\n", bean_process->bean_name);
@@ -181,20 +179,31 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
     bean_process->display(bean_process->bean);
     printf("###### %s init over ######\r\n",bean_process->bean_name);
 
-    if((bean_process->bean_type == BEAN_LEVEL_0) && !bean_array[bean_process->bean_pos].flag)
+    if((bean_process->bean_type == BEAN_LEVEL_0) && !bean_array[index].flag)
     {
-        bean_array[bean_process->bean_pos].process = bean_process;
-        bean_array[bean_process->bean_pos].flag = 1;
-       
+        bean_array[index].process = bean_process;
+        bean_array[index].flag = 1;
+
+        /* we sum the name[i] as the bean id, because every bean name is 
+           different, so the id is different
+        */
+        while(bean_process->bean_name[i] != '\0')
+        {
+           bean_process->bean_id += bean_process->bean_name[i];
+           i++;
+        }
+
+        bean_process->bean_id += (card_instance.shelf+card_instance.slot+card_instance.card)
         /* the buffer need to be lager than beansize + beanindex + moduleid */
         if((bean_process->bean_size + 4 + 4) > MSG_LEN_MAX)
         {
            printf("the bean %s pos %d too much lager \r\n", bean_process->bean_name, bean_process->bean_pos);
            printf("please redefine the length MSG_LEN_MAX bigger than %d \r\n", bean_process->bean_size + 8);
         }
-        module_info.bean_count++;
+       // module_info.bean_count++;
     }
 
+    index++;
     return 0;
 }
 
@@ -216,8 +225,6 @@ int bean_register_to_array(BEAN_PROCESS_STRU *bean_process)
 *****************************************************************************/
 int bean_update_to_local(char *bean_msg)
 {
-    int *index             = NULL;
-
     BEAN_PROCESS_STRU *head  = NULL;
     MSG_HEAD_STRU *head_msg = (MSG_HEAD_STRU *)bean_msg;
     if(head_msg == NULL)
@@ -225,17 +232,27 @@ int bean_update_to_local(char *bean_msg)
         return -1;
     }
 
+    if(head_msg->pos == 0xFFFFFFFF)
+    {
+        for()
+    }
+
+
     if(module_info.ModuleId == MODULE_SCM &&
-            (head_msg->index != INDEX_BEAN_0) &&
+            (head_msg->pos != 0) &&
             !module_sync_info[head_msg->moduleid])
     {
         printf("the module %d haven't finished sync action \r\n", head_msg->moduleid);
         return 0;
     }
 
-    if(!bean_array[head_msg->index].flag)
+    
+    if(
+        (head_msg->index>BEAN_ARRAY_SIZE) || 
+        (!bean_array[head_msg->index].flag) || 
+        (bean_array[head_msg->index].process->bean_type == BEAN_LEVEL_1))
     {
-        PRINTF("we need't process this message, the message id is %d\r\n", *index);
+        PRINTF("we need't process this message, the message id is %d\r\n", head_msg->index);
         return 0;
     }
 
@@ -243,7 +260,7 @@ int bean_update_to_local(char *bean_msg)
 
     if((0 != memcmp(head->bean, head_msg->bean, head->bean_size)) && !head->check_para(head_msg->bean));
     {
-        head->update_to_local(head->bean, head_msg->bean);
+        head->update(head->bean, head_msg->bean);
     }
 
     return 0;
@@ -255,15 +272,13 @@ int bean_array_init(MODULE_NAME_ENUM module)
     int i = 0;
 
 
-    while (i < INDEX_BEAN_ALL)
+    while (i < BEAN_ARRAY_SIZE)
     {
         bean_array[i].flag = 0;
         bean_array[i].process = NULL;
         i++;
     }
-
-    module_info.ModuleId = module;
-    module_info.bean_count = 0;
+    
     PRINTF("MSG ARRAY INIT OVER \r\n");
     bean_test_menu_register();
     return 0;
