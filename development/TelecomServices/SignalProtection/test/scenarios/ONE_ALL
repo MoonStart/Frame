@@ -1,0 +1,88 @@
+#################################################
+#
+#
+#
+# This script execute all requirements tests for 1+1
+#################################################
+
+Architecture 1PLUS1
+
+Delete
+Create OC48 1 0 1 1
+Send WORKING NR WORKING 0 1PLUS1 UNIDIR
+Send PROTECTION NR WORKING 0 1PLUS1 UNIDIR
+Command CLEAR
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Failure WORKING SD OFF
+Failure PROTECTION SD OFF
+Delete
+Create OC48 1 0 1 1
+
+#################################################
+# Test for request on working
+#
+#################################################
+
+Print   
+Print Executing request on working tests
+Print --------------------------------------------------------------------
+Print   
+
+Print ONE_REQUEST_ON_WORKING.txt...
+Run ONE_REQUEST_ON_WORKING.txt
+Print ONE_REQUEST_ON_WORKING_NR.txt...
+Run ONE_REQUEST_ON_WORKING_NR.txt
+
+#################################################
+# Test for command request
+#
+#################################################
+
+Print   
+Print Executing command request tests
+Print --------------------------------------------------------------------
+Print   
+
+Print ONE_LK_P.txt...
+Run ONE_LK_P.txt
+Print ONE_CLEAR_OF_COMMAND.txt...
+Run ONE_CLEAR_OF_COMMAND.txt
+
+#################################################
+# Test for request update
+#
+#################################################
+
+Print   
+Print Executing request update tests
+Print --------------------------------------------------------------------
+Print   
+
+Print Running ONE_PRIORITY_UPDATE_COMMAND.txt...
+Run ONE_PRIORITY_UPDATE_COMMAND.txt
+Print Running ONE_PRIORITY_UPDATE_DEFECT.txt...
+Run ONE_PRIORITY_UPDATE_DEFECT.txt
+Print Running ONE_PRIORITY_UPDATE_REJECT.txt...
+Run ONE_PRIORITY_UPDATE_REJECT.txt
+Print Running ONE_KBYTE_RECEIVED.txt...
+Run ONE_KBYTE_RECEIVED.txt
+
+#################################################
+# Test for missing transitions
+#
+#################################################
+
+Print   
+Print Executing missing transitions tests
+Print --------------------------------------------------------------------
+Print   
+
+Print Running ONE_MISSING_C_WORKING_HIGHER.txt...
+Run ONE_MISSING_C_WORKING_HIGHER.txt
+Print Running ONE_MISSING_C_WORKING_DEFECT.txt...
+Run ONE_MISSING_C_WORKING_DEFECT.txt
+Print Running ONE_MISSING_C_PROTECTION_COMMAND.txt...
+Run ONE_MISSING_C_PROTECTION_COMMAND.txt
+Print Running ONE_MISSING_C_CLEAR_REVERTIVE.txt...
+Run ONE_MISSING_C_CLEAR_REVERTIVE.txt

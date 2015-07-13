@@ -1,0 +1,454 @@
+/*--------------------------------------------------------------------------
+Copyright(c) Tellabs Transport Group. All rights reserved
+
+ SUBSYSTEM:     TSPII
+ TARGET   :     Common.
+ AUTHOR   :     17 December 2001, Eric Bernier
+ DESCRIPTION:   TSPII Sub-application on Transponder.
+--------------------------------------------------------------------------*/
+#ifdef WIN32
+    #pragma warning( disable : 4786 )
+#endif
+
+#include <ErrorService/FC_Error.h>
+#include <TsPii/TSPII_SubApplication.h>
+#include <TsPii/TSPII_UpdateAction.h>
+
+TSPII_SubApplication * TSPII_SubApplication::myInstance = NULL;
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SubApplication::TSPII_SubApplication()
+{
+    myInstance = this;
+    for (int i=0; i<TSPII_MAX_UPDATE_ACTIONS; i++)
+    {
+        myUpdateActionArray[i] = NULL;
+    }
+}
+    
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SubApplication::~TSPII_SubApplication()
+{
+    for (int i=0; i<TSPII_MAX_UPDATE_ACTIONS; i++)
+    {
+        if (myUpdateActionArray[i])
+        {   
+            myUpdateActionArray[i]->UnregisterAllRegions();
+            delete myUpdateActionArray[i];
+        }
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoInitWarm(FC_Object* theObject)
+{
+    InitCommon(WARM_RST);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoInitCold(FC_Object* theObject)
+{
+    InitCommon(COLD_RST);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoInitConfig(FC_Object* theObject)
+{
+    InitCommon(CONFIG_RST);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::InitCommon(restart_type theRestartType)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoCreateRegions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoDeleteRegions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoCreateActions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoDeleteActions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoActivateActions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoDeactivateActions(FC_Object* theObject)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::DoEnableInterrupts(void)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_DwRegion * TSPII_SubApplication::GetDw(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+///////////////////////////////////////////////////////////////////////////////
+TSPII_TcmRegion * TSPII_SubApplication::GetTcm(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_FecRegion * TSPII_SubApplication::GetFec(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_GccRegion * TSPII_SubApplication::GetGcc(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_GccMapRegion * TSPII_SubApplication::GetGccMap(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+TSPII_IBETHRegion *  TSPII_SubApplication::GetIBETH(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_OchOHRegion * TSPII_SubApplication::GetOchOH(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_OsaRegion * TSPII_SubApplication::GetOsa(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_OmsOHRegion * TSPII_SubApplication::GetOmsOH(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_OpticalRegion * TSPII_SubApplication::GetOptical(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_OtsOHRegion * TSPII_SubApplication::GetOtsOH(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_PilotToneRegion * TSPII_SubApplication::GetPilotTone(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_RsRegion * TSPII_SubApplication::GetRs(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_RmonRegion * TSPII_SubApplication::GetRmon(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_MacRegion * TSPII_SubApplication::GetMac(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_MsRegion * TSPII_SubApplication::GetMs(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_HopRegion * TSPII_SubApplication::GetHop(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_VcgRegion * TSPII_SubApplication::GetVcg(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_GfpRegion * TSPII_SubApplication::GetGfp(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_T1E1Region * TSPII_SubApplication::GetT1E1(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_1NSelRegion * TSPII_SubApplication::Get1NSel(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_ClkSelRegion * TSPII_SubApplication::GetClkSel(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_XcRegion * TSPII_SubApplication::GetXc(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_DcclRegion * TSPII_SubApplication::GetDccl(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_LagRegion * TSPII_SubApplication::GetLag(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_EvcRegion * TSPII_SubApplication::GetEvc(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_L2Region * TSPII_SubApplication::GetL2Eth(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_L2Region * TSPII_SubApplication::GetL2Lag(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_L2Region * TSPII_SubApplication::GetL2Vcg(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_DrtrRegion * TSPII_SubApplication::GetDrtr(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_DdltRegion * TSPII_SubApplication::GetDdlt(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SsmRegion * TSPII_SubApplication::GetSsm(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SncRegion * TSPII_SubApplication::GetSnc(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_FabRegion * TSPII_SubApplication::GetFab(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SwitchRegion * TSPII_SubApplication::GetSwitch(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_PipeRegion * TSPII_SubApplication::GetPipe(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_IPCountersRegion * TSPII_SubApplication::GetIPCounters(unsigned int theUnit, unsigned int theSlot)
+{
+    return NULL;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_UpdateAction * TSPII_SubApplication::GetUpdateAction(unsigned int theSlot)
+{
+    return myUpdateActionArray[theSlot];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+TSPII_SubApplication * TSPII_SubApplication::GetInstance()
+{
+    FC_THROW_ERROR_IF(myInstance == NULL, FC_RuntimeError, "TSPII_SubApplication instance unavailable");
+    return myInstance;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::InitCard(uint32 theSlot, CT_CardType theCardType)
+{
+    // Nothing to do
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::SetCardPresent(uint32 theSlot, CT_CardType theCardType)
+{
+    // Nothing to do
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::StartUpdateActions(uint32 theSlot)
+{
+    // Nothing to do
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::SetCardAbsent (uint32 theSlot)
+{
+    // Nothing to do
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool TSPII_SubApplication::IsCardInitialized(uint32 theSlot)
+{
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool TSPII_SubApplication::IsCardReady(uint32 theSlot)
+{
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool TSPII_SubApplication::Override(int argc, char** argv, uint32 theSlot)
+{
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::FwUpgrade(uint32 theSlot, uint16 * theOMLoadPtr, uint32 theOMLoadSizeInBytes)
+{
+    // Nothing to do
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool TSPII_SubApplication::IsFwUpgradeFailed(uint32 theSlot)
+{
+    return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+bool TSPII_SubApplication::IsFwUpgradeSuccessful(uint32 theSlot)
+{
+    return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOdu0PoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOdu1PoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOdu2PoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOdu3PoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOdu4PoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOduFPoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+uint16 TSPII_SubApplication::GetOduPoolIndex(uint32 theLogicalOduId)
+{
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+OmUpgStatus::Enum TSPII_SubApplication::GetOmUpgStatus(uint32 theSlot)
+{
+    return OmUpgStatus::Finished;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::ClearResetCause(uint32 theSlot)
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::SaveData()
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+void TSPII_SubApplication::NotifySignalProtection()
+{
+}
+

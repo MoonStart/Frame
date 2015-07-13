@@ -1,0 +1,81 @@
+##########################################################
+#####                                                #####
+#####  P E R F O R M A N C E    M O N I T O R I N G  #####
+#####                                                #####
+#####                  1+1 Protection                #####
+#####                                                #####
+##########################################################
+
+#### TEST 1 ####
+# Generate a Switch on Protection
+#
+
+# Init PCSM
+1:9 one log t
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+sp sync
+@Wait 10000
+
+# Create GRP1
+one create LINEAR BIDIR OC48 1 0 0 1 1 0
+
+1:9 tspiimon defect sfl on 0 1
+1:9 one stat
+@Print ##########################################################
+@Print Test 1 -> Generate a Switch on Protection
+@Print ##########################################################
+@Pause
+
+#### TEST 2 ####
+# Force to switch back to Working
+#
+one cmd f w
+
+1:9 one stat
+@Print ##########################################################
+@Print Test 2 -> Force to Switch back to Working
+@Print ##########################################################
+@Pause
+
+#### TEST 3 ####
+# Clear Force to Working command
+#
+one cmd c w
+
+1:9 one stat
+@Print ##########################################################
+@Print Test 3 -> Clear Force to Working command
+@Print ##########################################################
+@Pause
+
+#### TEST 4 ####
+# Clear LOS on Working
+#
+1:9 tspiimon defect sfl off 0 1
+1:9 one stat
+@Print ##########################################################
+@Print Test 4 -> Clear LOS on Working
+@Print ##########################################################
+@Pause
+
+#### TEST 5 ####
+# Set 1+1 group as revertive
+#
+one edit n y 10
+sp sts48 0
+one path n n n n 
+
+@Wait 2000
+
+1:9 one stat
+@Print ##########################################################
+@Print Test 5 -> Set 1+1 group as revertive
+@Print ##########################################################
+@Pause
+

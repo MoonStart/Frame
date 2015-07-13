@@ -1,0 +1,33 @@
+##########################################
+#
+# The node receives a signal in byte
+# K2 B1-4 and the node must transmit
+# the same code.
+#
+# rule 8.33 in SRS FP1.0
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Failure WORKING SD OFF
+Failure PROTECTION SD OFF
+Command CLEAR
+Send WORKING NR WORKING 0 1PLUS1 UNIDIR
+Send PROTECTION NR WORKING 0 1PLUS1 UNIDIR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+CheckFsm S_WORKING_SELECTED                     # Checks initial state
+Check NR WORKING 0 1PLUS1 UNIDIR                #
+
+Send WORKING NR PROTECTION 0 1PLUS1 UNIDIR      # Sends "1" on K1 B5-8
+Send PROTECTION NR PROTECTION 0 1PLUS1 UNIDIR   #
+
+CheckFsm S_WORKING_SELECTED                     # Node must return "1" on K2 B1-4
+Check NR WORKING 1 1PLUS1 UNIDIR                #
+
+Send WORKING NR WORKING 0 1PLUS1 UNIDIR         # Clears the signal
+Send PROTECTION NR WORKING 0 1PLUS1 UNIDIR      #

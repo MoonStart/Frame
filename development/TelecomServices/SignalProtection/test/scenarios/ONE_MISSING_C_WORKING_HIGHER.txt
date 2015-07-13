@@ -1,0 +1,124 @@
+##########################################
+# This scenario tests some transitions
+# those that are not tested by usual scenario.
+# In this test we complete all missing
+# transition of C_WORKING_HIGHER condition.
+#
+##########################################
+
+Architecture 1PLUS1
+
+Failure PROTECTION LOS OFF
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+Command CLEAR
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is on protection because of a
+# failure on working. But the failure is
+# cleared, the node goes in WTR and another
+# failure happens on protection
+##########################################
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR
+
+Failure PROTECTION LOS ON
+
+CheckFsm S_WORKING_SELECTED
+Check SF_L WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is on protection because it is
+# not revertive. Then a failure occures
+# on protection.
+##########################################
+
+Failure PROTECTION LOS OFF        #
+Failure WORKING LOS OFF           # Return to default configuration
+Command CLEAR                     #
+Delete                            #
+Create OC48 1 0 1 1               #
+Edit NORMAL N 2 N N               #
+Failure WORKING LOS OFF           #
+CheckFsm S_WORKING_SELECTED       #
+Check NR WORKING 0 1PLUS1 UNIDIR  #
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_PROTECTION_NO_REQUEST
+Check DNR PROTECTION 0 1PLUS1 UNIDIR
+
+Failure PROTECTION LOS ON
+
+CheckFsm S_WORKING_SELECTED
+Check SF_L WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is selecting working because of a
+# external command. Then a failure occures
+# on protection.
+##########################################
+
+Failure PROTECTION LOS OFF      #
+Failure WORKING LOS OFF         # Return to default configuration
+Command CLEAR                   #
+Delete                          #
+Create OC48 1 0 1 1             #
+Edit NORMAL N 2 N N             #
+
+Command MS_P
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check MS PROTECTION 0 1PLUS1 UNIDIR
+
+Failure PROTECTION LOS ON
+
+CheckFsm S_WORKING_SELECTED
+Check SF_L WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node handles a defect on working and 
+# an higher priority external command is
+# seted by the user.
+##########################################
+
+Failure PROTECTION LOS OFF     # Return to default configuration
+Failure WORKING LOS OFF        #
+Command CLEAR                  #
+Delete                         #
+Create OC48 1 0 1 1            #
+Edit NORMAL Y 2 N N            #
+Command CLEAR                  #
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Command FS_W
+
+CheckFsm S_WORKING_SELECTED
+Check FS WORKING 0 1PLUS1 UNIDIR
+

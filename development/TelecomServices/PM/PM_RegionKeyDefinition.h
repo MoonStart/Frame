@@ -1,0 +1,411 @@
+/*--------------------------------------------------------------------------
+Copyright(c) Tellabs Transport Group. All rights reserved
+
+ SUBSYSTEM:     Performance Monitoring.
+ TARGET   :     All.
+ AUTHOR   :     20 July, 2000 Marc Vendette.
+ DESCRIPTION:   PM blackboard region keys definition.
+--------------------------------------------------------------------------*/
+
+#ifndef PM_REGIONKEYDEFINITION_H
+#define PM_REGIONKEYDEFINITION_H
+
+#include "CommonTypes/CT_PM_Definition.h"
+#include "CommonTypes/CT_SystemIds.h"
+#include <Blackboard/FC_BbKey.h>
+
+extern FC_BbKey PM_XFER_FTP_CFG;
+
+// Configuration of the X values
+extern FC_BbKey PM_GENERAL_CFG;
+extern FC_BbKey PM_END_OF_PERIOD;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR DATA
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_DATA_DEFECT;
+extern FC_BbKey PM_DATA_COUNTER;
+
+extern FC_BbKey PM_MS_NE_DEFECT;
+extern FC_BbKey PM_MS_NE_FAILURE;
+extern FC_BbKey PM_MS_NE_COUNTER;
+extern FC_BbKey PM_MS_NE_STATUS;
+
+extern FC_BbKey PM_MS_FE_DEFECT;
+extern FC_BbKey PM_MS_FE_FAILURE;
+extern FC_BbKey PM_MS_FE_COUNTER;
+
+extern FC_BbKey PM_HOP_NE_DEFECT;
+extern FC_BbKey PM_HOP_NE_FAILURE;
+extern FC_BbKey PM_HOP_NE_COUNTER;
+
+extern FC_BbKey PM_GFP_DEFECT;
+extern FC_BbKey PM_GFP_COUNTER;
+
+extern FC_BbKey PM_RMON_DEFECT;
+extern FC_BbKey PM_RMON_COUNTER;
+extern FC_BbKey PM_RMON_STATUS;
+
+
+// PROCESSOR KEY DEFINITION
+
+//---------------------------------------------------------------------------
+// PM KEY FOR DATA
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_DATA_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_DATA_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_DATA_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_DATA_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR Near-End SONET/SDH MS
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_MS_NE_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_NE_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_NE_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_NE_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR Far-End SONET/SDH MS
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_MS_FE_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_FE_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_FE_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_MS_FE_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR Near-End SONET/SDH HOP
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_HOP_NE_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_NE_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_NE_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_NE_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR Far-End SONET/SDH HOP
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_HOP_FE_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_FE_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_FE_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_HOP_FE_REQUEST;
+
+
+//---------------------------------------------------------------------------
+// PM KEY FOR GFP
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_GFP_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_GFP_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_GFP_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_GFP_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR RMON
+//---------------------------------------------------------------------------
+extern FC_BbKey PM_RMON_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_RMON_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_RMON_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_RMON_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR OTU
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_OTU_DEFECT;
+extern FC_BbKey PM_OTU_COUNTER;
+extern FC_BbKey PM_OTU_STATUS;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_OTU_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OTU_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OTU_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OTU_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR ODU
+//---------------------------------------------------------------------------
+ 
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_ODU_DEFECT;
+extern FC_BbKey PM_ODU_COUNTER;
+extern FC_BbKey PM_ODU_STATUS;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_ODU_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_ODU_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_ODU_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_ODU_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR TCM
+//---------------------------------------------------------------------------
+ 
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_TCM_DEFECT;
+extern FC_BbKey PM_TCM_COUNTER;
+extern FC_BbKey PM_TCM_STATUS;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_TCM_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_TCM_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_TCM_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_TCM_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR OPTICAL POWER
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_OPT_STATUS;
+extern FC_BbKey PM_OPT_DEFECT;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_OPT_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OPT_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OPT_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OPT_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR OMS POWER
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_OMS_STATUS;
+extern FC_BbKey PM_OMS_DEFECT;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_OMS_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OMS_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OMS_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_OMS_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR LASER
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_LASER_STATUS;
+
+// PROCESSOR KEY DEFINITION
+    
+extern FC_BbKey PM_LASER_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_LASER_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_LASER_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_LASER_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR CHANNNEL OPTICAL POWER
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+extern FC_BbKey PM_COP_STATUS;
+extern FC_BbKey PM_COP_DEFECT;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_COP_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_COP_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_COP_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_COP_REQUEST;
+
+extern FC_BbKey PM_INVALID_BB_KEY;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR EON
+//---------------------------------------------------------------------------
+
+// COLLECTOR KEY DEFINITION
+
+extern FC_BbKey PM_EON_COUNTER;
+
+// PROCESSOR KEY DEFINITION
+
+extern FC_BbKey PM_EON_CONFIG[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_EON_VALUE_CURRENT[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_EON_VALUE_PREVIOUS[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_EON_REQUEST;
+
+//---------------------------------------------------------------------------
+// PM KEY FOR HISTORY
+//---------------------------------------------------------------------------
+
+extern FC_BbKey PM_FILE_LATEST_PERIOD_READY;
+
+extern FC_BbKey PM_CARD_FILE_READY;
+
+extern FC_BbKey* PM_AMP_OS_15M_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey* PM_AMP_OS_DAY_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_AMP_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_AMP_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_AMP_OS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_AMP_OS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_AMP_OS_CONFIG_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_AMP_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_AMP_OS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey* PM_OSC_OS_15M_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey* PM_OSC_OS_DAY_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_OSC_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_OSC_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_OSC_OS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_OSC_OS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_OSC_OS_CONFIG_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_OSC_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_OSC_OS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey* PM_MUX_OS_15M_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey* PM_MUX_OS_DAY_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_MUX_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_MUX_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_MUX_OS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_MUX_OS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_MUX_OS_CONFIG_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_MUX_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_MUX_OS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey* PM_RCMM_OS_15M_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey* PM_RCMM_OS_DAY_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_RCMM_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_RCMM_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_RCMM_OS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_RCMM_OS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_RCMM_OS_CONFIG_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_RCMM_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_RCMM_OS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey* PM_OLIM_OS_15M_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey* PM_OLIM_OS_DAY_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_OLIM_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_OLIM_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_OLIM_OS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_OLIM_OS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_OLIM_OS_CONFIG_HISTORICAL[NUMBER_OF_OPTICAL_SHELF];
+extern FC_BbKey PM_OLIM_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_OLIM_OS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey PM_TRN_RAM_OS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_OS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey* PM_TRN_RAM_PS_15M_HISTORICAL[NUMBER_OF_PORT_SHELF];
+extern FC_BbKey* PM_TRN_RAM_PS_DAY_HISTORICAL[NUMBER_OF_PORT_SHELF];
+extern FC_BbKey PM_TRN_RAM_PS1_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS1_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS2_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS2_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS3_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS3_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS4_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS4_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS5_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS5_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS6_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS6_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS7_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS7_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS8_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS8_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS9_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS9_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS10_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS10_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS11_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS11_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS12_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS12_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS13_15M_HISTORICAL[CT_PM_NUMBER_OF_15M_HISTORICAL_DATA];
+extern FC_BbKey PM_TRN_RAM_PS13_DAY_HISTORICAL[CT_PM_NUMBER_OF_DAY_HISTORICAL_DATA];
+
+extern FC_BbKey PM_TRN_RAM_OS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern FC_BbKey* PM_TRN_RAM_PS_CONFIG_HISTORICAL[NUMBER_OF_PORT_SHELF];
+extern FC_BbKey PM_TRN_RAM_PS1_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS2_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS3_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS4_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS5_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS6_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS7_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS8_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS9_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS10_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS11_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS12_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+extern FC_BbKey PM_TRN_RAM_PS13_CONFIG_HISTORICAL[CT_PM_PERIOD_UNKNOWN];
+
+extern const string PM_KeySideTable[];
+
+FC_BbKey& PM_HISTORICAL(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory);
+
+FC_BbKey& PM_HISTORICAL_AMP(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory, CT_ShelfId theShelf);
+FC_BbKey& PM_HISTORICAL_OSC(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory, CT_ShelfId theShelf);
+FC_BbKey& PM_HISTORICAL_MUX(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory, CT_ShelfId theShelf);
+FC_BbKey& PM_HISTORICAL_OLIM(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory, CT_ShelfId theShelf);
+FC_BbKey& PM_HISTORICAL_TRN_RAM(CT_PM_Period thePeriod, CT_PM_HistoryId theHistory, CT_ShelfId theShelf);
+
+
+#endif //PM_REGIONKEYDEFINITION_H
+

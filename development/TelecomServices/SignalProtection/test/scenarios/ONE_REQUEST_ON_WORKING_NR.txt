@@ -1,0 +1,59 @@
+##########################################
+#
+# This scenario tests the complete management
+# by the node of a failure on working (1) and
+# of a external command on working.
+#
+# Important note: The node is non-revertive
+##########################################
+
+Architecture 1PLUS1
+
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL N 10 N N
+
+Failure WORKING LOS OFF
+
+##########################################
+# Failure on working facility
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON                   # A failure occures on working
+
+CheckFsm S_DEFECT_ON_WORKING             # Node must select protection facility
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR    #
+
+Failure WORKING LOS OFF                  # The defect is cleared
+
+CheckFsm S_PROTECTION_NO_REQUEST         # Node must stay on protection
+Check DNR PROTECTION 0 1PLUS1 UNIDIR     #
+
+##########################################
+# Command MS
+##########################################
+
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL N 10 N N
+
+Command MS_P                             # Sets a external command request
+
+CheckFsm S_COMMAND_TO_PROTECTION         # Node selects protection
+Check MS PROTECTION 0 1PLUS1 UNIDIR      #
+
+Command CLEAR                            # The command is cleared
+
+CheckFsm S_PROTECTION_NO_REQUEST         # Node must not return to working
+Check DNR PROTECTION 0 1PLUS1 UNIDIR     #
+
+
+### Remove the non-revertive setting ####
+
+Edit NORMAL Y 10 N N                     #
+CheckFsm S_WORKING_SELECTED              # Node returns to normal state
+Check NR WORKING 0 1PLUS1 UNIDIR         #
+

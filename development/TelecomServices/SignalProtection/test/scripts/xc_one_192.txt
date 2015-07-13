@@ -1,0 +1,155 @@
+############################################
+#####                                  #####
+#####    C R O S S    C O N N E C T    #####
+#####                                  #####
+#####      1+1 Protection (OC-192)     #####
+#####                                  #####
+############################################
+
+#######################################
+# Verify connections of a first group #
+#######################################
+#### TEST 1 ####
+# Verify INGRESS XC virtual port table
+#
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# Create GRP1
+one create LINEAR BIDIR OC192 1 0 0 2 0 0
+
+# Verify INGRESS XC virtual port table
+1:9 xc dvpr i 40
+
+@Print ##############################################
+@Print TEST 1 -> Verify INGRESS XC virtual port table
+@Print ##############################################
+@Pause
+
+#### TEST 2 ####
+# Verify EGRESS XC virtual port table
+#
+1:9 xc dvpr e 20
+
+@Print #############################################
+@Print TEST 2 -> Verify EGRESS XC virtual port table
+@Print #############################################
+@Pause
+
+##################################
+# Cross-Connect Card 1 to Card 3 #
+##################################
+#### TEST 3 ####
+# Cross-Connect using XC1, XC2, ... XC8
+# Verify INGRESS XC virtual port table
+#
+xc connect 1 1 1 0 1 3 0
+xc connect 2 1 1 1 1 3 1
+xc connect 3 1 1 2 1 3 2
+xc connect 4 1 1 3 1 3 3
+xc connect 5 1 3 0 1 1 0
+xc connect 6 1 3 1 1 1 1
+xc connect 7 1 3 2 1 1 2
+xc connect 8 1 3 3 1 1 3
+
+1:9 xc dvpr i 40
+
+@Print ##############################################
+@Print TEST 3 -> Verify INGRESS XC virtual port table
+@Print ##############################################
+@Pause
+
+#### TEST 4 ####
+# Verify EGRESS XC virtual port table
+#
+1:9 xc dvpr e 20
+
+@Print #############################################
+@Print TEST 4 -> Verify EGRESS XC virtual port table
+@Print #############################################
+@Pause
+
+################################
+# Force a Switch to Protection #
+################################
+#### TEST 5 ####
+# Verify INGRESS XC virtual port table
+
+sp group 0
+one cmd f p
+
+1:9 xc dvpr i 40
+
+@Print ##############################################
+@Print TEST 5 -> Verify INGRESS XC virtual port table
+@Print ##############################################
+@Pause
+
+#### TEST 6 ####
+# Verify EGRESS XC virtual port table
+#
+1:9 xc dvpr e 20
+
+@Print #############################################
+@Print TEST 6 -> Verify EGRESS XC virtual port table
+@Print #############################################
+@Pause
+
+##############################
+# Clear Switch to Protection #
+##############################
+#### TEST 7 ####
+# Verify INGRESS XC virtual port table
+
+one cmd c p
+
+1:9 xc dvpr i 40
+
+@Print ##############################################
+@Print TEST 7 -> Verify INGRESS XC virtual port table
+@Print ##############################################
+@Pause
+
+#### TEST 8 ####
+# Verify EGRESS XC virtual port table
+#
+1:9 xc dvpr e 20
+
+@Print #############################################
+@Print TEST 8 -> Verify EGRESS XC virtual port table
+@Print #############################################
+@Pause
+
+###########################
+# Delete Protection Group #
+###########################
+#### TEST 9 ####
+# Verify INGRESS XC virtual port table
+
+one delete 0
+
+1:9 xc dvpr i 40
+
+@Print ##############################################
+@Print TEST 9 -> Verify INGRESS XC virtual port table
+@Print ##############################################
+@Pause
+
+#### TEST 10 ####
+# Verify EGRESS XC virtual port table
+#
+1:9 xc dvpr e 20
+
+@Print ##############################################
+@Print TEST 10 -> Verify EGRESS XC virtual port table
+@Print ##############################################
+@Pause
+

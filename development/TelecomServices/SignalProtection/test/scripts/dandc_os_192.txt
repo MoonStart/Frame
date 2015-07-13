@@ -1,0 +1,235 @@
+##########################################################
+#####                                                #####
+#####        D R O P   A N D   C O N T I N U E       #####
+#####                                                #####
+#####    Opposite Side (OC-192 -  2 STSs Involved)   #####
+#####                                                #####
+##########################################################
+
+#### TEST 1 ####
+# Create Drop & Continue groups and connections
+#
+
+# Init NETRA
+sp facade y
+til XcValidate off
+til AllPath on on
+til UseCardPresence off
+
+# Init PCSM
+1:9 clsr timeout 100000 100000 100000
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# force synchronization of PCSMs
+sp sync
+
+@Wait 1000
+
+# Create GRP1, MAP1 and RING1
+clsr create OC192 1 0 2 0 3 0 4 0
+clsr map 0 2 4 3 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC192 2 99 4 99 99 99 99 99 2 99 4 99 99 99 99 99
+sp sts48 0
+clsr path n n n n n n n n
+sp sts48 1
+clsr path n n n n n n n n
+sp sts48 2
+clsr path n n n n n n n n
+sp sts48 3
+clsr path n n n n n n n n
+
+# Create GRP2, MAP2 and RING2
+clsr create OC192 5 0 6 0 7 0 8 0
+clsr map 2 4 3 0 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC192 4 0 99 99 99 99 99 99 4 0 99 99 99 99 99 99
+sp sts48 0
+clsr path n n n n n n n n
+sp sts48 1
+clsr path n n n n n n n n
+sp sts48 2
+clsr path n n n n n n n n
+sp sts48 3
+clsr path n n n n n n n n
+
+# Create GRP3, MAP3 and RING3
+clsr create OC192 11 0 12 0 13 0 14 0
+clsr map 4 3 0 2 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC192 99 2 99 0 99 99 99 99 99 2 99 0 99 99 99 99
+sp sts48 0
+clsr path n n n n n n n n
+sp sts48 1
+clsr path n n n n n n n n
+sp sts48 2
+clsr path n n n n n n n n
+sp sts48 3
+clsr path n n n n n n n n
+
+# Create UPSR1
+one create UPSR UNIDIR OC192 16 0 0 7 0 1
+one edit n y 5
+
+1:9 sp group 0
+1:9 one timeout 5000
+
+# Make connections
+# Bidirectional add to ring 1
+xc connect 1  1 13 0 1 18 0
+xc connect 2  1 13 1 1 18 1
+xc connect 3  1 13 2 1 18 2
+xc connect 4  1 13 3 1 18 3
+xc connect 5  1 18 0 1 13 0
+xc connect 6  1 18 1 1 13 1
+xc connect 7  1 18 2 1 13 2
+xc connect 8  1 18 3 1 13 3
+# Bidirectional ring interconnection
+xc connect 9  1 1 0 1 17 0
+xc connect 10 1 1 2 1 17 2
+xc connect 11 1 17 0 1 1 0
+xc connect 12 1 17 2 1 1 2
+# Continue in ring 1
+xc connect 13 1 7 0 1 5 0
+xc connect 14 1 7 2 1 5 2
+xc connect 15 1 16 0 1 5 0
+xc connect 16 1 16 2 1 5 2
+# UPSR in ring 1
+xc connect 17 1 5 0 1 7 0
+xc connect 18 1 5 2 1 7 2
+
+1:9 xc dvpr i 64
+1:9 xc dvpr e 64
+
+@Print ####################################################
+@Print TEST 1 -> Verify Drop & Continue initial connections
+@Print ####################################################
+@Pause
+
+#### TEST 2 ####
+# Test Primary Squelch Table
+#
+
+# Create a ring failure between nodes 4 and 2
+#
+1:9 tspiimon defect sfl on 0 13
+1:9 tspiimon defect sfl on 0 14
+1:9 tspiimon defect sfl on 0 5
+1:9 tspiimon defect sfl on 0 6
+1:9 tspiimon defect sfp on 0 13
+1:9 tspiimon defect sfp on 0 14
+1:9 tspiimon defect sfp on 0 5
+1:9 tspiimon defect sfp on 0 6
+1:9 tspiimon defect sfp on 2 13
+1:9 tspiimon defect sfp on 2 14
+1:9 tspiimon defect sfp on 2 5
+1:9 tspiimon defect sfp on 2 6
+1:9 sp group 0
+1:9 tspiimon aps 11 4 2 1 2 0 2
+1:9 tspiimon aps 11 2 4 1 2 0 4
+1:9 sp group 1
+1:9 tspiimon aps 11 2 4 1 2 0 8
+1:9 sp group 2
+1:9 tspiimon aps 11 4 2 1 2 0 12
+
+@Wait 1000
+
+1:9 xc dvpr i 64
+1:9 xc dvpr e 64
+
+@Print ####################################
+@Print TEST 2 -> Test Primary Squelch Table
+@Print ####################################
+@Pause
+
+#### TEST 3 ####
+# Test Secondary Squelch Table
+#
+
+# Create a ring failure between nodes 2 and 0
+#
+1:9 tspiimon defect sfl on 0 1
+1:9 tspiimon defect sfl on 0 2
+1:9 tspiimon defect sfl on 0 7
+1:9 tspiimon defect sfl on 0 8
+1:9 tspiimon defect sfp on 0 1
+1:9 tspiimon defect sfp on 0 2
+1:9 tspiimon defect sfp on 0 7
+1:9 tspiimon defect sfp on 0 8
+1:9 tspiimon defect sfp on 2 1
+1:9 tspiimon defect sfp on 2 2
+1:9 tspiimon defect sfp on 2 7
+1:9 tspiimon defect sfp on 2 8
+1:9 sp group 0
+1:9 tspiimon aps 11 4 2 1 2 0 2
+1:9 tspiimon aps 11 2 4 1 0 0 4
+1:9 sp group 2
+1:9 tspiimon aps 11 2 0 1 0 0 12
+
+@Wait 1000
+
+1:9 sp group 0
+1:9 tspiimon aps 11 2 4 1 2 0 4
+1:9 sp group 2
+1:9 tspiimon aps 11 2 0 1 2 0 12
+
+# Wait for UPSR2 to switch - Hold-off timer
+@Wait 4000
+
+1:9 xc dvpr i 64
+1:9 xc dvpr e 64
+
+@Print ######################################
+@Print TEST 3 -> Test Secondary Squelch Table
+@Print ######################################
+@Pause
+
+
+#### TEST 4 ####
+# Clear all remaining failures
+#
+
+1:9 tspiimon defect sfl off 0 13
+1:9 tspiimon defect sfl off 0 14
+1:9 tspiimon defect sfl off 0 5
+1:9 tspiimon defect sfl off 0 6
+1:9 tspiimon defect sfl off 0 1
+1:9 tspiimon defect sfl off 0 2
+1:9 tspiimon defect sfl off 0 7
+1:9 tspiimon defect sfl off 0 8
+1:9 tspiimon defect sfp off 0 1
+1:9 tspiimon defect sfp off 0 2
+1:9 tspiimon defect sfp off 0 7
+1:9 tspiimon defect sfp off 0 8
+1:9 tspiimon defect sfp off 0 13
+1:9 tspiimon defect sfp off 0 14
+1:9 tspiimon defect sfp off 0 5
+1:9 tspiimon defect sfp off 0 6
+1:9 tspiimon defect sfp off 2 1
+1:9 tspiimon defect sfp off 2 2
+1:9 tspiimon defect sfp off 2 7
+1:9 tspiimon defect sfp off 2 8
+1:9 tspiimon defect sfp off 2 13
+1:9 tspiimon defect sfp off 2 14
+1:9 tspiimon defect sfp off 2 5
+1:9 tspiimon defect sfp off 2 6
+
+1:9 sp group 0
+1:9 tspiimon aps 0 0 2 0 0 0 2
+1:9 tspiimon aps 0 0 3 0 0 0 4
+1:9 sp group 1
+1:9 tspiimon aps 0 2 4 0 0 0 6
+1:9 tspiimon aps 0 2 0 0 0 0 8
+1:9 sp group 2
+1:9 tspiimon aps 0 4 3 0 0 0 12
+1:9 tspiimon aps 0 4 2 0 0 0 14
+
+@Wait 5000
+
+1:9 xc dvpr i 64
+1:9 xc dvpr e 64
+
+@Print ######################################
+@Print TEST 4 -> Clear all remaining failures
+@Print ######################################
+@Pause
+

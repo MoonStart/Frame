@@ -1,0 +1,37 @@
+##########################################
+# This scenario tests some transitions
+# those that are not tested by usual scenario.
+# In this test we complete all missing
+# transition of C_CLEAR_REVERTIVE condition.
+#
+##########################################
+
+Architecture 1PLUS1
+
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+Failure WORKING LOS OFF
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is in WTR and then a clear command
+# is seted by the user.
+##########################################
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR
+
+Command CLEAR
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR

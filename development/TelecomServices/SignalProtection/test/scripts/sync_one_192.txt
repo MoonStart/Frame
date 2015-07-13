@@ -1,0 +1,232 @@
+############################################
+#####                                  #####
+#####            S Y N C               #####
+#####                                  #####
+#####    1+1 Protection  (OC-192)      #####
+#####                                  #####
+############################################
+
+#### TEST 1 ####
+# Set initial state of 1+1 group before synchronization
+
+# Init NETRA
+sp facade y
+til XcValidate off
+til AllPath on on
+til UseCardPresence off
+
+# Create GRP1, MAP1, RING1 and CFG1
+one create LINEAR BIDIR OC192 1 0 0 2 0 0
+one edit n n 10
+sp sts48 0
+one path n n n n
+sp sts48 1
+one path n n n n
+sp sts48 2
+one path n n n n
+sp sts48 3
+one path n n n n
+
+@Print Startup cold PCSMA
+@Pause
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+@Print Let PCSMA synchronize
+@Pause
+
+@Wait 3000
+one cmd f p
+@Wait 3000
+one cmd c x
+
+1:9 one state a
+
+@Print ################################
+@Print TEST 1 -> Verify new group state
+@Print ################################
+@Pause
+
+#### TEST 2 ####
+# Verify PCSMA synchronizes from disk on a warm boot
+
+@Print Shutdown warm PCSMA
+@Pause
+
+@Print Startup warm PCSMA in a debugger
+@Pause
+
+sp initport 1
+
+@Print Let PCSMA synchronize
+@Pause
+
+1:9 one state a
+
+@Print ################################################
+@Print TEST 2 -> Verify PCSMA synchronization from disk
+@Print ################################################
+@Pause
+
+#### TEST 3 ####
+# Verify PCSMB synchronizes from mate on a cold boot
+
+@Print Startup cold PCSMB
+@Pause
+
+sp initport 1
+
+@Print Let PCSMB synchronize
+@Pause
+
+1:10 one state a
+
+@Print ################################################
+@Print TEST 3 -> Verify PCSMB synchronization from mate
+@Print ################################################
+@Pause
+
+#### TEST 4 ####
+# Verify PCSMA synchronizes a command after recovering from a bad quality
+
+@Print Set CQS_CardQuality value to 2 on PCSMA
+@Print (region edit CQS_CardQuality 0)
+@Pause
+
+@Print Break PCSMA debugger
+@Pause
+
+@Wait 3000
+one cmd f w
+@Wait 3000
+one cmd c x
+
+@Print  
+@Print  
+@Print Break NETRA debugger,
+@Print Restart PCSMA debugger (Go)
+@Print and do the following on PCSMA shell:
+@Print  
+@Print - region edit CQS_CardQuality 0
+@Print   Set value as 0
+@Print - Let PCSMA synchronize
+@Print - one state a
+@Print  
+@Print Restart NETRA debugger (Go)
+@Print  
+@Print  
+@Print #############################################
+@Print TEST 4 -> Verify PCSMA synchronizes a command
+@Print #############################################
+@Pause
+
+#### TEST 5 ####
+# Verify PCSMA synchronizes from disk on a warm boot
+
+@Print Shutdown cold PCSMA
+@Pause
+
+@Wait 3000
+one cmd f p
+@Wait 3000
+one cmd c x
+
+@Print Startup cold PCSMA
+@Pause
+
+sp initport 1
+
+@Print Let PCSMA synchronize
+@Pause
+
+1:9 one state a
+
+@Print ##########################################################
+@Print TEST 5 -> Verify PCSMA synchronizes from mate on cold boot
+@Print ##########################################################
+@Pause
+
+#### TEST 6 ####
+# Verify PCSMA synchronizes from disk on a warm boot
+
+@Print Shutdown warm PCSMA
+@Print Shutdown warm PCSMB
+@Pause
+
+@Print Startup warm PCSMB
+@Pause
+
+sp initport 1
+
+@Print Let PCSMB synchronize
+@Pause
+
+1:10 one state a
+
+@Print ##########################################################
+@Print TEST 6 -> Verify PCSMB synchronizes from disk on warm boot
+@Print ##########################################################
+@Pause
+
+#### TEST 7 ####
+# Verify synchronization from mate of more than one group
+
+# Create GRP2 and CFG5
+one create LINEAR BIDIR OC48 3 0 0 4 0 0
+one edit n n 10
+sp sts48 0
+one path n n n n
+sp sts48 1
+one path n n n n
+sp sts48 2
+one path n n n n
+sp sts48 3
+one path n n n n
+
+@Wait 3000
+one cmd f p
+@Wait 3000
+one cmd c x
+
+@Print Startup warm PCSMA
+@Pause
+
+sp initport 1
+
+@Print Let PCSMA synchronize
+@Pause
+
+1:9 one state a
+1:9 sp group 1
+1:9 one state a
+
+@Print #################################################################
+@Print TEST 7 -> Verify synchronization from mate of more than one group
+@Print #################################################################
+@Pause
+
+
+#### TEST 8 ####
+# Verify synchronization from disk of more than one group
+
+@Print Shutdown warm PCSMA
+@Print Shutdown cold PCSMB
+
+@Print Startup warm PCSMA
+@Pause
+
+sp initport 1
+
+@Print Let PCSMA synchronize
+@Pause
+
+1:9 one state a
+1:9 sp group 1
+1:9 one state a
+
+@Print #################################################################
+@Print TEST 8 -> Verify synchronization from disk of more than one group
+@Print #################################################################
+@Pause
+

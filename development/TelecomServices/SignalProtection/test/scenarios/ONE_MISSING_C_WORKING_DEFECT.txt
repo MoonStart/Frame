@@ -1,0 +1,91 @@
+##########################################
+# This scenario tests some transitions
+# those that are not tested by usual scenario.
+# In this test we complete all missing
+# transition of C_WORKING_DEFECT condition.
+#
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+Command CLEAR
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is in WTR an another defect 
+# happens
+##########################################
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+##########################################
+# Node selects the protection because
+# it is not revertive and then a defect
+# occures on working facility.
+##########################################
+
+Failure WORKING LOS OFF            #
+Command CLEAR                      # Sets the default settings
+Delete                             #
+Create OC48 1 0 1 1                #
+Edit NORMAL N 2 N N                #
+Failure WORKING LOS OFF            #
+CheckFsm S_WORKING_SELECTED        #
+Check NR WORKING 0 1PLUS1 UNIDIR   #
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_PROTECTION_NO_REQUEST
+Check DNR PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+##########################################
+# Node executes a command and a failure
+# of higher priority is detected on 
+# working facility.
+##########################################
+
+Failure WORKING LOS OFF           #
+Command CLEAR                     # Sets the node configuration
+Delete                            # and clears the last defect
+Create OC48 1 0 1 1               #
+Edit NORMAL N 2 N N               #
+
+Command MS_P
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check MS PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+

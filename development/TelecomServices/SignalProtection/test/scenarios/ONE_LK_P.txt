@@ -1,0 +1,19 @@
+##########################################
+#  
+# Validates the LK_P command effect
+#
+# SRS FP1.0 8.18 BRS-3403
+#           8.23 BRS-3412
+#           8.22 BRS-3411
+##########################################
+
+Architecture 1PLUS1
+
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 10 N N
+
+Command LK_P                        # Sends the lockout command
+
+CheckFsm S_WORKING_SELECTED         # Checks the resulting state
+Check LP WORKING 0 1PLUS1 UNIDIR    # 

@@ -1,0 +1,97 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ExecutionSupport"=..\..\..\SoftwareServices\FC\ExecutionSupport\proj\ExecutionSupport.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    ExecutionSupport
+    ..\..\..\SoftwareServices\FC\ExecutionSupport\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "TsPii"=..\..\TsPii\proj\TsPii.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    TsPii
+    ..\..\TsPii
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "blackboard"=..\..\..\SoftwareServices\FC\Blackboard\proj\blackboard.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    blackboard
+    ..\..\..\SoftwareServices\FC\Blackboard\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "cfg"=.\cfg.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    cfg
+    ..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mon"=..\..\Monitoring\proj\mon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    mon
+    ..\..\Monitoring\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

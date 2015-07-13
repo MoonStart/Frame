@@ -1,0 +1,113 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "CommonTypes"=..\..\..\CommonTypes\proj\CommonTypes.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    CommonTypes
+    ..\..\..\development\CommonTypes\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "T6100Common"=..\..\..\CommonPlatforms\SoftwareServices\T6100\proj\T6100Common.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    T6100Common
+    ..\..\..\development\CommonPlatforms\SoftwareServices\T6100\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pmCommonPlatform"=..\..\..\CommonPlatforms\TelecomServices\PM\proj\pmCommonPlatform.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    pmCommonPlatform
+    ..\..\..\development\CommonPlatforms\TelecomServices\PM\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pmLib"=.\pmLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    pmLib
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "pmSpecificAPM"=..\..\..\APM8250\TelecomServices\PM\proj\pmSpecificAPM.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    pmSpecificAPM
+    ..\..\..\APM8250\TelecomServices\PM\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "telcommon"=..\..\TelCommon\proj\telcommon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    telcommon
+    ..\..\TelCommon\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

@@ -1,0 +1,538 @@
+#To reset config
+#===============
+
+sp shelf 3
+
+til XcValidate off
+til AllPath on off
+til AllCard off
+
+# Upper ring
+#=============
+
+#Node 0 (GROUP 0)
+#======
+clsr create OC48 6 0 6 1 6 2 6 3
+clsr edit n y 7
+clsr ring OC48 1 99 2 99
+sp sts48 0
+clsr path n n n y  n n n n 
+sp sts48 1
+clsr path n n n n  n n n n 
+sp sts48 2
+clsr path n n n n  n n n n 
+sp sts48 3
+clsr path n n n n  n n n n 
+clsr map  0 1 2 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+
+#Node 1 (GROUP 1)
+#======
+clsr create OC48 7 0 7 1 7 2 7 3
+clsr edit n y 7
+clsr ring OC48 2 0 99 99
+sp sts48 0
+clsr path n n n n  n n n n 
+sp sts48 1
+clsr path n n n n  n n n n 
+sp sts48 2
+clsr path n n n n  n n n n 
+sp sts48 3
+clsr path n n n n  n n n n 
+clsr map 1 2 0 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+#Node 2 (GROUP 2)
+#======
+clsr create OC48 8 0 8 1 8 2 8 3
+clsr edit n y 7
+clsr ring OC48 99 1 99 0
+sp sts48 0
+clsr path n n n n  n n n y
+sp sts48 1
+clsr path n n n n  n n n n
+sp sts48 2
+clsr path n n n n  n n n n
+sp sts48 3
+clsr path n n n n  n n n n 
+clsr map 2 0 1 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+
+#Lower Ring
+#=========
+
+#Node 3 (GROUP 3)
+#======
+clsr create OC48 11 0 11 1 11 2 11 3
+clsr edit n y 7
+clsr ring OC48 4 99 5 99
+sp sts48 0
+clsr path n n n y  n n n n
+sp sts48 1
+clsr path n n n n  n n n n
+sp sts48 2
+clsr path n n n n  n n n n
+sp sts48 3
+clsr path n n n n  n n n n 
+clsr map 3 4 5 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+
+#Node 4 (GROUP 4)
+#======
+clsr create OC48 12 0 12 1 12 2 12 3
+clsr edit n y 7
+clsr ring OC48 5 3 99 99
+sp sts48 0
+clsr path n n n n  n n n n
+sp sts48 1
+clsr path n n n n  n n n n
+sp sts48 2
+clsr path n n n n  n n n n
+sp sts48 3
+clsr path n n n n  n n n n
+clsr map 4 5 3 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+
+#Node 5 (GROUP 5)
+#======
+clsr create OC48 13 0 13 1 13 2 13 3
+clsr edit n y 7
+clsr ring OC48 99 4 99 3
+sp sts48 0
+clsr path n n n n  n n n y
+sp sts48 1
+clsr path n n n n  n n n n
+sp sts48 2
+clsr path n n n n  n n n n
+sp sts48 3
+clsr path n n n n  n n n n
+clsr map 5 3 4 99   99 99 99 99   99 99 99 99   99 99 99 99
+
+
+#Upper UPSR
+#==========
+one create UPSR UNIDIR OC48  12 2 1   7 2 1 
+one edit n n 10
+
+3:9 sp group 0
+3:9 one timeout 1500
+3:10 sp group 0
+3:10 one timeout 1500
+
+#Lower UPSR
+#==========
+one create UPSR UNIDIR OC48 7 0 1    12 0 1
+one edit n n 10
+
+3:9 sp group 1
+3:9 one timeout 1500
+3:10 sp group 1
+3:10 one timeout 1500
+
+#On Netra
+#========
+
+#Lower ring
+#==========
+#module 11
+#========
+#port 0
+#------
+tscfg set term lte 0 11 3
+tscfg set std sonet 0 11 3
+tscfg ena laser 0 11 3
+tscfg dis eaisl 0 11 3
+tscfg dis eaisp 0 0 11 3
+tscfg dis euneq 0 0 11 3
+tscfg dis iaisl 0 11 3
+tscfg dis iaisp 0 0 11 3
+tscfg set ettrace port11.0 0 11 3
+
+#port 1
+#-------
+tscfg set term lte 1 11 3
+tscfg set std sonet 1 11 3
+tscfg ena laser 1 11 3
+tscfg dis eaisl 1 11 3
+tscfg dis eaisp 0 1 11 3
+tscfg dis euneq 0 1 11 3
+tscfg dis iaisl 1 11 3
+tscfg dis iaisp 0 1 11 3
+tscfg set ettrace port11.1 1 11 3
+
+#port 2
+#------
+tscfg set term lte 2 11 3
+tscfg set std sonet 2 11 3
+tscfg ena laser 2 11 3
+tscfg dis eaisl 2 11 3
+tscfg dis eaisp 0 2 11 3
+tscfg dis euneq 0 2 11 3
+tscfg dis iaisl 2 11 3
+tscfg dis iaisp 0 2 11 3
+tscfg set ettrace port11.2 2 11 3
+
+#port 3
+#-------
+tscfg set term lte 3 11 3
+tscfg set std sonet 3 11 3
+tscfg ena laser 3 11 3
+tscfg dis eaisl 3 11 3
+tscfg dis eaisp 0 3 11 3
+tscfg dis euneq 0 3 11 3
+tscfg dis iaisl 3 11 3
+tscfg dis iaisp 0 3 11 3
+tscfg set ettrace port11.3 3 11 3
+
+#module 12
+#========
+#port 0
+#------
+tscfg set term lte 0 12 3
+tscfg set std sonet 0 12 3
+tscfg ena laser 0 12 3
+tscfg dis eaisl 0 12 3
+tscfg dis eaisp 0 0 12 3
+tscfg dis euneq 0 0 12 3
+tscfg dis iaisl 0 12 3
+tscfg dis iaisp 0 0 12 3
+tscfg set ettrace port12.0 0 12 3
+
+#port 1
+#-------
+tscfg set term lte 1 12 3
+tscfg set std sonet 1 12 3
+tscfg ena laser 1 12 3
+tscfg dis eaisl 1 12 3
+tscfg dis eaisp 0 1 12 3
+tscfg dis euneq 0 1 12 3
+tscfg dis iaisl 1 12 3
+tscfg dis iaisp 0 1 12 3
+tscfg set ettrace port12.1 1 12 3
+
+#port 2
+#------
+tscfg set term lte 2 12 3
+tscfg set std sonet 2 12 3
+tscfg ena laser 2 12 3
+tscfg dis eaisl 2 12 3
+tscfg dis eaisp 0 2 12 3
+tscfg dis euneq 0 2 12 3
+tscfg dis iaisl 2 12 3
+tscfg dis iaisp 0 2 12 3
+tscfg set ettrace port12.2 2 12 3
+
+#port 3
+#-------
+tscfg set term lte 3 12 3
+tscfg set std sonet 3 12 3
+tscfg ena laser 3 12 3
+tscfg dis eaisl 3 12 3
+tscfg dis eaisp 0 3 12 3
+tscfg dis euneq 0 3 12 3
+tscfg dis iaisl 3 12 3
+tscfg dis iaisp 0 3 12 3
+tscfg set ettrace port12.3 3 12 3
+
+
+#module 13
+#========
+#port 0
+#------
+tscfg set term lte 0 13 3
+tscfg set std sonet 0 13 3
+tscfg ena laser 0 13 3
+tscfg dis eaisl 0 13 3
+tscfg dis eaisp 0 0 13 3
+tscfg dis euneq 0 0 13 3
+tscfg dis iaisl 0 13 3
+tscfg dis iaisp 0 0 13 3
+tscfg set ettrace port13.0 0 13 3
+
+#port 1
+#-------
+tscfg set term lte 1 13 3
+tscfg set std sonet 1 13 3
+tscfg ena laser 1 13 3
+tscfg dis eaisl 1 13 3
+tscfg dis eaisp 0 1 13 3
+tscfg dis euneq 0 1 13 3
+tscfg dis iaisl 1 13 3
+tscfg dis iaisp 0 1 13 3
+tscfg set ettrace port13.1 1 13 3
+
+#port 2
+#------
+tscfg set term lte 2 13 3
+tscfg set std sonet 2 13 3
+tscfg ena laser 2 13 3
+tscfg dis eaisl 2 13 3
+tscfg dis eaisp 0 2 13 3
+tscfg dis euneq 0 2 13 3
+tscfg dis iaisl 2 13 3
+tscfg dis iaisp 0 2 13 3
+tscfg set ettrace port13.2 2 13 3
+
+#port 3
+#-------
+tscfg set term lte 3 13 3
+tscfg set std sonet 3 13 3
+tscfg ena laser 3 13 3
+tscfg dis eaisl 3 13 3
+tscfg dis eaisp 0 3 13 3
+tscfg dis euneq 0 3 13 3
+tscfg dis iaisl 3 13 3
+tscfg dis iaisp 0 3 13 3
+tscfg set ettrace port13.3 3 13 3
+
+
+#Upper ring
+#===========
+
+#module 6
+#=========
+#port 0
+#------
+tscfg set term lte 0 6 3
+tscfg set std sonet 0 6 3
+tscfg ena laser 0 6 3
+tscfg dis eaisl 0 6 3
+tscfg dis eaisp 0 0 6 3
+tscfg dis euneq 0 0 6 3
+tscfg dis iaisl 0 6 3
+tscfg dis iaisp 0 0 6 3
+tscfg set ettrace port6.0 0 6 3
+
+#port 1
+#-------
+tscfg set term lte 1 6 3
+tscfg set std sonet 1 6 3
+tscfg ena laser 1 6 3
+tscfg dis eaisl 1 6 3
+tscfg dis eaisp 0 1 6 3
+tscfg dis euneq 0 1 6 3
+tscfg dis iaisl 1 6 3
+tscfg dis iaisp 0 1 6 3
+tscfg set ettrace port6.1 1 6 3
+
+#port 2
+#------
+tscfg set term lte 2 6 3
+tscfg set std sonet 2 6 3
+tscfg ena laser 2 6 3
+tscfg dis eaisl 2 6 3
+tscfg dis eaisp 0 2 6 3
+tscfg dis euneq 0 2 6 3
+tscfg dis iaisl 2 6 3
+tscfg dis iaisp 0 2 6 3
+tscfg set ettrace port6.2 2 6 3
+
+#port 3
+#-------
+tscfg set term lte 3 6 3
+tscfg set std sonet 3 6 3
+tscfg ena laser 3 6 3
+tscfg dis eaisl 3 6 3
+tscfg dis eaisp 0 3 6 3
+tscfg dis euneq 0 3 6 3
+tscfg dis iaisl 3 6 3
+tscfg dis iaisp 0 3 6 3
+tscfg set ettrace port6.3 3 6 3
+
+
+#module 7
+#=========
+#port 0
+#------
+tscfg set term lte 0 7 3
+tscfg set std sonet 0 7 3
+tscfg ena laser 0 7 3
+tscfg dis eaisl 0 7 3
+tscfg dis eaisp 0 0 7 3
+tscfg dis euneq 0 0 7 3
+tscfg dis iaisl 0 7 3
+tscfg dis iaisp 0 0 7 3
+tscfg set ettrace port7.0 0 7 3
+
+#port 1
+#-------
+tscfg set term lte 1 7 3
+tscfg set std sonet 1 7 3
+tscfg ena laser 1 7 3
+tscfg dis eaisl 1 7 3
+tscfg dis eaisp 0 1 7 3
+tscfg dis euneq 0 1 7 3
+tscfg dis iaisl 1 7 3
+tscfg dis iaisp 0 1 7 3
+tscfg set ettrace port7.1 1 7 3
+
+#port 2
+#------
+tscfg set term lte 2 7 3
+tscfg set std sonet 2 7 3
+tscfg ena laser 2 7 3
+tscfg dis eaisl 2 7 3
+tscfg dis eaisp 0 2 7 3
+tscfg dis euneq 0 2 7 3
+tscfg dis iaisl 2 7 3
+tscfg dis iaisp 0 2 7 3
+tscfg set ettrace port7.2 2 7 3
+
+#port 3
+#-------
+tscfg set term lte 3 7 3
+tscfg set std sonet 3 7 3
+tscfg ena laser 3 7 3
+tscfg dis eaisl 3 7 3
+tscfg dis eaisp 0 3 7 3
+tscfg dis euneq 0 3 7 3
+tscfg dis iaisl 3 7 3
+tscfg dis iaisp 0 3 7 3
+tscfg set ettrace port7.3 3 7 3
+
+#module 8
+#========
+#port 0
+#------
+tscfg set term lte 0 8 3
+tscfg set std sonet 0 8 3
+tscfg ena laser 0 8 3
+tscfg dis eaisl 0 8 3
+tscfg dis eaisp 0 0 8 3
+tscfg dis euneq 0 0 8 3
+tscfg dis iaisl 0 8 3
+tscfg dis iaisp 0 0 8 3
+tscfg set ettrace port8.0 0 8 3
+
+#port 1
+#-------
+tscfg set term lte 1 8 3
+tscfg set std sonet 1 8 3
+tscfg ena laser 1 8 3
+tscfg dis eaisl 1 8 3
+tscfg dis eaisp 0 1 8 3
+tscfg dis euneq 0 1 8 3
+tscfg dis iaisl 1 8 3
+tscfg dis iaisp 0 1 8 3
+tscfg set ettrace port8.1 1 8 3
+
+#port 2
+#------
+tscfg set term lte 2 8 3
+tscfg set std sonet 2 8 3
+tscfg ena laser 2 8 3
+tscfg dis eaisl 2 8 3
+tscfg dis eaisp 0 2 8 3
+tscfg dis euneq 0 2 8 3
+tscfg dis iaisl 2 8 3
+tscfg dis iaisp 0 2 8 3
+tscfg set ettrace port8.2 2 8 3
+
+#port 3
+#-------
+tscfg set term lte 3 8 3
+tscfg set std sonet 3 8 3
+tscfg ena laser 3 8 3
+tscfg dis eaisl 3 8 3
+tscfg dis eaisp 0 3 8 3
+tscfg dis euneq 0 3 8 3
+tscfg dis iaisl 3 8 3
+tscfg dis iaisp 0 3 8 3
+tscfg set ettrace port8.3 3 8 3
+
+
+
+
+#Add/Drop card
+#=============
+#module 2
+#========
+#port 0
+#------
+tscfg set term lte 0 2 3
+tscfg set std sonet 0 2 3
+tscfg ena laser 0 2 3
+tscfg dis eaisl 0 2 3
+tscfg dis eaisp 0 0 2 3
+tscfg dis euneq 0 0 2 3
+tscfg dis iaisl 0 2 3
+tscfg dis iaisp 0 0 2 3
+tscfg set ettrace port2.0 0 2 3
+
+#port 1
+#-------
+tscfg set term lte 1 2 3
+tscfg set std sonet 1 2 3
+tscfg ena laser 1 2 3
+tscfg dis eaisl 1 2 3
+tscfg dis eaisp 0 1 2 3
+tscfg dis euneq 0 1 2 3
+tscfg dis iaisl 1 2 3
+tscfg dis iaisp 0 1 2 3
+tscfg set ettrace port2.1 1 2 3
+
+#port 2
+#------
+tscfg set term lte 2 2 3
+tscfg set std sonet 2 2 3
+tscfg ena laser 2 2 3
+tscfg dis eaisl 2 2 3
+tscfg dis eaisp 0 2 2 3
+tscfg dis euneq 0 2 2 3
+tscfg dis iaisl 2 2 3
+tscfg dis iaisp 0 2 2 3
+tscfg set ettrace port2.2 2 2 3
+
+#port 3
+#-------
+tscfg set term lte 3 2 3
+tscfg set std sonet 3 2 3
+tscfg ena laser 3 2 3
+tscfg dis eaisl 3 2 3
+tscfg dis eaisp 0 3 2 3
+tscfg dis euneq 0 3 2 3
+tscfg dis iaisl 3 2 3
+tscfg dis iaisp 0 3 2 3
+tscfg set ettrace port2.3 3 2 3
+
+
+#
+# cross-connections
+#
+
+#Add/drop on upper ring
+#=======================
+xc connect 1  3 8 2 3 2 0 
+xc connect 2  3 2 0 3 8 2
+
+# ring interconnection on node 0
+#=================================
+xc connect 3 3 6 0 3 2 1
+xc connect 4 3 2 1 3 6 0
+
+# continue on node 1 (unidir)
+#====================
+xc connect 5 3 7 2 3 7 0
+
+#  Upper UPSR cross-connection (unidir)
+#======================================
+xc connect 6 3 7 0 3 7 2
+
+
+# continue on node 4 (unidir)
+#====================
+xc connect 7 3 12 0 3 12 2
+
+#  Lower UPSR cross-connection (unidir)
+#======================================
+xc connect  8 3 12 2 3 12 0
+
+# ring interconnection on node 5
+#=================================
+xc connect 9 3 13 2 3 2 3
+xc connect 10 3 2 3 3 13 2
+
+#Add/drop on upper ring
+#=======================
+xc connect 11 3 11 0 3 2 2
+xc connect 12 3 2 2 3 11 0
+

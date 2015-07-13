@@ -1,0 +1,299 @@
+######################################################
+#####                                            #####
+#####  I N T E R F A C E    V A L I D A T I O N  #####
+#####                                            #####
+#####              1+1 Protection                #####
+#####                                            #####
+######################################################
+
+########################
+# Test Groups creation #
+########################
+#### TEST 1 ####
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# Create GRP1
+one create LINEAR BIDIR OC48 1 0 0 1 1 0
+
+@Wait 2000
+
+1:9 one state a
+@Print ########################################################
+@Print TEST 1 -> Verify new group default values: group state
+@Print ########################################################
+@Pause
+
+#### TEST 2 ####
+1:9 one stat
+@Print ########################################################
+@Print TEST 2 -> Verify new group default values: group status
+@Print ########################################################
+@Pause
+
+#### TEST 3 ####
+1:9 one config
+@Print ########################################################
+@Print TEST 3 -> Verify new group default values: port mapping
+@Print ########################################################
+@Pause
+
+#### TEST 4 ####
+# Create GRP2
+one create LINEAR BIDIR OC48 2 0 0 2 1 0
+
+@Wait 2000
+
+1:9 sp group 1
+1:9 one state a
+@Print ########################################################
+@Print TEST 4 -> Test a second group: see if GROUP ID and 
+@Print           UNIQUE ID increment
+@Print ########################################################
+@Pause
+
+#### TEST 5 ####
+# Create GRP3
+one create LINEAR BIDIR OC48 3 0 0 4 1 0
+
+@Wait 2000
+
+1:9 sp group 2
+1:9 one state a
+@Print ########################################################
+@Print TEST 5 -> Test a third group: see if GROUP ID and 
+@Print           UNIQUE ID increment
+@Print ########################################################
+@Pause
+
+#### TEST 6 ####
+one delete 1
+
+1:9 sp group 1
+1:9 one state a
+@Print ########################################################
+@Print TEST 6 -> Delete the second group: see if it is disabled
+@Print ########################################################
+@Pause
+
+#### TEST 7 ####
+# Create GRP4
+one create LINEAR BIDIR OC48 6 0 0 6 1 0 1 20
+
+@Wait 2000
+
+1:9 one state a
+1:9 one config
+@Print ########################################################
+@Print TEST 7 -> Try to fill the hole left by the deletion of 
+@Print           the second group.  UNIQUE ID should increment
+@Print ########################################################
+@Pause
+
+#### TEST 8 ####
+# Create GRP5
+one create LINEAR BIDIR OC48 7 0 0 7 1 0 3 12
+
+@Wait 2000
+
+1:9 sp group 3
+1:9 one state a
+@Print ########################################################
+@Print TEST 8 -> Create a group with a UNIQUE ID lower than
+@Print           max UNIQUE ID.
+@Print ########################################################
+@Pause
+
+###########################
+# Test 1+1 Configurations #
+###########################
+#### TEST 9 ####
+# Set CFG1
+sp group 1
+one edit n y 10
+sp sts48 0
+one path n n n n 
+
+1:9 sp group 1
+1:9 one config
+@Print ########################################################
+@Print TEST 9 -> Set a new config.
+@Print ########################################################
+@Pause
+
+#### TEST 10 ####
+# Set CFG2
+one edit l n 0
+sp sts48 0
+one path y y n n 
+
+1:9 one config
+@Print ########################################################
+@Print TEST 10 -> Test configuration 2
+@Print ########################################################
+@Pause
+
+#### TEST 11 ####
+# Set CFG3
+one edit s y 700
+sp sts48 0
+one path n n y y 
+
+1:9 one config
+@Print ########################################################
+@Print TEST 11 -> Test configuration 3
+@Print ########################################################
+@Pause
+
+#### TEST 12 ####
+# Set CFG4
+one edit n n 800 
+sp sts48 0
+one path y y y y
+
+1:9 one config
+@Print ########################################################
+@Print TEST 12 -> Test configuration 4
+@Print ########################################################
+@Pause
+
+one edit n y 10
+sp sts48 0
+one path n n n n 
+
+#######################
+# Test Netra commands #
+#######################
+#### TEST 13 ####
+# Lock Protection
+one cmd l x
+
+1:9 one state a
+@Print ########################################################
+@Print TEST 13 -> Test Lock Protection
+@Print ########################################################
+@Pause
+
+one cmd c x
+
+#### TEST 14 ####
+# Force switch on Protection
+one cmd f p
+
+1:9 one state a
+1:9 one stat
+@Print ########################################################
+@Print TEST 14 -> Force switch on protection
+@Print ########################################################
+@Pause
+
+one cmd c p
+
+#### TEST 15 ####
+# Manual switch on Protection
+one cmd m p
+
+1:9 one state a
+1:9 one stat
+@Print ########################################################
+@Print TEST 15 -> Manual switch on protection
+@Print ########################################################
+@Pause
+
+one cmd c p
+
+##########################################
+# Test 1+1 Status reporting on Netra and #
+# Registration for Notification          #
+##########################################
+#### TEST 16 ####
+notif dump y
+one regNotif
+one status
+@Print ########################################################
+@Print TEST 16 -> Test Status Reporting to Netra and
+@Print            registration for notification
+@Print            Display initial status on NETRA of GROUP ID 1
+@Print ########################################################
+@Pause
+
+#### TEST 17 ####
+one cmd f p
+@Wait 1000
+one status
+@Print ########################################################
+@Print TEST 17 -> Force switch on protection
+@Print ########################################################
+@Pause
+
+one cmd c p
+
+#### TEST 18 ####
+1:9 tspiimon defect sfl on 0 6
+
+one status
+@Print ########################################################
+@Print TEST 18 -> Set a defect on working
+@Print ########################################################
+@Pause
+
+#### TEST 19 ####
+one cmd f w
+@Wait 1000
+one status
+@Print ########################################################
+@Print TEST 19 -> Force switch on working
+@Print ########################################################
+@Pause
+
+one cmd c w
+
+#### TEST 20 ####
+1:9 tspiimon defect sfl on 1 6
+
+one status
+@Print ########################################################
+@Print TEST 20 -> Set a defect on protection
+@Print ########################################################
+@Pause
+
+#### TEST 21 ####
+# Test WTR and revertive mode
+1:9 tspiimon defect sfl off 1 6
+1:9 tspiimon defect sfl off 0 6
+
+@Wait 11000
+
+1:9 one state a
+@Print ########################################################
+@Print TEST 21 -> Test WTR and Revertive mode
+@Print ########################################################
+@Pause
+
+#### TEST 22 ####
+# Test Non-Revertive mode
+one edit n n 10
+sp sts48 0
+one path n n n n 
+
+1:9 tspiimon defect sfl on 0 6
+@Wait 500
+
+1:9 tspiimon defect sfl off 0 6
+
+@Wait 10000
+
+1:9 one state a
+@Print ########################################################
+@Print TEST 22 -> Test non-revertive mode
+@Print ########################################################
+@Pause
+

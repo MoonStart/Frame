@@ -1,0 +1,52 @@
+############################################
+#####                                  #####
+#####            T S P I I             #####
+#####                                  #####
+#####         1+1 Protection (OC-192)  #####
+#####                                  #####
+############################################
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+sp sync
+
+@Wait 2000
+
+# Create GRP1
+one create LINEAR BIDIR OC192 1 0 0 2 0 0
+
+1:9 one state a
+@Print ###########################################
+@Print #### TEST 1 ####
+@Print # Check the initial state of the
+@Print # 1+1 group with default K1K2 bytes.
+@Print ###########################################
+@Pause
+
+1:9 tspiicfg apsEgK1K2  get 2 0
+@Print ###########################################
+@Print #### TEST 2 ####
+@Print # Check default K1K2 bytes sent on TSPII
+@Print # and UNEQ-P AIS-P values of protection
+@Print ###########################################
+@Pause
+
+
+one cmd f p
+
+1:9 tspiicfg apsEgK1K2  get 2 0
+@Print ###########################################
+@Print #### TEST 3 ####
+@Print # Send a Force switch to Protection command and see which
+@Print # K-Bytes are sent on TSPII interface
+@Print # and UNEQ-P AIS-P values of protection
+@Print ###########################################
+@Pause
+

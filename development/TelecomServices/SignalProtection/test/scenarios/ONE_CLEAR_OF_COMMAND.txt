@@ -1,0 +1,34 @@
+##########################################
+#  
+# A command is cleared by a defect.
+# When the defect is cleared, the command
+# must be cleared. 
+#
+# SRS FP1.0 8.19 BRS-3404
+#           
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+Command MS_P							# Sends an MS command
+
+CheckFsm S_COMMAND_TO_PROTECTION		# Checks the resulting state
+Check MS PROTECTION 0 1PLUS1 UNIDIR		# 
+
+Failure WORKING LOS ON  				# New higher priority defect
+
+CheckFsm S_DEFECT_ON_WORKING			# Priority must be upgrade
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR   # 
+
+Failure WORKING LOS OFF  				# The defect is cleared
+
+CheckFsm S_WTR							# Command MS must be ignored
+Check WTR PROTECTION 0 1PLUS1 UNIDIR    # 
+
+

@@ -1,0 +1,126 @@
+############################################
+#####                                  #####
+#####  P O R T    M O N I T O R I N G  #####
+#####                                  #####
+#####          1+1 Protection          #####
+#####                                  #####
+############################################
+
+##################################################
+# Test facilities registering to Port Monitoring #
+##################################################
+#### TEST 1 ####
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# Create GRP1
+one create LINEAR BIDIR OC48 1 0 0 1 1 0
+
+# Set defects on group slot
+# Set LOS (AIS-L) defect
+1:9 tspiimon defect sfl on 0 1
+1:9 tspiimon defect sfl on 1 1
+1:9 one state a
+@Print ##########################################################
+@Print Test 1 -> See if Facilities have been registered to Port
+@Print           Monitoring by setting a defect (LOS -> AIS-L)
+@Print           on all ports and looking at the impact on the
+@Print           GROUP state.
+@Print ##########################################################
+@Pause
+
+#### TEST 2 ####
+# Set defects on another slot
+#
+1:9 tspiimon defect sfl off 0 1
+1:9 tspiimon defect sfl off 1 1
+1:9 tspiimon defect sfl on 0 2
+1:9 tspiimon defect sfl on 1 2
+1:9 one state a
+@Print ##########################################################
+@Print Test 2 -> Clear defect on tested group and set new defects
+@Print           on another slot.  There should be no impact on
+@Print           tested group.
+@Print ##########################################################
+@Pause
+
+1:9 tspiimon defect sfl off 0 2
+1:9 tspiimon defect sfl off 1 2
+
+#### TEST 3 ####
+# Set SD-BER defect
+#
+1:9 tspiimon defect sdl on 0 1
+1:9 one state a
+1:9 tspiimon defect sdl off 0 1
+@Print ##########################################################
+@Print Test 3 -> Check SD-BER defect.
+@Print ##########################################################
+@Pause
+
+#### TEST 4 ####
+# Set ERROR PATH defect
+#
+1:9 tspiimon defect errp on 1 1
+1:9 one state a
+1:9 tspiimon defect errp off 1 1
+@Print ##########################################################
+@Print Test 4 -> Check ERROR PATH defect.
+@Print ##########################################################
+@Pause
+
+#### TEST 5 ####
+# Set INT_COMM defect
+#
+1:9 tspiimon defect comm on 0 1
+1:9 one state a
+1:9 tspiimon defect comm off 0 1
+@Print ##########################################################
+@Print Test 5 -> Check INT_COMM defect.
+@Print ##########################################################
+@Pause
+
+#### TEST 6 ####
+# Set UNSTABLE K1K2 defect
+#
+1:9 tspiimon defect k1k2 on 1 1
+1:9 one state a
+1:9 tspiimon defect k1k2 off 1 1
+@Print ##########################################################
+@Print Test 6 -> Check UNSTABLE K1K2 defect.
+@Print ##########################################################
+@Pause
+
+######################################################
+# Test facilities unregistering from Port Monitoring #
+######################################################
+#### TEST 7 ####
+# Failure on our slot should not call our ProtectionAction
+# since our group is deleted
+#
+
+one delete 0
+one create LINEAR BIDIR OC48 2 0 0 2 1 0
+
+1:9 sp trace y
+
+1:9 tspiimon defect sfl on 0 1
+1:9 tspiimon defect sfl on 1 1
+1:9 sp trace n
+
+@Print ##########################################################
+@Print Test 7 -> See if Facilities have been unregistered from
+@Print           Port Monitoring. Delete original 1+1 group on 
+@Print           SLOT 1 and create a new one on SLOT 2.  Set 
+@Print           defects on SLOT 1: no trace of "Protection
+@Print           action called" should appear on PCSM screen.
+@Print ##########################################################
+

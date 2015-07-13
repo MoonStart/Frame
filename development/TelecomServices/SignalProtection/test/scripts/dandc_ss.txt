@@ -1,0 +1,266 @@
+##########################################################
+#####                                                #####
+#####       D R O P   A N D   C O N T I N U E        #####
+#####                                                #####
+#####                   Same Side                    #####
+#####                                                #####
+##########################################################
+
+#### TEST 1 ####
+# Create Drop & Continue groups and connections
+#
+
+# Init NETRA
+sp facade y
+til XcValidate off
+til AllPath on on
+til UseCardPresence off
+
+# Init PCSM
+1:9 clsr timeout 100000 100000 100000
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# force synchronization of PCSMs
+sp sync
+
+@Wait 10000
+
+# Create GRP1, MAP1 and RING1
+clsr create OC48 1 0 1 1 1 2 1 3
+clsr map 0 2 4 3 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC48 2 99 4 99
+clsr path n n n n n n n n
+
+# Create GRP2, MAP2 and RING2
+clsr create OC48 3 0 3 1 3 2 3 3
+clsr map 2 4 3 0 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC48 4 0 99 99
+clsr path n n n n n n n n
+
+# Create GRP3, MAP3 and RING3
+clsr create OC48 5 0 5 1 5 2 5 3
+clsr map 4 3 0 2 99 99 99 99 99 99 99 99 99 99 99 99
+clsr ring OC48 99 2 99 0
+clsr path n n n n n n n n
+
+# Create GRP4
+clsr create OC48 2 0 2 1 2 2 2 3
+
+# Create UPSR1
+one create UPSR UNIDIR OC48 3 0 1 2 2 1
+one edit n y 5
+
+# Create UPSR2
+one create UPSR UNIDIR OC48 2 0 1 3 2 1
+one edit n y 5
+
+1:9 sp group 0
+1:9 one timeout 5000
+1:9 sp group 1
+1:9 one timeout 5000
+
+# Make connections
+# Bidirectional add to ring 1
+xc connect 1 1 5 2 1 18 0
+xc connect 2 1 18 0 1 5 2
+# Bidirectional ring interconnection
+xc connect 3 1 1 0 1 17 0
+xc connect 4 1 17 0 1 1 0
+# UPSR in ring 1
+xc connect 6 1 3 0 1 3 2
+# Continue in ring 1
+xc connect 5 1 3 2 1 3 0
+# UPSR in ring 2
+xc connect 8 1 2 0 1 2 2
+# Continue in ring 2
+xc connect 7 1 2 2 1 2 0
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ####################################################
+@Print TEST 1 -> Verify Drop & Continue initial connections
+@Print ####################################################
+@Pause
+
+#### TEST 2 ####
+# Test Primary Squelch Table
+#
+
+# Create a ring failure between nodes 4 and 2
+#
+1:9 tspiimon defect sfl on 2 5
+1:9 tspiimon defect sfl on 3 5
+1:9 tspiimon defect sfl on 0 3
+1:9 tspiimon defect sfl on 1 3
+1:9 tspiimon defect sfp on 2 5
+1:9 tspiimon defect sfp on 3 5
+1:9 tspiimon defect sfp on 0 3
+1:9 tspiimon defect sfp on 1 3
+1:9 sp group 0
+1:9 tspiimon aps 11 4 2 1 2 1 1
+1:9 tspiimon aps 11 2 4 1 2 3 1
+1:9 sp group 1
+1:9 tspiimon aps 11 2 4 1 2 3 3
+1:9 sp group 2
+1:9 tspiimon aps 11 4 2 1 2 1 5
+
+@Wait 1000
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ####################################
+@Print TEST 2 -> Test Primary Squelch Table
+@Print ####################################
+@Pause
+
+#### TEST 3 ####
+# Test Secondary Squelch Table
+#
+
+# Create a ring failure between nodes 2 and 0
+#
+1:9 tspiimon defect sfl on 0 1
+1:9 tspiimon defect sfl on 1 1
+1:9 tspiimon defect sfl on 2 3
+1:9 tspiimon defect sfl on 3 3
+1:9 tspiimon defect sfp on 0 1
+1:9 tspiimon defect sfp on 1 1
+1:9 tspiimon defect sfp on 2 3
+1:9 tspiimon defect sfp on 3 3
+1:9 sp group 0
+1:9 tspiimon aps 11 4 2 1 2 1 1
+1:9 tspiimon aps 11 2 4 1 0 3 1
+1:9 sp group 2
+1:9 tspiimon aps 11 2 0 1 0 1 5
+
+@Wait 1000
+
+1:9 sp group 0
+1:9 tspiimon aps 11 2 4 1 2 3 1
+1:9 sp group 2
+1:9 tspiimon aps 11 2 0 1 2 1 5
+
+# Wait for UPSR to switch - Hold-off timer
+@Wait 4000
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ######################################
+@Print TEST 3 -> Test Secondary Squelch Table
+@Print ######################################
+@Pause
+
+
+#### TEST 4 ####
+# Test Primary Squelch table after Secondary has been exercised
+#
+
+1:9 tspiimon defect sfl off 2 5 
+1:9 tspiimon defect sfl off 3 5 
+1:9 tspiimon defect sfl off 0 3 
+1:9 tspiimon defect sfl off 1 3 
+1:9 tspiimon defect sfp off 2 5 
+1:9 tspiimon defect sfp off 3 5 
+1:9 tspiimon defect sfp off 0 3 
+1:9 tspiimon defect sfp off 1 3 
+1:9 sp group 0
+1:9 tspiimon aps 11 0 2 1 2 3 1
+1:9 sp group 1
+1:9 tspiimon aps 11 2 0 1 2 1 3
+1:9 sp group 2
+1:9 tspiimon aps 11 0 2 1 2 3 5
+
+# Wait for UPSR to revert - WTR
+@Wait 5000
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print #######################################################################
+@Print TEST 4 -> Test Primary Squelch table after Secondary has been exercised
+@Print #######################################################################
+@Pause
+
+
+#### TEST 5 ####
+# Clear all remaining failures
+#
+
+1:9 tspiimon defect sfl off 0 1 
+1:9 tspiimon defect sfl off 1 1 
+1:9 tspiimon defect sfl off 2 3 
+1:9 tspiimon defect sfl off 3 3 
+1:9 tspiimon defect sfp off 0 1 
+1:9 tspiimon defect sfp off 1 1 
+1:9 tspiimon defect sfp off 2 3 
+1:9 tspiimon defect sfp off 3 3 
+
+1:9 sp group 0
+1:9 tspiimon aps 0 0 2 0 0 1 1
+1:9 tspiimon aps 0 0 3 0 0 3 1
+1:9 sp group 1
+1:9 tspiimon aps 0 2 4 0 0 1 3
+1:9 tspiimon aps 0 2 0 0 0 3 3
+1:9 sp group 2
+1:9 tspiimon aps 0 4 3 0 0 1 5
+1:9 tspiimon aps 0 4 2 0 0 3 5
+
+@Wait 1000
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ######################################
+@Print TEST 5 -> Clear all remaining failures
+@Print ######################################
+@Pause
+
+
+#### TEST 6 ####
+# Test UPSR Hold-Off timer
+#
+# Clear a failure BEFORE expiration of hold-off timer
+
+1:9 tspiimon defect sfl on 0 3
+1:9 tspiimon defect sfp on 0 3
+
+@Wait 4000
+
+1:9 tspiimon defect sfl off 0 3
+1:9 tspiimon defect sfp off 0 3
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ######################################################
+@Print TEST 6 -> Test UPSR Hold-Off timer - Before Expiration
+@Print ######################################################
+@Pause
+
+
+#### TEST 7 ####
+# Test UPSR Hold-Off timer
+#
+# Clear a failure AFTER expiration of hold-off timer
+
+1:9 tspiimon defect sfl on 0 3
+1:9 tspiimon defect sfp on 0 3
+
+@Wait 6000
+
+1:9 tspiimon defect sfl off 0 3
+1:9 tspiimon defect sfp off 0 3
+
+1:9 xc dvpr i 48
+1:9 xc dvpr e 64
+
+@Print ########################################################
+@Print TEST 7 -> Test UPSR Hold-Off timer - Wait for Expiration
+@Print ########################################################
+@Pause
+

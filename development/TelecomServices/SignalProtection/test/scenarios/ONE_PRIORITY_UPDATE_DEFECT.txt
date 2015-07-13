@@ -1,0 +1,62 @@
+##########################################
+#
+# Test for priority update
+#
+# 1) SD_W to SF_W
+# 2) SD_P to SF_P
+# The node execute a defect and
+# then an another defect of higher priority
+# occures. The node must then update is 
+# priority request.
+#
+# See setion 8.24 of SRS-Behavioral 
+# Requirements for more infomations.
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Failure WORKING SD OFF
+Failure PROTECTION SD OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+##########################################
+# 1) SD_W to SF_W
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING SD ON					# A degrade occures on working
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SD_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON					# The facility enters in LOS
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+##########################################
+# 2) SD_P to SF_P
+##########################################
+Failure WORKING SD OFF					
+Failure WORKING LOS OFF					
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+Failure PROTECTION SD ON					# A degrade occures on protection
+
+CheckFsm S_WORKING_SELECTED
+Check SD_L WORKING 0 1PLUS1 UNIDIR
+
+Failure PROTECTION LOS ON					# The facility enters in LOS
+
+CheckFsm S_WORKING_SELECTED
+Check SF_L WORKING 0 1PLUS1 UNIDIR
+

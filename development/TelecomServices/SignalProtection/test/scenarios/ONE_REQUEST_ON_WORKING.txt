@@ -1,0 +1,81 @@
+##########################################
+#
+# Test for current scenarios of a request
+# on the working (MS, SD_W, SF_W) and then
+# node switch to protection.
+#
+# See setion 8.2.1 of SRS-Behavioral 
+# Requirements for more infomations.
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+##########################################
+# Defect on working
+#
+# rules 8.9 in SRS
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON                  # A defect occures on working
+
+CheckFsm S_DEFECT_ON_WORKING            # Node goes on protection
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR   #
+
+Failure WORKING LOS OFF                 # The defect is cleared
+
+CheckFsm S_WTR                          # Node goes in WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR    #
+
+Wait NR 1800 2800                       # Goes in WTR
+
+CheckFsm S_WORKING_SELECTED             # Node return to working
+Check NR WORKING 0 1PLUS1 UNIDIR        #
+
+##########################################
+# Defect on working (SD)
+#
+# rules 8.9 in SRS
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING SD ON                   # A defect occures on working
+
+CheckFsm S_DEFECT_ON_WORKING            # Node goes on protection
+Check SD_L PROTECTION 0 1PLUS1 UNIDIR   #
+
+Failure WORKING SD OFF                  # The defect is cleared
+
+CheckFsm S_WTR                          # Node goes in WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR    #
+
+Wait NR 1800 2800                       # Goes in WTR
+
+CheckFsm S_WORKING_SELECTED             # Node return to working
+Check NR WORKING 0 1PLUS1 UNIDIR        #
+
+##########################################
+# Command MS
+#
+# rules 8.9 in SRS
+##########################################
+
+Command MS_P                            # A external command is sent
+
+CheckFsm S_COMMAND_TO_PROTECTION        # Node goes to protection
+Check MS PROTECTION 0 1PLUS1 UNIDIR     #
+
+Command CLEAR                           # The command is cleared
+
+CheckFsm S_WORKING_SELECTED             # Return to working
+Check NR WORKING 0 1PLUS1 UNIDIR        #

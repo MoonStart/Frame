@@ -1,0 +1,25 @@
+//Copyright(c) Tellabs Transport Group. All rights reserved.
+
+
+#include <SNMP/SNMP_Defs.h>
+
+
+// Blackboard keys
+
+const FC_BbKey SNMP_RMON_COUNTERS        = "SNMP_RMON_COUNTERS";
+const FC_BbKey SNMP_RMON_STATS_DATA      = "SNMP_RMON_STATS_DATA";
+const FC_BbKey SNMP_RMON_STATS_CFG       = "SNMP_RMON_STATS_CFG";
+const FC_BbKey SNMP_RMON_STATS_REQ       = "SNMP_RMON_STATS_REQ";
+const FC_BbKey SNMP_RMON_HIST_DATA       = "SNMP_RMON_HIST_DATA";
+const FC_BbKey SNMP_RMON_HIST_CFG        = "SNMP_RMON_HIST_CFG";
+const FC_BbKey SNMP_RMON_HIST_REQ        = "SNMP_RMON_HIST_REQ";
+const FC_BbKey SNMP_RMON_HIST_STORAGE    = "SNMP_RMON_HIST_STORAGE";
+const FC_BbKey SNMP_CTRL_SYSUPTIME       = "SNMP_CTRL_SYSUPTIME";
+const FC_BbKey SNMP_SC_SYSUPTIME         = "SNMP_SC_SYSUPTIME";
+const FC_BbKey SNMP_SYS_INFO             = "SNMP_SYS_INFO";
+const FC_BbKey SNMP_INTF_COUNTERS        = "SNMP_INTF_COUNTERS";
+const FC_BbKey SNMP_INTF_STATS_DATA      = "SNMP_INTF_STATS_DATA";
+const FC_BbKey SNMP_INTF_STATS_CFG       = "SNMP_INTF_STATS_CFG";
+const FC_BbKey SNMP_INTF_STATS_REQ       = "SNMP_INTF_STATS_REQ";
+
+const uint32 SNMP_MAX_COUNTER32          = 4294967295;

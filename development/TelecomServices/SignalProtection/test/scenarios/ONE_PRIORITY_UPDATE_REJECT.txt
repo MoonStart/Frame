@@ -1,0 +1,87 @@
+##########################################
+#
+# Test for priority update
+#
+# 1) FW_W (then LOS on working)
+# 2) LK_P (automatic LOS refused)
+# 3) LOS ( manuel switch refused)
+# The node execute an external command and
+# then a a LOS of signal occurs on selected. 
+# The node must not update its 
+# priority request.
+#
+# See section 8.24 of SRS-Behavioral 
+# Requirements for more infomations.
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Failure WORKING SD OFF
+Failure PROTECTION SD OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 0 N N
+
+##########################################
+# 1) FS_W (automatic LOS refused)
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Command FS_W                            # A external command is sent
+
+CheckFsm S_WORKING_SELECTED
+Check FS WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON                  # Loss of signal on Working
+
+CheckFsm S_WORKING_SELECTED
+Check FS WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# 2) LK_P (automatic LOS refused)
+##########################################
+
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Command CLEAR
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Command LK_P                            # A external command is sent
+
+CheckFsm S_WORKING_SELECTED
+Check LP WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON                  # Loss of signal on Working
+
+CheckFsm S_WORKING_SELECTED
+Check LP WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# 2) LOS (manual switch refused)
+##########################################
+
+Failure WORKING LOS OFF
+Failure PROTECTION LOS OFF
+Command CLEAR
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS ON                  # a LOS is generated
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Command MS_W                            # A external command is sent
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+

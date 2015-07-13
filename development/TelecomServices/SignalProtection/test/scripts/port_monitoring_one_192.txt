@@ -1,0 +1,56 @@
+############################################
+#####                                  #####
+#####  P O R T    M O N I T O R I N G  #####
+#####                                  #####
+#####      1+1 Protection (OC-192)     #####
+#####                                  #####
+############################################
+
+##################################################
+# Test facilities registering to Port Monitoring #
+##################################################
+#### TEST 1 ####
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# Create GRP1
+one create LINEAR BIDIR OC192 1 0 0 2 0 0
+
+# Set defects on group slot
+# Set LOS (AIS-L) defect
+1:9 tspiimon defect sfl on 0 1
+1:9 tspiimon defect sfl on 0 2
+1:9 one state a
+@Print ##################################################
+@Print TEST 1 -> See if Facilities have been registered
+@Print           to Port monitoring by setting a defect 
+@Print           (LOS) on all ports and looking at the
+@Print           impact on the group state.
+@Print ##################################################
+@Pause
+
+#### TEST 2 ####
+# Set defects on another slot
+#
+1:9 tspiimon defect sfl off 0 1
+1:9 tspiimon defect sfl off 0 2
+1:9 tspiimon defect sfl on 1 1
+1:9 tspiimon defect sfl on 0 3
+1:9 one state a
+@Print ##################################################
+@Print TEST 2 -> Clear defect on tested group and set new
+@Print           defects on another port. There should be
+@Print           no impact on tested group.
+@Print ##################################################
+@Pause
+
+1:9 tspiimon defect sfl off 1 1
+1:9 tspiimon defect sfl off 0 3

@@ -1,0 +1,165 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "AM"=..\..\..\CardServices\AM\proj\AM.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    AM
+    ..\..\..\CardServices\AM\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Alarm"=.\Alarm.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    Alarm
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "AlarmCommonPlatform"=..\..\..\CommonPlatforms\TelecomServices\Alarm\proj\AlarmCommonPlatform.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    AlarmCommonPlatform
+    ..\..\..\CommonPlatforms\TelecomServices\Alarm\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "AlarmSpecificOSC"=..\..\..\OSC\TelecomServices\Alarm\proj\AlarmSpecificOSC.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    AlarmSpecificOSC
+    ..\..\..\osc\TelecomServices\Alarm\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "AlarmSpecificTrn"=..\..\..\transponder\TelecomServices\Alarm\proj\AlarmSpecificTrn.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    AlarmSpecificTrn
+    ..\..\..\transponder\TelecomServices\Alarm\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CommonTypes"=..\..\..\CommonTypes\proj\CommonTypes.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    CommonTypes
+    ..\..\..\CommonTypes\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ITS"=..\..\..\CardServices\ITS\proj\ITS.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    ITS
+    ..\..\..\CardServices\ITS\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "T6100Common"=..\..\..\CommonPlatforms\SoftwareServices\T6100\proj\T6100Common.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    T6100Common
+    ..\..\..\CommonPlatforms\SoftwareServices\T6100\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mon"=..\..\Monitoring\proj\mon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    mon
+    ..\..\Monitoring\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    alarm
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

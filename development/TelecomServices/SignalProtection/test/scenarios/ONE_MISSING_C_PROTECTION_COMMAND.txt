@@ -1,0 +1,94 @@
+##########################################
+# This scenario tests some transitions
+# those that are not tested by usual scenario.
+# In this test we complete all missing
+# transition of C_PROTECTION_COMMAND condition.
+#
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+Command CLEAR
+Failure WORKING LOS OFF
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# Node selects protection because of a
+# failure on working and then an higher
+# priority external command is received.
+##########################################
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Command FS_P
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check FS PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+##########################################
+# Node is in WTR and then a command is
+# received.
+##########################################
+
+Command CLEAR                      #
+Delete                             # Returns to defaults state
+Create OC48 1 0 1 1                #
+Edit NORMAL Y 2 N N                #
+Command CLEAR                      #
+CheckFsm S_WORKING_SELECTED        #
+Check NR WORKING 0 1PLUS1 UNIDIR   #
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_WTR
+Check WTR PROTECTION 0 1PLUS1 UNIDIR
+
+Command FS_P
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check FS PROTECTION 0 1PLUS1 UNIDIR
+
+##########################################
+# Node is using protection because it is
+# non revertive and then an external 
+# command is received.
+##########################################
+
+Delete                               #
+Create OC48 1 0 1 1                  # Returns to default state
+Edit NORMAL N 2 N N                  #
+Failure WORKING LOS OFF              #
+CheckFsm S_WORKING_SELECTED          #
+Check NR WORKING 0 1PLUS1 UNIDIR     #
+
+Failure WORKING LOS ON
+
+CheckFsm S_DEFECT_ON_WORKING
+Check SF_L PROTECTION 0 1PLUS1 UNIDIR
+
+Failure WORKING LOS OFF
+
+CheckFsm S_PROTECTION_NO_REQUEST
+Check DNR PROTECTION 0 1PLUS1 UNIDIR
+
+Command FS_P
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check FS PROTECTION 0 1PLUS1 UNIDIR
+

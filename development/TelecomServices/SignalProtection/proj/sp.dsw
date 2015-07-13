@@ -1,0 +1,129 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "CommonTypes"=..\..\..\CommonTypes\proj\CommonTypes.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    CommonTypes
+    ..\..\..\CommonTypes\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ExecutionSupport"=..\..\..\SoftwareServices\FC\ExecutionSupport\proj\ExecutionSupport.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    ExecutionSupport
+    ..\..\..\SoftwareServices\FC\ExecutionSupport\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "T6100Common"=..\..\..\CommonPlatforms\SoftwareServices\T6100\proj\T6100Common.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    T6100Common
+    ..\..\..\CommonPlatforms\SoftwareServices\T6100\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "blackboard"=..\..\..\SoftwareServices\FC\Blackboard\proj\blackboard.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    blackboard
+    ..\..\..\SoftwareServices\FC\Blackboard\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mon"=..\..\Monitoring\proj\mon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    mon
+    ..\..\Monitoring\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "sp"=.\sp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    sp
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "telcommon"=..\..\TelCommon\proj\telcommon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    telcommon
+    ..\..\TelCommon\proj
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

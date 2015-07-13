@@ -1,0 +1,110 @@
+######################################################
+#####                                            #####
+#####  I N T E R F A C E    V A L I D A T I O N  #####
+#####                                            #####
+#####              1+1 Protection (OC-192)       #####
+#####                                            #####
+######################################################
+
+########################
+# Test Groups creation #
+########################
+#### TEST 1 ####
+
+# Init NETRA
+sp facade y
+til XcValidate off
+
+# Init PCSM
+1:9 one log t
+
+# clear AIS-L and AIS-P on all ports
+sp initport 1
+
+# Create GRP1
+one create LINEAR BIDIR OC192 1 0 0 2 0 0
+
+@Wait 2000
+
+1:9 one state a
+@Print ########################################################
+@Print TEST 1 -> Verify new group default values: group state
+@Print ########################################################
+@Pause
+
+#### TEST 2 ####
+1:9 one stat
+@Print ########################################################
+@Print TEST 2 -> Verify new group default values: group status
+@Print ########################################################
+@Pause
+
+#### TEST 3 ####
+1:9 one config
+@Print ########################################################
+@Print TEST 3 -> Verify new group default values: port mapping
+@Print ########################################################
+@Pause
+
+#### TEST 4 ####
+# Set and verify a config
+#
+one edit n y 10
+sp sts48 0
+one path n n n n 
+sp sts48 1
+one path y y n n 
+sp sts48 2
+one path n n y y 
+sp sts48 3
+one path n n n n 
+
+@Wait 1000
+1:9 one config
+@Print ########################################################
+@Print TEST 4 -> Set and verify config
+@Print ########################################################
+@Pause
+
+#######################
+# Test Netra commands #
+#######################
+#### TEST 5 ####
+# Force switch on Protection
+one cmd f p
+
+1:9 one state a
+1:9 one stat
+@Print ########################################################
+@Print TEST 5 -> Force switch on protection
+@Print ########################################################
+@Pause
+
+one cmd c p
+
+##########################################
+# Test 1+1 Status reporting on Netra and #
+# Registration for Notification          #
+##########################################
+#### TEST 6 ####
+notif dump y
+one regNotif
+one status
+@Print ########################################################
+@Print TEST 6 -> Test status reporting to Netra and
+@Print           registration to notification
+@Print           Display initial status on Netra of Group ID 1
+@Print ########################################################
+@Pause
+
+#### TEST 7 ####
+one cmd f p
+@Wait 100
+one status
+@Print ########################################################
+@Print TEST 7 -> Force switch on protection
+@Print ########################################################
+@Pause
+
+one cmd c p
+

@@ -1,0 +1,65 @@
+##########################################
+#
+# Test for priority update
+#
+# 1) MS_W to FS_W
+# 2) FS_W to LK_P
+# 3) MS_P to FS_P
+# The node execute an external command and
+# then an another command of higher priority
+# occures. The node must then update is 
+# priority request.
+#
+# See setion 8.24 of SRS-Behavioral 
+# Requirements for more infomations.
+##########################################
+
+Architecture 1PLUS1
+
+Failure WORKING LOS OFF
+Command CLEAR
+Delete
+Create OC48 1 0 1 1
+Edit NORMAL Y 2 N N
+
+##########################################
+# 1) MS_W to FS_W
+##########################################
+
+CheckFsm S_WORKING_SELECTED
+Check NR WORKING 0 1PLUS1 UNIDIR
+
+Command MS_W                            # A external command is sent
+
+CheckFsm S_WORKING_SELECTED
+Check MS WORKING 0 1PLUS1 UNIDIR
+
+Command FS_W                            # New higher priority request
+
+CheckFsm S_WORKING_SELECTED
+Check FS WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# 2) FS_W to LK_P
+##########################################
+
+Command LK_P                            # New higher priority request
+
+CheckFsm S_WORKING_SELECTED
+Check LP WORKING 0 1PLUS1 UNIDIR
+
+##########################################
+# 3) MS_P to FS_P
+##########################################
+Command CLEAR
+
+Command MS_P                            #
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check MS PROTECTION 0 1PLUS1 UNIDIR
+
+Command FS_P                            # New higher priority request
+
+CheckFsm S_COMMAND_TO_PROTECTION
+Check FS PROTECTION 0 1PLUS1 UNIDIR
+
