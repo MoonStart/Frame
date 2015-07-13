@@ -1,0 +1,5 @@
+# BOS file used by the clearmake -A option
+# The PATH line below causes clearmake to "inherit" the environment PATH
+
+PATH :sh = echo $$PATH
+

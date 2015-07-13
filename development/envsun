@@ -1,0 +1,26 @@
+#!/usr/bin/ksh
+
+################################################################################
+# Make script to build applications using cleamake with GNU Make compatibility #
+# mode                                                                         #
+#                                                                              #
+#                                                                              #
+################################################################################
+
+
+BUILD_OS=solaris
+PLATFORM="SUN"
+export BUILD_OS PLATFORM
+
+CMAKE_PNAME_SEP="/"
+TTG_ROOT="/vobs/ots/development"
+WRL_ROOT="/vobs/wrlinux"
+WRL_PLAT_ROOT="/vobs/ots/wrlsp"
+
+PROJECT_ROOT=$TTG_ROOT
+EPILOGUE_ROOT=/vobs/ots/epilogue
+
+export CMAKE_PNAME_SEP TTG_ROOT WRL_ROOT WRL_PLAT_ROOT PROJECT_ROOT EPILOGUE_ROOT
+export DSET_ROOT=/vobs/cots/dset_501a
+
+
