@@ -1,0 +1,401 @@
+/*
+ * Copyright(c) Tellabs Operations, Inc. 6/15/2006
+ *
+ * TARGET      : SPM8560
+ * AUTHOR      : Steve Erlenborn
+ * DESCRIPTION : This file provides card-specific network interface utilities.
+ */
+
+#include "Nm/Nm_InterfaceUtils.h"
+#include "Nm/Nm_Defs.h"
+
+/*
+** This function returns a pointer to a string for the device name
+** corresponding to the given 'theLogicalInterfaceNumber'.
+*/
+const char * GetDeviceNameFromLogicalIf(int theLogicalInterfaceNumber)
+{
+    switch (theLogicalInterfaceNumber)
+    {
+    case NM_SPM8560_INTERNAL_INTERFACE_NUMBER:
+    case NM_SPM8560_LCI_INTERFACE_NUMBER:
+        return "motfcc";
+    case NM_SPM8560_MGMT_INTERFACE_NUMBER:
+    case NM_SPM8560_DCN_INTERFACE_NUMBER:
+    case NM_SPM8560_DCC_INTERFACE_NUMBER:
+        return "mottsec";
+    case NM_SPM8560_VIRTINT_INTERFACE_NUMBER:
+    case NM_SPM8560_VTSEC0_INTERFACE_NUMBER:
+    case NM_SPM8560_VTSEC1_INTERFACE_NUMBER:
+    case NM_SPM8560_VTSEC2_INTERFACE_NUMBER:
+    case NM_SPM8560_VTSEC3_INTERFACE_NUMBER:
+    case NM_SPM8560_VTSEC4_INTERFACE_NUMBER:
+        return "virtsec";
+    case NM_SPM8560_RTR_INTERFACE_NUMBER:
+    case NM_SPM8560_PREV_INTERFACE_NUMBER:
+    case NM_SPM8560_NEXT_INTERFACE_NUMBER:
+    case NM_SPM8560_EAST_INTERFACE_NUMBER:
+    case NM_SPM8560_WEST_INTERFACE_NUMBER:
+    case NM_SPM8560_RDCN_INTERFACE_NUMBER:
+    case NM_SPM8560_NORTH_INTERFACE_NUMBER:
+    case NM_SPM8560_SOUTH_INTERFACE_NUMBER:
+    case NM_SPM8560_EAST2_INTERFACE_NUMBER:
+    case NM_SPM8560_WEST2_INTERFACE_NUMBER:
+    case NM_SPM8560_NORTH2_INTERFACE_NUMBER:
+    case NM_SPM8560_SOUTH2_INTERFACE_NUMBER:
+    case NM_SPM8560_INTSPM_INTERFACE_NUMBER:
+    case NM_SPM8560_PREV2_INTERFACE_NUMBER:
+    case NM_SPM8560_NEXT2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_LBK_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_LBK2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_EXT_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_PREV_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_NEXT_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_EAST_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_WEST_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_NORTH_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_SOUTH_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_PREV2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_NEXT2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_EAST2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_WEST2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_NORTH2_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_SOUTH2_INTERFACE_NUMBER:
+    case NM_SPM8560_MGMT_GTW_INTERFACE_NUMBER:
+    case NM_SPM8560_INTER_DPM_INTERFACE_NUMBER:
+    case NM_SPM8560_SCN_INT_INTERFACE_NUMBER:
+        return "virtual";
+
+    case NM_SPM8560_GNE_INTERFACE_NUMBER:
+        // There is no device for the "GNE" interface
+    case NM_SPM8560_HIGH_SPEED_INTERFACE_NUMBER:
+        // There is no device for a High Speed Interface
+    default:
+        return "none";
+    }
+}
+
+/*
+** This function returns the device unit number
+** corresponding to the given 'theLogicalInterfaceNumber'.
+*/
+int GetDeviceUnitFromLogicalIf(int theLogicalInterfaceNumber)
+{
+    switch (theLogicalInterfaceNumber)
+    {
+    case NM_SPM8560_INTERNAL_INTERFACE_NUMBER:
+        return 1;
+    case NM_SPM8560_LCI_INTERFACE_NUMBER:
+        return 0;
+    case NM_SPM8560_MGMT_INTERFACE_NUMBER:
+        return 1;
+    case NM_SPM8560_DCN_INTERFACE_NUMBER:
+        return 1;
+    case NM_SPM8560_DCC_INTERFACE_NUMBER:
+        return 0;
+    case NM_SPM8560_VTSEC0_INTERFACE_NUMBER:
+        return 0;
+    case NM_SPM8560_VTSEC1_INTERFACE_NUMBER:
+        return 1;
+    case NM_SPM8560_VTSEC2_INTERFACE_NUMBER:
+        return 2;
+    case NM_SPM8560_SCN_INT_INTERFACE_NUMBER:
+        return 32;
+    case NM_SPM8560_VTSEC3_INTERFACE_NUMBER:
+        return 3;
+    case NM_SPM8560_VTSEC4_INTERFACE_NUMBER:
+        return 4;
+    case NM_SPM8560_VIRTINT_INTERFACE_NUMBER:
+        return 4;
+    case NM_SPM8560_RTR_INTERFACE_NUMBER:
+        return 0;
+    case NM_SPM8560_PREV_INTERFACE_NUMBER:
+        return 1;
+    case NM_SPM8560_NEXT_INTERFACE_NUMBER:
+        return 2;
+    case NM_SPM8560_EAST_INTERFACE_NUMBER:
+        return 3;
+    case NM_SPM8560_WEST_INTERFACE_NUMBER:
+        return 4;
+    case NM_SPM8560_RDCN_INTERFACE_NUMBER:
+        return 5;
+    case NM_SPM8560_NORTH_INTERFACE_NUMBER:
+        return 6;
+    case NM_SPM8560_SOUTH_INTERFACE_NUMBER:
+        return 7;
+    case NM_SPM8560_EAST2_INTERFACE_NUMBER:
+        return 8;
+    case NM_SPM8560_WEST2_INTERFACE_NUMBER:
+        return 9;
+    case NM_SPM8560_NORTH2_INTERFACE_NUMBER:
+        return 10;
+    case NM_SPM8560_SOUTH2_INTERFACE_NUMBER:
+        return 11;
+    case NM_SPM8560_INTSPM_INTERFACE_NUMBER:
+        return 12;
+    case NM_SPM8560_PREV2_INTERFACE_NUMBER:
+        return 13;
+    case NM_SPM8560_NEXT2_INTERFACE_NUMBER:
+        return 14;
+    case NM_SPM8560_SCN_LBK_INTERFACE_NUMBER:
+        return 2;
+    case NM_SPM8560_SCN_LBK2_INTERFACE_NUMBER:
+        return 3;
+    case NM_SPM8560_SCN_EXT_INTERFACE_NUMBER:
+        return 16;
+    case NM_SPM8560_SCN_PREV_INTERFACE_NUMBER:        
+        return 18;
+    case NM_SPM8560_SCN_NEXT_INTERFACE_NUMBER:
+        return 19;
+    case NM_SPM8560_SCN_EAST_INTERFACE_NUMBER:
+        return 20;
+    case NM_SPM8560_SCN_WEST_INTERFACE_NUMBER:
+        return 21;
+    case NM_SPM8560_SCN_NORTH_INTERFACE_NUMBER:
+        return 22;
+    case NM_SPM8560_SCN_SOUTH_INTERFACE_NUMBER:
+        return 23;
+    case NM_SPM8560_SCN_PREV2_INTERFACE_NUMBER:        
+        return 24;
+    case NM_SPM8560_SCN_NEXT2_INTERFACE_NUMBER:
+        return 25;
+    case NM_SPM8560_SCN_EAST2_INTERFACE_NUMBER:
+        return 26;
+    case NM_SPM8560_SCN_WEST2_INTERFACE_NUMBER:
+        return 27;
+    case NM_SPM8560_SCN_NORTH2_INTERFACE_NUMBER:
+        return 28;
+    case NM_SPM8560_SCN_SOUTH2_INTERFACE_NUMBER:
+        return 29;
+    case NM_SPM8560_MGMT_GTW_INTERFACE_NUMBER:
+        return 30;
+    case NM_SPM8560_INTER_DPM_INTERFACE_NUMBER:
+		return 31;
+    case NM_SPM8560_GNE_INTERFACE_NUMBER:
+        // There is no "GNE" interface
+    case NM_SPM8560_HIGH_SPEED_INTERFACE_NUMBER:
+        // There is no High Speed Interface
+    default:
+        return 0;
+    }
+}
+
+
+/*
+** This function returns a pointer to a label corresponding
+** to the given 'theLogicalInterfaceNumber'.
+*/
+const char * GetLabelFromLogicalIf(int theLogicalInterfaceNumber)
+{
+    switch (theLogicalInterfaceNumber)
+    {
+    case NM_SPM8560_INTERNAL_INTERFACE_NUMBER:
+        return "INT";
+    case NM_SPM8560_VIRTINT_INTERFACE_NUMBER:
+        return "VINT";
+    case NM_SPM8560_LCI_INTERFACE_NUMBER:
+        return "LCI";
+    case NM_SPM8560_MGMT_INTERFACE_NUMBER:
+        return "MGMT";
+    case NM_SPM8560_DCN_INTERFACE_NUMBER:
+        return "DCN";
+    case NM_SPM8560_DCC_INTERFACE_NUMBER:
+        return "DCC";
+    case NM_SPM8560_VTSEC0_INTERFACE_NUMBER:
+        return "VTSEC0";
+    case NM_SPM8560_VTSEC1_INTERFACE_NUMBER:
+        return "VTSEC1";
+    case NM_SPM8560_VTSEC2_INTERFACE_NUMBER:
+        return "VTSEC2";
+    case NM_SPM8560_SCN_INT_INTERFACE_NUMBER:
+        return "SCN_INT";
+    case NM_SPM8560_VTSEC3_INTERFACE_NUMBER:
+        return "VTSEC3";
+    case NM_SPM8560_VTSEC4_INTERFACE_NUMBER:
+        return "VTSEC4";
+    case NM_SPM8560_RTR_INTERFACE_NUMBER:
+        return "RTR";
+    case NM_SPM8560_PREV_INTERFACE_NUMBER:
+        return "MCN_PREV (RT1)";
+    case NM_SPM8560_NEXT_INTERFACE_NUMBER:
+        return "MCN_NEXT (RT2)";
+    case NM_SPM8560_EAST_INTERFACE_NUMBER:
+        return "MCN_EAST";
+    case NM_SPM8560_WEST_INTERFACE_NUMBER:
+        return "MCN_WEST";
+    case NM_SPM8560_RDCN_INTERFACE_NUMBER:
+        return "RDCN";
+    case NM_SPM8560_NORTH_INTERFACE_NUMBER:
+        return "MCN_NORTH";
+    case NM_SPM8560_SOUTH_INTERFACE_NUMBER:
+        return "MCN_SOUTH";
+    case NM_SPM8560_GNE_INTERFACE_NUMBER:
+        return "GNE";
+    case NM_SPM8560_HIGH_SPEED_INTERFACE_NUMBER:
+        return "HSINT";
+    case NM_SPM8560_EAST2_INTERFACE_NUMBER:
+        return "MCN_EAST2";
+    case NM_SPM8560_WEST2_INTERFACE_NUMBER:
+        return "MCN_WEST2";
+    case NM_SPM8560_NORTH2_INTERFACE_NUMBER:
+        return "MCN_NORTH2";
+    case NM_SPM8560_SOUTH2_INTERFACE_NUMBER:
+        return "MCN_SOUTH2";
+    case NM_SPM8560_INTSPM_INTERFACE_NUMBER:
+        return "INTSPM";
+    case NM_SPM8560_PREV2_INTERFACE_NUMBER:
+        return "MCN_PREV2 (RT1)";
+    case NM_SPM8560_NEXT2_INTERFACE_NUMBER:
+        return "MCN_NEXT2 (RT2)";
+    case NM_SPM8560_SCN_LBK_INTERFACE_NUMBER:
+        return "SCN_LBK";
+    case NM_SPM8560_SCN_LBK2_INTERFACE_NUMBER:
+        return "SCN_LBK2";
+    case NM_SPM8560_SCN_EXT_INTERFACE_NUMBER:
+        return "SCN_EXT";
+    case NM_SPM8560_SCN_PREV_INTERFACE_NUMBER:
+        return "SCN_PREV";
+    case NM_SPM8560_SCN_NEXT_INTERFACE_NUMBER:
+        return "SCN_NEXT";
+    case NM_SPM8560_SCN_EAST_INTERFACE_NUMBER:
+        return "SCN_EAST";
+    case NM_SPM8560_SCN_WEST_INTERFACE_NUMBER:
+        return "SCN_WEST";
+    case NM_SPM8560_SCN_NORTH_INTERFACE_NUMBER:
+        return "SCN_NORTH";
+    case NM_SPM8560_SCN_SOUTH_INTERFACE_NUMBER:
+        return "SCN_SOUTH";
+    case NM_SPM8560_SCN_PREV2_INTERFACE_NUMBER:
+        return "SCN_PREV2";
+    case NM_SPM8560_SCN_NEXT2_INTERFACE_NUMBER:
+        return "SCN_NEXT2";
+    case NM_SPM8560_SCN_EAST2_INTERFACE_NUMBER:
+        return "SCN_EAST2";
+    case NM_SPM8560_SCN_WEST2_INTERFACE_NUMBER:
+        return "SCN_WEST2";
+    case NM_SPM8560_SCN_NORTH2_INTERFACE_NUMBER:
+        return "SCN_NORTH2";
+    case NM_SPM8560_SCN_SOUTH2_INTERFACE_NUMBER:
+        return "SCN_SOUTH2";
+    case NM_SPM8560_MGMT_GTW_INTERFACE_NUMBER:
+        return "MGMTGTW";
+    case NM_SPM8560_INTER_DPM_INTERFACE_NUMBER:
+		return "INTDPM";
+    default:
+        return "?";
+    }
+}
+
+/*
+** This function returns a the full name (device & unit #)
+** corresponding to the given 'theLogicalInterfaceNumber'.
+*/
+const char * GetFullNameFromLogicalIf(int theLogicalInterfaceNumber)
+{
+    switch (theLogicalInterfaceNumber)
+    {
+    case NM_SPM8560_VIRTINT_INTERFACE_NUMBER:
+        return NM_SPM8560_VIRTINT_INTERFACE_NAME;
+    case NM_SPM8560_INTERNAL_INTERFACE_NUMBER:
+        return NM_SPM8560_INTERNAL_INTERFACE_NAME;
+    case NM_SPM8560_LCI_INTERFACE_NUMBER:
+        return NM_SPM8560_LCI_INTERFACE_NAME;
+    case NM_SPM8560_MGMT_INTERFACE_NUMBER:
+        return NM_SPM8560_MGMT_INTERFACE_NAME;
+    case NM_SPM8560_DCN_INTERFACE_NUMBER:
+        return NM_SPM8560_DCN_INTERFACE_NAME;
+    case NM_SPM8560_DCC_INTERFACE_NUMBER:
+        return NM_SPM8560_DCC_INTERFACE_NAME;
+    case NM_SPM8560_VTSEC0_INTERFACE_NUMBER:
+        return NM_SPM8560_VTSEC0_INTERFACE_NAME;
+    case NM_SPM8560_VTSEC1_INTERFACE_NUMBER:
+        return NM_SPM8560_VTSEC1_INTERFACE_NAME;
+    case NM_SPM8560_VTSEC2_INTERFACE_NUMBER:
+        return NM_SPM8560_VTSEC2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_INT_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_INT_INTERFACE_NAME;
+    case NM_SPM8560_VTSEC3_INTERFACE_NUMBER:
+        return NM_SPM8560_VTSEC3_INTERFACE_NAME;
+    case NM_SPM8560_VTSEC4_INTERFACE_NUMBER:
+        return NM_SPM8560_VTSEC4_INTERFACE_NAME;
+    case NM_SPM8560_RTR_INTERFACE_NUMBER:
+        return NM_SPM8560_RTR_INTERFACE_NAME;
+    case NM_SPM8560_PREV_INTERFACE_NUMBER:
+        return NM_SPM8560_PREV_INTERFACE_NAME;
+    case NM_SPM8560_NEXT_INTERFACE_NUMBER:
+        return NM_SPM8560_NEXT_INTERFACE_NAME;
+    case NM_SPM8560_EAST_INTERFACE_NUMBER:
+        return NM_SPM8560_EAST_INTERFACE_NAME;
+    case NM_SPM8560_WEST_INTERFACE_NUMBER:
+        return NM_SPM8560_WEST_INTERFACE_NAME;
+    case NM_SPM8560_RDCN_INTERFACE_NUMBER:
+        return NM_SPM8560_RDCN_INTERFACE_NAME;
+    case NM_SPM8560_NORTH_INTERFACE_NUMBER:
+        return NM_SPM8560_NORTH_INTERFACE_NAME;
+    case NM_SPM8560_SOUTH_INTERFACE_NUMBER:
+        return NM_SPM8560_SOUTH_INTERFACE_NAME;
+    case NM_SPM8560_GNE_INTERFACE_NUMBER:
+        return NM_SPM8560_GNE_INTERFACE_NAME;
+    case NM_SPM8560_HIGH_SPEED_INTERFACE_NUMBER:
+        return "HSINT";
+    case NM_SPM8560_EAST2_INTERFACE_NUMBER:
+        return NM_SPM8560_EAST2_INTERFACE_NAME;
+    case NM_SPM8560_WEST2_INTERFACE_NUMBER:
+        return NM_SPM8560_WEST2_INTERFACE_NAME;
+    case NM_SPM8560_NORTH2_INTERFACE_NUMBER:
+        return NM_SPM8560_NORTH2_INTERFACE_NAME;
+    case NM_SPM8560_SOUTH2_INTERFACE_NUMBER:
+        return NM_SPM8560_SOUTH2_INTERFACE_NAME;
+    case NM_SPM8560_INTSPM_INTERFACE_NUMBER:
+        return NM_SPM8560_INTSPM_INTERFACE_NAME;
+    case NM_SPM8560_PREV2_INTERFACE_NUMBER:
+        return NM_SPM8560_PREV2_INTERFACE_NAME;
+    case NM_SPM8560_NEXT2_INTERFACE_NUMBER:
+        return NM_SPM8560_NEXT2_INTERFACE_NAME;
+	case NM_SPM8560_SCN_LBK_INTERFACE_NUMBER:
+	    return NM_SPM8560_SCN_LBK_INTERFACE_NAME;
+	case NM_SPM8560_SCN_LBK2_INTERFACE_NUMBER:
+	    return NM_SPM8560_SCN_LBK2_INTERFACE_NAME;
+	case NM_SPM8560_SCN_EXT_INTERFACE_NUMBER:
+	    return NM_SPM8560_SCN_EXT_INTERFACE_NAME;
+    case NM_SPM8560_SCN_PREV_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_PREV_INTERFACE_NAME;
+    case NM_SPM8560_SCN_NEXT_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_NEXT_INTERFACE_NAME;
+    case NM_SPM8560_SCN_EAST_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_EAST_INTERFACE_NAME;
+    case NM_SPM8560_SCN_WEST_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_WEST_INTERFACE_NAME;
+    case NM_SPM8560_SCN_NORTH_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_NORTH_INTERFACE_NAME;
+    case NM_SPM8560_SCN_SOUTH_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_SOUTH_INTERFACE_NAME;
+    case NM_SPM8560_SCN_PREV2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_PREV2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_NEXT2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_NEXT2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_EAST2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_EAST2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_WEST2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_WEST2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_NORTH2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_NORTH2_INTERFACE_NAME;
+    case NM_SPM8560_SCN_SOUTH2_INTERFACE_NUMBER:
+        return NM_SPM8560_SCN_SOUTH2_INTERFACE_NAME;
+    case NM_SPM8560_MGMT_GTW_INTERFACE_NUMBER:
+        return NM_SPM8560_MGMT_GTW_INTERFACE_NAME;
+    case NM_SPM8560_INTER_DPM_INTERFACE_NUMBER:
+		return NM_SPM8560_INTER_DPM_INTERFACE_NAME;
+    default:
+        return "?";
+    }
+}
+
+/*
+** This function returns 1 to indicate that the Default
+** Gateway is significant on this module type.
+*/
+int ModuleUsesDefaultGateway()
+{
+    return 1;
+}

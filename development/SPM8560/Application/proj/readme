@@ -1,0 +1,27 @@
+SPM8560 boot proj makefiles have been modified for a pboot bug.  
+There was an upgrade problem on, in or about upgrading to 4.3.  The bug was 
+such that the upgrade buffer in ram was corrupted and would never be
+able to load the new application.  As such, the changes added to 
+workaround this bug involve a slightly adjusted boot procedure
+(with differently named files).  This readme documents those adjustments:
+
+pre 4.3             post 4.3
+SPM8560bboot        SPM8560Bbboot
+SPM8560pboot        SPM8560Bpboot
+		    SPM8560app
+		    SPM8560pboot
+SPM8560app          SPM8560Bapp
+
+Okay, so we had to change the cardtype from SPM8560 to SPM8560B.  When pboot runs,
+it will try to load the SPM8560app.  The SPM8560 app is really a customized PBOOT
+that is small enough to not be corrupted by the upgrade buffer problem.  It then
+has the specialized job of loading the real application without corrupting the upgrade
+buffer.  SPM8560pboot is just a copy of the regular pboot (SPM8560Bpboot) and 
+just provided on the disk for backwards compatibility and downgrade scenario's.
+
+The SPM8560app load (which is just a customized version of PBOOT) uses its own 
+unique copies of pboot.c and customdialog.  So for SPM8560app, we use the files
+pbootB.c and customdialog_ppc_8560B.c.  For the other, regular pboot loaders, we use
+pboot.c and customdialog_ppc_8560.c.
+
+
