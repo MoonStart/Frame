@@ -1,0 +1,69 @@
+State 0:
+          input ::= * cmdlist
+          cmdlist ::= * cmdlist ecmd
+          cmdlist ::= * ecmd
+          ecmd ::= * SEMI
+          ecmd ::= * cmdx SEMI
+          cmdx ::= * cmd
+          cmd ::= * ED EDFA THREASHOLD para1
+
+                          SEMI shift-reduce 3      ecmd ::= SEMI
+                            ED shift        4      
+                         input accept
+                       cmdlist shift        1      
+                          ecmd shift-reduce 2      cmdlist ::= ecmd
+                          cmdx shift        5      
+                           cmd shift-reduce 5      cmdx ::= cmd
+
+State 1:
+      (0) input ::= cmdlist *
+          cmdlist ::= cmdlist * ecmd
+          ecmd ::= * SEMI
+          ecmd ::= * cmdx SEMI
+          cmdx ::= * cmd
+          cmd ::= * ED EDFA THREASHOLD para1
+
+                             $ reduce       0      input ::= cmdlist
+                          SEMI shift-reduce 3      ecmd ::= SEMI
+                            ED shift        4      
+                          ecmd shift-reduce 1      cmdlist ::= cmdlist ecmd
+                          cmdx shift        5      
+                           cmd shift-reduce 5      cmdx ::= cmd
+
+State 2:
+          cmd ::= ED EDFA THREASHOLD * para1
+          para1 ::= * INT
+
+                           INT shift-reduce 7      para1 ::= INT
+                         para1 shift-reduce 6      cmd ::= ED EDFA THREASHOLD para1
+
+State 3:
+          cmd ::= ED EDFA * THREASHOLD para1
+
+                    THREASHOLD shift        2      
+
+State 4:
+          cmd ::= ED * EDFA THREASHOLD para1
+
+                          EDFA shift        3      
+
+State 5:
+          ecmd ::= cmdx * SEMI
+
+                          SEMI shift-reduce 4      ecmd ::= cmdx SEMI
+
+----------------------------------------------------
+Symbols:
+    0: $:
+    1: SEMI
+    2: ED
+    3: EDFA
+    4: THREASHOLD
+    5: INT
+    6: error:
+    7: input: SEMI ED
+    8: cmdlist: SEMI ED
+    9: ecmd: SEMI ED
+   10: cmdx: ED
+   11: cmd: ED
+   12: para1: INT

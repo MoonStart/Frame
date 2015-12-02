@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lemon", "Lemon.vcproj", "{D5009E6B-4E69-446F-A8E3-F7FDDCD12A10}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLI", "..\CLI\CLI.vcproj", "{40B12A4B-04D0-403D-9388-67BA471259AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D5009E6B-4E69-446F-A8E3-F7FDDCD12A10}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D5009E6B-4E69-446F-A8E3-F7FDDCD12A10}.Debug|Win32.Build.0 = Debug|Win32
+		{D5009E6B-4E69-446F-A8E3-F7FDDCD12A10}.Release|Win32.ActiveCfg = Release|Win32
+		{D5009E6B-4E69-446F-A8E3-F7FDDCD12A10}.Release|Win32.Build.0 = Release|Win32
+		{40B12A4B-04D0-403D-9388-67BA471259AA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{40B12A4B-04D0-403D-9388-67BA471259AA}.Debug|Win32.Build.0 = Debug|Win32
+		{40B12A4B-04D0-403D-9388-67BA471259AA}.Release|Win32.ActiveCfg = Release|Win32
+		{40B12A4B-04D0-403D-9388-67BA471259AA}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 命令行或者调试命令应该有两种格式
+ 
+ 命令行xml配置文件有如下的格式
+ 格式1：
+   除开<COMMAND>节点之外，其他的节点都是MODE说明，命令行
+ 只有进入了对应的模式才可以使用对应的命令，一个模式下的命令对其他模式不可见
+ 格式2：
+    每一行命令配置是cmd=开头，都用分号结尾，表示一行命令的格式说明
+	
+ 1.参数后面用“=”表明，后面可带参数INT/STRING/ENUM
+   1.1 当参数为INT 时候， 后面带range说明，不带range说明
+        解析器报错，当无range要求时，range="NULL", 可以用
+		[] () (] [)表明区间的范围
+	   当参数为多个int时候，后面带多个range说明
+	   
+ 2.当参数为字符串时，=后面为STRING，无范围说明
+ 3. 当参数为枚举时候，后面带枚举的参数, 后面带参数说明
+    value=[], 以|隔开多个值
+ 3. 命令有四种格式，创建，删除，修改，获取，分别以
+    ENT（enter）,DEL(delete) MOD(modify) RERV(retrieve),表示
+-->
+<COMMNAD>
+ 	<EDFA>
+    	cmd=ED EDFA threashold=INT range=[1-36]; <!--INT 格式-->
+		cmd=ED EDFA POWER=ENUM value=[on|off]; <!-- enum 格式 -->  
+		cmd=RTRV EDFA version;
+	</EDFA>
+	
+	<COMMANN>
+	    cmd=ENT USER NAME=STRING,PASSWORD=STRING;
+	    cmd=ED USER NAME=STRING PASSWORD=STRING;
+		cmd=DEL USER NAME=STRING;
+		cmd=RTRV USER NAME=STRING; <!-- if we meet problem such as one parameter have mutli 
+		                                format, we use it like this way to resolve it  -->
+		cmd=RTRV USER ALL;
+	<!--EXP: create one user the name and password shoul be string-->
+	</COMMANN>
+</COMMAND>
